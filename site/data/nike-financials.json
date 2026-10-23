@@ -1,0 +1,3336 @@
+{
+ "meta": {
+  "title": "NIKE, Inc. – phân phối và kết quả tài chính FY2020–FY2026",
+  "generated_on": "2026-10-23",
+  "extracted_on": "2026-10-23",
+  "workbook": "downloads/NIKE_Financial_Dataset_FY2020-2026.xlsx",
+  "currency": "USD",
+  "fiscal_year_end": "31/5",
+  "status_counts": {
+   "Khớp nguồn chính thức": 167,
+   "Chờ người kiểm tra": 35,
+   "Đã xác minh (người)": 0,
+   "Thiếu / không công bố": 1,
+   "Bằng chứng mâu thuẫn": 0
+  },
+  "status_labels": {
+   "Khớp nguồn chính thức": "Matched to official source",
+   "Chờ người kiểm tra": "Pending human review",
+   "Đã xác minh (người)": "Human verified",
+   "Thiếu / không công bố": "Missing or undisclosed",
+   "Bằng chứng mâu thuẫn": "Conflicting evidence"
+  }
+ },
+ "years": [
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025,
+  2026
+ ],
+ "filings": {
+  "2020": {
+   "accession": "0000320187-20-000047",
+   "filed": "2020-07-24",
+   "period_end": "2020-05-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm",
+   "title": "NIKE, Inc. Form 10-K for the fiscal year ended May 31, 2020"
+  },
+  "2021": {
+   "accession": "0000320187-21-000028",
+   "filed": "2021-07-20",
+   "period_end": "2021-05-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm",
+   "title": "NIKE, Inc. Form 10-K for the fiscal year ended May 31, 2021"
+  },
+  "2022": {
+   "accession": "0000320187-22-000038",
+   "filed": "2022-07-21",
+   "period_end": "2022-05-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/320187/000032018722000038/nke-20220531.htm",
+   "title": "NIKE, Inc. Form 10-K for the fiscal year ended May 31, 2022"
+  },
+  "2023": {
+   "accession": "0000320187-23-000039",
+   "filed": "2023-07-20",
+   "period_end": "2023-05-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/320187/000032018723000039/nke-20230531.htm",
+   "title": "NIKE, Inc. Form 10-K for the fiscal year ended May 31, 2023"
+  },
+  "2024": {
+   "accession": "0000320187-24-000044",
+   "filed": "2024-07-25",
+   "period_end": "2024-05-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/320187/000032018724000044/nke-20240531.htm",
+   "title": "NIKE, Inc. Form 10-K for the fiscal year ended May 31, 2024"
+  },
+  "2025": {
+   "accession": "0000320187-25-000047",
+   "filed": "2025-07-17",
+   "period_end": "2025-05-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/320187/000032018725000047/nke-20250531.htm",
+   "title": "NIKE, Inc. Form 10-K for the fiscal year ended May 31, 2025"
+  },
+  "2026": {
+   "accession": "0000320187-26-000088",
+   "filed": "2026-07-15",
+   "period_end": "2026-05-31",
+   "url": "https://www.sec.gov/Archives/edgar/data/320187/000032018726000088/nke-20260531.htm",
+   "title": "NIKE, Inc. Form 10-K for the fiscal year ended May 31, 2026"
+  }
+ },
+ "metrics": {
+  "revenues": {
+   "vi": "Doanh thu",
+   "en": "Revenues",
+   "unit": "USD triệu",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Tổng doanh thu hợp nhất của NIKE, Inc. (NIKE Brand + Converse + Corporate).",
+   "location": "Item 8 – Consolidated Statements of Income, dòng “Revenues”"
+  },
+  "cost_of_sales": {
+   "vi": "Giá vốn hàng bán",
+   "en": "Cost of sales",
+   "unit": "USD triệu",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Giá vốn hàng bán hợp nhất.",
+   "location": "Item 8 – Consolidated Statements of Income, dòng “Cost of sales”"
+  },
+  "gross_profit": {
+   "vi": "Lợi nhuận gộp",
+   "en": "Gross profit",
+   "unit": "USD triệu",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Doanh thu trừ giá vốn hàng bán, như trình bày trên báo cáo kết quả kinh doanh.",
+   "location": "Item 8 – Consolidated Statements of Income, dòng “Gross profit”"
+  },
+  "demand_creation_expense": {
+   "vi": "Chi phí tạo nhu cầu",
+   "en": "Demand creation expense",
+   "unit": "USD triệu",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Cấu phần marketing của tổng chi phí bán hàng và quản lý. 10-K FY2020: chi phí quảng cáo, khuyến mại, hợp đồng tài trợ vận động viên, truyền thông, sự kiện thương hiệu; 10-K FY2026: “brand marketing expense and sports marketing expense”.",
+   "location": "Item 8 – Consolidated Statements of Income, dòng “Demand creation expense”"
+  },
+  "operating_overhead_expense": {
+   "vi": "Chi phí vận hành chung",
+   "en": "Operating overhead expense",
+   "unit": "USD triệu",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Cấu phần còn lại của tổng chi phí bán hàng và quản lý: chủ yếu lương và phúc lợi, nghiên cứu và phát triển, nợ khó đòi, tiền thuê, khấu hao, dịch vụ chuyên môn, đầu tư công nghệ, đi lại (theo 10-K FY2026).",
+   "location": "Item 8 – Consolidated Statements of Income, dòng “Operating overhead expense”"
+  },
+  "total_selling_admin_expense": {
+   "vi": "Tổng chi phí bán hàng và quản lý (SG&A)",
+   "en": "Total selling and administrative expense",
+   "unit": "USD triệu",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Tổng chi phí tạo nhu cầu và chi phí vận hành chung. NIKE không phân bổ khoản này theo kênh phân phối.",
+   "location": "Item 8 – Consolidated Statements of Income, dòng “Total selling and administrative expense”"
+  },
+  "interest_expense_net": {
+   "vi": "Chi phí (thu nhập) lãi thuần",
+   "en": "Interest expense (income), net",
+   "unit": "USD triệu",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Số dương = chi phí lãi thuần; số âm = thu nhập lãi thuần. Giữ đúng quy ước dấu của NIKE.",
+   "location": "Item 8 – Consolidated Statements of Income, dòng “Interest expense (income), net” (từ FY2024 ghi là “Interest (income) expense, net”)"
+  },
+  "other_expense_net": {
+   "vi": "Chi phí (thu nhập) khác thuần",
+   "en": "Other (income) expense, net",
+   "unit": "USD triệu",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Số dương = chi phí khác thuần; số âm = thu nhập khác thuần. Giữ đúng quy ước dấu của NIKE.",
+   "location": "Item 8 – Consolidated Statements of Income, dòng “Other (income) expense, net”"
+  },
+  "income_before_taxes": {
+   "vi": "Lợi nhuận trước thuế",
+   "en": "Income before income taxes",
+   "unit": "USD triệu",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Lợi nhuận trước thuế thu nhập doanh nghiệp.",
+   "location": "Item 8 – Consolidated Statements of Income, dòng “Income before income taxes”"
+  },
+  "income_tax_expense": {
+   "vi": "Chi phí thuế thu nhập",
+   "en": "Income tax expense",
+   "unit": "USD triệu",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Chi phí thuế thu nhập doanh nghiệp.",
+   "location": "Item 8 – Consolidated Statements of Income, dòng “Income tax expense”"
+  },
+  "net_income": {
+   "vi": "Lợi nhuận sau thuế",
+   "en": "Net income",
+   "unit": "USD triệu",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Lợi nhuận thuần của NIKE, Inc.",
+   "location": "Item 8 – Consolidated Statements of Income, dòng “Net income”"
+  },
+  "inventories": {
+   "vi": "Hàng tồn kho cuối kỳ",
+   "en": "Inventories",
+   "unit": "USD triệu",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Số dư hàng tồn kho tại ngày kết thúc năm tài chính (31/5). Giá trị năm trước là số dư đầu kỳ.",
+   "location": "Item 8 – Consolidated Balance Sheets, dòng “Inventories” (số dư tại 31/5)"
+  },
+  "ebit_reported": {
+   "vi": "EBIT do NIKE công bố",
+   "en": "Total NIKE, Inc. Earnings Before Interest and Taxes (EBIT)",
+   "unit": "USD triệu",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "Non-GAAP – NIKE định nghĩa",
+   "definition": "Lợi nhuận sau thuế cộng chi phí (thu nhập) lãi thuần và chi phí thuế. NIKE ghi rõ đây là chỉ tiêu non-GAAP. Dùng để đối chiếu với EBIT tự tính ở sheet 04.",
+   "location": "Item 7 – MD&A, bảng “Total NIKE, Inc. EBIT” (mục Use of Non-GAAP Financial Measures / Operating Segments)"
+  },
+  "revenues_pct_change_reported": {
+   "vi": "% thay đổi doanh thu (NIKE công bố, đã làm tròn)",
+   "en": "TOTAL NIKE, INC. REVENUES – % change",
+   "unit": "%",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "MD&A – % tính từ số GAAP",
+   "definition": "Tỷ lệ tăng trưởng theo báo cáo, NIKE làm tròn đến số nguyên. Dùng để đối chiếu với tăng trưởng tự tính.",
+   "location": "Item 7 – MD&A, bảng doanh thu NIKE, Inc., cột “% CHANGE”"
+  },
+  "revenues_pct_change_cn": {
+   "vi": "% thay đổi doanh thu loại trừ biến động tỷ giá",
+   "en": "TOTAL NIKE, INC. REVENUES – % change excluding currency changes",
+   "unit": "%",
+   "scope": "NIKE, Inc.",
+   "channel": "",
+   "kind": "Non-GAAP – NIKE định nghĩa",
+   "definition": "Tăng trưởng trung lập tỷ giá (currency-neutral), chỉ tiêu non-GAAP do NIKE tính theo tỷ giá năm trước. Không thể tự tính lại từ BCTC.",
+   "location": "Item 7 – MD&A, bảng doanh thu NIKE, Inc., cột “% CHANGE EXCLUDING CURRENCY CHANGES”"
+  },
+  "nike_direct_revenue": {
+   "vi": "Doanh thu NIKE Direct",
+   "en": "Sales through Direct to Consumer (NIKE Brand)",
+   "unit": "USD triệu",
+   "scope": "NIKE Brand",
+   "channel": "NIKE Direct",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Doanh thu NIKE Brand bán trực tiếp cho người tiêu dùng qua cửa hàng do NIKE sở hữu và nền tảng số (“NIKE Brand Digital”) – theo định nghĩa trong Item 1 của 10-K. Không gồm kênh trực tiếp của Converse. Thuyết minh BCTC gọi dòng này là “Sales through Direct to Consumer”, MD&A gọi là “Sales through NIKE Direct”.",
+   "location": "Item 8 – Note “Revenues”, bảng phân tách doanh thu, cột “Total NIKE Brand”, dòng “Sales through Direct to Consumer”"
+  },
+  "nike_brand_wholesale_revenue": {
+   "vi": "Doanh thu bán buôn NIKE Brand",
+   "en": "Sales to Wholesale Customers (NIKE Brand)",
+   "unit": "USD triệu",
+   "scope": "NIKE Brand",
+   "channel": "Bán buôn (Wholesale)",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Doanh thu NIKE Brand bán cho khách hàng bán buôn (nhà bán lẻ, nhà phân phối, đối tác). Không gồm bán buôn của Converse.",
+   "location": "Item 8 – Note “Revenues”, bảng phân tách doanh thu, cột “Total NIKE Brand”, dòng “Sales to Wholesale Customers”"
+  },
+  "global_brand_divisions_revenue": {
+   "vi": "Doanh thu Global Brand Divisions",
+   "en": "Other / Global Brand Divisions (NIKE Brand)",
+   "unit": "USD triệu",
+   "scope": "NIKE Brand",
+   "channel": "Global Brand Divisions",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "“NIKE Brand licensing and other miscellaneous revenues” không thuộc khu vực địa lý nào; không thuộc kênh Direct hay Wholesale. Quy mô rất nhỏ.",
+   "location": "Item 8 – Note “Revenues”, bảng phân tách doanh thu, cột “Total NIKE Brand”, dòng “Other”"
+  },
+  "nike_brand_revenue": {
+   "vi": "Tổng doanh thu NIKE Brand",
+   "en": "Total NIKE Brand revenues",
+   "unit": "USD triệu",
+   "scope": "NIKE Brand",
+   "channel": "Tổng NIKE Brand",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "NIKE Direct + Bán buôn NIKE Brand + Global Brand Divisions. Không gồm Converse và Corporate.",
+   "location": "Item 8 – Note “Revenues”, bảng phân tách doanh thu, cột “Total NIKE Brand”, dòng “Total revenues”"
+  },
+  "converse_revenue": {
+   "vi": "Doanh thu Converse",
+   "en": "Converse revenues",
+   "unit": "USD triệu",
+   "scope": "Converse",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Doanh thu thương hiệu Converse (gồm cả kênh trực tiếp và bán buôn của Converse). Dùng để đối chiếu NIKE Brand với NIKE, Inc.",
+   "location": "Item 8 – Note “Revenues”, bảng phân tách doanh thu, cột “Converse”, dòng “Total revenues”"
+  },
+  "corporate_revenue": {
+   "vi": "Doanh thu Corporate",
+   "en": "Corporate revenues",
+   "unit": "USD triệu",
+   "scope": "Corporate",
+   "channel": "",
+   "kind": "GAAP – BCTC đã kiểm toán",
+   "definition": "Chủ yếu là lãi/lỗ phòng ngừa rủi ro tỷ giá liên quan đến doanh thu; có thể âm. Dùng để đối chiếu.",
+   "location": "Item 8 – Note “Revenues”, bảng phân tách doanh thu, cột “Corporate”, dòng “Total revenues”"
+  },
+  "nike_brand_digital_sales": {
+   "vi": "Doanh số NIKE Brand Digital",
+   "en": "NIKE Brand Digital sales (FY2020–21: “Digital commerce sales”)",
+   "unit": "USD tỷ",
+   "scope": "NIKE Brand",
+   "channel": "NIKE Direct – Digital",
+   "kind": "MD&A – thuyết minh",
+   "definition": "Doanh số qua nền tảng số của NIKE Brand – một phần của NIKE Direct. NIKE chỉ công bố dạng làm tròn đến 0,1 tỷ USD trong phần thuyết minh.",
+   "location": "Item 7 – MD&A, đoạn văn về NIKE Direct (câu trích ở cột “Số hoặc câu hiển thị trong tài liệu”)"
+  },
+  "nike_direct_share_stated": {
+   "vi": "Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)",
+   "en": "NIKE Direct as approx. % of total NIKE Brand revenues (as stated)",
+   "unit": "%",
+   "scope": "NIKE Brand",
+   "channel": "NIKE Direct",
+   "kind": "MD&A – thuyết minh",
+   "definition": "Tỷ trọng làm tròn do NIKE tự nêu trong MD&A. Dùng để đối chiếu với tỷ trọng tự tính ở sheet 04.",
+   "location": "Item 7 – MD&A, câu “NIKE Direct revenues represented approximately …% of total NIKE Brand revenues”"
+  },
+  "nike_direct_pct_change_reported": {
+   "vi": "% thay đổi NIKE Direct (NIKE công bố, đã làm tròn)",
+   "en": "Sales through NIKE Direct – % change",
+   "unit": "%",
+   "scope": "NIKE Brand",
+   "channel": "NIKE Direct",
+   "kind": "MD&A – % tính từ số GAAP",
+   "definition": "Tăng trưởng theo báo cáo do NIKE làm tròn đến số nguyên. Dùng để đối chiếu.",
+   "location": "Item 7 – MD&A, bảng doanh thu, mục Supplemental NIKE Brand Revenues Details, cột “% CHANGE”"
+  },
+  "nike_direct_pct_change_cn": {
+   "vi": "% thay đổi NIKE Direct loại trừ tỷ giá",
+   "en": "Sales through NIKE Direct – % change excluding currency changes",
+   "unit": "%",
+   "scope": "NIKE Brand",
+   "channel": "NIKE Direct",
+   "kind": "Non-GAAP – NIKE định nghĩa",
+   "definition": "Tăng trưởng trung lập tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
+   "location": "Item 7 – MD&A, bảng doanh thu, mục Supplemental NIKE Brand Revenues Details, cột “% CHANGE EXCLUDING CURRENCY CHANGES”"
+  },
+  "nike_brand_wholesale_pct_change_reported": {
+   "vi": "% thay đổi bán buôn (NIKE công bố, đã làm tròn)",
+   "en": "Sales to Wholesale Customers – % change",
+   "unit": "%",
+   "scope": "NIKE Brand",
+   "channel": "Bán buôn (Wholesale)",
+   "kind": "MD&A – % tính từ số GAAP",
+   "definition": "Tăng trưởng theo báo cáo do NIKE làm tròn đến số nguyên. Dùng để đối chiếu.",
+   "location": "Item 7 – MD&A, bảng doanh thu, mục Supplemental NIKE Brand Revenues Details, cột “% CHANGE”"
+  },
+  "nike_brand_wholesale_pct_change_cn": {
+   "vi": "% thay đổi bán buôn loại trừ tỷ giá",
+   "en": "Sales to Wholesale Customers – % change excluding currency changes",
+   "unit": "%",
+   "scope": "NIKE Brand",
+   "channel": "Bán buôn (Wholesale)",
+   "kind": "Non-GAAP – NIKE định nghĩa",
+   "definition": "Tăng trưởng trung lập tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
+   "location": "Item 7 – MD&A, bảng doanh thu, mục Supplemental NIKE Brand Revenues Details, cột “% CHANGE EXCLUDING CURRENCY CHANGES”"
+  },
+  "nike_brand_pct_change_reported": {
+   "vi": "% thay đổi doanh thu NIKE Brand (NIKE công bố, đã làm tròn)",
+   "en": "TOTAL NIKE BRAND REVENUES – % change",
+   "unit": "%",
+   "scope": "NIKE Brand",
+   "channel": "Tổng NIKE Brand",
+   "kind": "MD&A – % tính từ số GAAP",
+   "definition": "Tăng trưởng theo báo cáo do NIKE làm tròn đến số nguyên. Dùng để đối chiếu.",
+   "location": "Item 7 – MD&A, bảng doanh thu, mục Supplemental NIKE Brand Revenues Details, cột “% CHANGE”"
+  },
+  "nike_brand_pct_change_cn": {
+   "vi": "% thay đổi NIKE Brand loại trừ tỷ giá",
+   "en": "TOTAL NIKE BRAND REVENUES – % change excluding currency changes",
+   "unit": "%",
+   "scope": "NIKE Brand",
+   "channel": "Tổng NIKE Brand",
+   "kind": "Non-GAAP – NIKE định nghĩa",
+   "definition": "Tăng trưởng trung lập tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
+   "location": "Item 7 – MD&A, bảng doanh thu, mục Supplemental NIKE Brand Revenues Details, cột “% CHANGE EXCLUDING CURRENCY CHANGES”"
+  }
+ },
+ "observations": {
+  "revenues": {
+   "2020": {
+    "value": 37403.0,
+    "prior": 39117.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "37,403",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 44538.0,
+    "prior": 37403.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "44,538",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 46710.0,
+    "prior": 44538.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "46,710",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 51217.0,
+    "prior": 46710.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "51,217",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 51362.0,
+    "prior": 51217.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "51,362",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 46309.0,
+    "prior": 51362.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "46,309",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 46398.0,
+    "prior": 46309.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "46,398",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "cost_of_sales": {
+   "2020": {
+    "value": 21162.0,
+    "prior": 21643.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "21,162",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 24576.0,
+    "prior": 21162.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "24,576",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 25231.0,
+    "prior": 24576.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "25,231",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 28925.0,
+    "prior": 25231.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "28,925",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 28475.0,
+    "prior": 28925.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "28,475",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 26519.0,
+    "prior": 28475.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "26,519",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 26487.0,
+    "prior": 26519.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "26,487",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "gross_profit": {
+   "2020": {
+    "value": 16241.0,
+    "prior": 17474.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "16,241",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 19962.0,
+    "prior": 16241.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "19,962",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 21479.0,
+    "prior": 19962.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "21,479",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 22292.0,
+    "prior": 21479.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "22,292",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 22887.0,
+    "prior": 22292.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "22,887",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 19790.0,
+    "prior": 22887.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "19,790",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 19911.0,
+    "prior": 19790.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "19,911",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "demand_creation_expense": {
+   "2020": {
+    "value": 3592.0,
+    "prior": 3753.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "3,592",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 3114.0,
+    "prior": 3592.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "3,114",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 3850.0,
+    "prior": 3114.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "3,850",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 4060.0,
+    "prior": 3850.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "4,060",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 4285.0,
+    "prior": 4060.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "4,285",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 4689.0,
+    "prior": 4285.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "4,689",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 4754.0,
+    "prior": 4689.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "4,754",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "operating_overhead_expense": {
+   "2020": {
+    "value": 9534.0,
+    "prior": 8949.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "9,534",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 9911.0,
+    "prior": 9534.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "9,911",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 10954.0,
+    "prior": 9911.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "10,954",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 12317.0,
+    "prior": 10954.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "12,317",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 12291.0,
+    "prior": 12317.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "12,291",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 11399.0,
+    "prior": 12291.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "11,399",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 11360.0,
+    "prior": 11399.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "11,360",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "total_selling_admin_expense": {
+   "2020": {
+    "value": 13126.0,
+    "prior": 12702.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "13,126",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 13025.0,
+    "prior": 13126.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "13,025",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 14804.0,
+    "prior": 13025.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "14,804",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 16377.0,
+    "prior": 14804.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "16,377",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 16576.0,
+    "prior": 16377.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "16,576",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 16088.0,
+    "prior": 16576.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "16,088",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 16114.0,
+    "prior": 16088.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "16,114",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "interest_expense_net": {
+   "2020": {
+    "value": 89.0,
+    "prior": 49.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "89",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 262.0,
+    "prior": 89.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "262",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 205.0,
+    "prior": 262.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "205",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": -6.0,
+    "prior": 205.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "6",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": -161.0,
+    "prior": -6.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "161",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": -107.0,
+    "prior": -161.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "107",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": -50.0,
+    "prior": -107.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "50",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "other_expense_net": {
+   "2020": {
+    "value": 139.0,
+    "prior": -78.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "139",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 14.0,
+    "prior": 139.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "14",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": -181.0,
+    "prior": 14.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "181",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": -280.0,
+    "prior": -181.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "280",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": -228.0,
+    "prior": -280.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "228",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": -76.0,
+    "prior": -228.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "76",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": -53.0,
+    "prior": -76.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "53",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "income_before_taxes": {
+   "2020": {
+    "value": 2887.0,
+    "prior": 4801.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "2,887",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 6661.0,
+    "prior": 2887.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "6,661",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 6651.0,
+    "prior": 6661.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "6,651",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 6201.0,
+    "prior": 6651.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "6,201",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 6700.0,
+    "prior": 6201.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "6,700",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 3885.0,
+    "prior": 6700.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "3,885",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 3900.0,
+    "prior": 3885.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "3,900",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "income_tax_expense": {
+   "2020": {
+    "value": 348.0,
+    "prior": 772.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "348",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 934.0,
+    "prior": 348.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "934",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 605.0,
+    "prior": 934.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "605",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 1131.0,
+    "prior": 605.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "1,131",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 1000.0,
+    "prior": 1131.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "1,000",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 666.0,
+    "prior": 1000.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "666",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 792.0,
+    "prior": 666.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "792",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "net_income": {
+   "2020": {
+    "value": 2539.0,
+    "prior": 4029.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "2,539",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 5727.0,
+    "prior": 2539.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "5,727",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 6046.0,
+    "prior": 5727.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "6,046",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 5070.0,
+    "prior": 6046.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "5,070",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 5700.0,
+    "prior": 5070.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "5,700",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 3219.0,
+    "prior": 5700.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 56,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "3,219",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 3108.0,
+    "prior": 3219.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 55,
+    "section": "CONSOLIDATED STATEMENTS OF INCOME",
+    "evidence": "3,108",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "inventories": {
+   "2020": {
+    "value": 7367.0,
+    "prior": 5622.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 58,
+    "section": "CONSOLIDATED BALANCE SHEETS",
+    "evidence": "7,367",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 6854.0,
+    "prior": 7367.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 59,
+    "section": "CONSOLIDATED BALANCE SHEETS",
+    "evidence": "6,854",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 8420.0,
+    "prior": 6854.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 58,
+    "section": "CONSOLIDATED BALANCE SHEETS",
+    "evidence": "8,420",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 8454.0,
+    "prior": 8420.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED BALANCE SHEETS",
+    "evidence": "8,454",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 7519.0,
+    "prior": 8454.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 59,
+    "section": "CONSOLIDATED BALANCE SHEETS",
+    "evidence": "7,519",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 7489.0,
+    "prior": 7519.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 58,
+    "section": "CONSOLIDATED BALANCE SHEETS",
+    "evidence": "7,489",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 7501.0,
+    "prior": 7489.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 57,
+    "section": "CONSOLIDATED BALANCE SHEETS",
+    "evidence": "7,501",
+    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "ebit_reported": {
+   "2020": {
+    "value": 2976.0,
+    "prior": 4850.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 35,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. EARNINGS BEFORE INTEREST AND TAXES(1) | 2,976 | 4,850 | -39 | 4,379 | 11",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh 0 triệu USD, ngưỡng ±1 triệu USD).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 6923.0,
+    "prior": 2976.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 36,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. EARNINGS BEFORE INTEREST AND TAXES(1) | 6,923 | 2,976 | 133 | 4,850 | -39",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh 0 triệu USD, ngưỡng ±1 triệu USD).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 6856.0,
+    "prior": 6923.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 36,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. EARNINGS BEFORE INTEREST AND TAXES(1) | 6,856 | 6,923 | -1 | 2,976 | 133",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh 0 triệu USD, ngưỡng ±1 triệu USD).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 6195.0,
+    "prior": 6856.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 36,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. EARNINGS BEFORE INTEREST AND TAXES(1) | 6,195 | 6,856 | -10 | 6,923 | -1",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh 0 triệu USD, ngưỡng ±1 triệu USD).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 6539.0,
+    "prior": 6195.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 38,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. EARNINGS BEFORE INTEREST AND TAXES(1) | 6,539 | 6,195 | 6 | 6,856 | -10",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh 0 triệu USD, ngưỡng ±1 triệu USD).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 3778.0,
+    "prior": 6539.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 37,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. EARNINGS BEFORE INTEREST AND TAXES(1) | 3,778 | 6,539 | -42 | 6,195 | 6",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh 0 triệu USD, ngưỡng ±1 triệu USD).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 3850.0,
+    "prior": 3778.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 36,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. EBIT(1) | 3,850 | 3,778 | 2 | 6,539 | -42",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh 0 triệu USD, ngưỡng ±1 triệu USD).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "revenues_pct_change_reported": {
+   "2020": {
+    "value": -0.04,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 31,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 37,403 | 39,117 | -4 | -2 | 36,397 | 7 | 11",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,38 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 0.19,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 44,538 | 37,403 | 19 | 17 | 39,117 | -4 | -2",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,08 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 0.05,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 46,710 | 44,538 | 5 | 6 | 37,403 | 19 | 17",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,12 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 0.1,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 51,217 | 46,710 | 10 | 16 | 44,538 | 5 | 6",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,35 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 0.0,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 34,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 51,362 | 51,217 | 0 | 1 | 46,710 | 10 | 16",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,28 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": -0.1,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 33,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 46,309 | 51,362 | -10 | -9 | 51,217 | 0 | 1",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,16 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 0.0,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 46,398 | 46,309 | 0 | -2 | 51,362 | -10 | -9",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,19 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "revenues_pct_change_cn": {
+   "2020": {
+    "value": -0.02,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 31,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 37,403 | 39,117 | -4 | -2 | 36,397 | 7 | 11",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 0.17,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 44,538 | 37,403 | 19 | 17 | 39,117 | -4 | -2",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 0.06,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 46,710 | 44,538 | 5 | 6 | 37,403 | 19 | 17",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 0.16,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 51,217 | 46,710 | 10 | 16 | 44,538 | 5 | 6",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 0.01,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 34,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 51,362 | 51,217 | 0 | 1 | 46,710 | 10 | 16",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": -0.09,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 33,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 46,309 | 51,362 | -10 | -9 | 51,217 | 0 | 1",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": -0.02,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE, INC. REVENUES | 46,398 | 46,309 | 0 | -2 | 51,362 | -10 | -9",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "nike_direct_revenue": {
+   "2020": {
+    "value": 12382.0,
+    "prior": 11753.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 88,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "12,382",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 31).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 16370.0,
+    "prior": 12382.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 86,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "16,370",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 18726.0,
+    "prior": 16370.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 85,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "18,726",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 21308.0,
+    "prior": 18726.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 83,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "21,308",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 21519.0,
+    "prior": 21308.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 84,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "21,519",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 34).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 18783.0,
+    "prior": 21519.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 82,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "18,783",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 33).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 17720.0,
+    "prior": 18783.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 83,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "17,720",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "nike_brand_wholesale_revenue": {
+   "2020": {
+    "value": 23156.0,
+    "prior": 25423.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 88,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "23,156",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 31).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 25898.0,
+    "prior": 23156.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 86,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "25,898",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 25608.0,
+    "prior": 25898.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 85,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "25,608",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 27397.0,
+    "prior": 25608.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 83,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "27,397",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 27758.0,
+    "prior": 27397.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 84,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "27,758",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 34).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 25883.0,
+    "prior": 27758.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 82,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "25,883",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 33).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 27453.0,
+    "prior": 25883.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 83,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "27,453",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "global_brand_divisions_revenue": {
+   "2020": {
+    "value": 30.0,
+    "prior": 42.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 88,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "30",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 31).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 25.0,
+    "prior": 30.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 86,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "25",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 102.0,
+    "prior": 25.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 85,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "102",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 58.0,
+    "prior": 102.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 83,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "58",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 45.0,
+    "prior": 58.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 84,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "45",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 34).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 48.0,
+    "prior": 45.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 82,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "48",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 33).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 49.0,
+    "prior": 48.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 83,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "49",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "nike_brand_revenue": {
+   "2020": {
+    "value": 35568.0,
+    "prior": 37218.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 88,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "35,568",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 31).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 42293.0,
+    "prior": 35568.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 86,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "42,293",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 44436.0,
+    "prior": 42293.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 85,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "44,436",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 48763.0,
+    "prior": 44436.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 83,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "48,763",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 49322.0,
+    "prior": 48763.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 84,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "49,322",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 34).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 44714.0,
+    "prior": 49322.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 82,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "44,714",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 33).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 45222.0,
+    "prior": 44714.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 83,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "45,222",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "converse_revenue": {
+   "2020": {
+    "value": 1846.0,
+    "prior": 1906.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 88,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "1,846",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 31).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 2205.0,
+    "prior": 1846.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 86,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "2,205",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 2346.0,
+    "prior": 2205.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 85,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "2,346",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 2427.0,
+    "prior": 2346.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 83,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "2,427",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 2082.0,
+    "prior": 2427.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 84,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "2,082",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 34).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 1692.0,
+    "prior": 2082.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 82,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "1,692",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 33).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 1174.0,
+    "prior": 1692.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 83,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "1,174",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "corporate_revenue": {
+   "2020": {
+    "value": -11.0,
+    "prior": -7.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 88,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "11",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 31).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 40.0,
+    "prior": -11.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 86,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "40",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": -72.0,
+    "prior": 40.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 85,
+    "section": "NOTE 16 — REVENUES",
+    "evidence": "72",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 27.0,
+    "prior": -72.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 83,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "27",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": -42.0,
+    "prior": 27.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 84,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "42",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 34).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": -97.0,
+    "prior": -42.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 82,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "97",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 33).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 2.0,
+    "prior": -97.0,
+    "status": "Khớp nguồn chính thức",
+    "page": 83,
+    "section": "NOTE 14 — REVENUES",
+    "evidence": "2",
+    "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "nike_brand_digital_sales": {
+   "2020": {
+    "value": 5.5,
+    "prior": 3.8,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Digital commerce sales were $5.5 billion for fiscal 2020 compared to $3.8 billion for fiscal 2019.",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 9.1,
+    "prior": 5.5,
+    "status": "Chờ người kiểm tra",
+    "page": 33,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Digital commerce sales were $9.1 billion for fiscal 2021 compared to $5.5 billion for fiscal 2020.",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 10.7,
+    "prior": 9.1,
+    "status": "Chờ người kiểm tra",
+    "page": 33,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "NIKE Brand Digital sales were $10.7 billion for fiscal 2022 compared to $9.1 billion for fiscal 2021.",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 12.6,
+    "prior": 10.7,
+    "status": "Chờ người kiểm tra",
+    "page": 33,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "NIKE Brand Digital sales were $12.6 billion for fiscal 2023 compared to $10.7 billion for fiscal 2022.",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "ĐIỀU CHỈNH HỒI TỐ: 10-K FY2024 trình bày lại là 12,4 tỷ USD (chênh -0,2 tỷ USD).",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 12.1,
+    "prior": 12.4,
+    "status": "Chờ người kiểm tra",
+    "page": 35,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "NIKE Brand Digital sales were $12.1 billion for fiscal 2024 compared to $12.4 billion for fiscal 2023.",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 9.6,
+    "prior": 12.1,
+    "status": "Chờ người kiểm tra",
+    "page": 34,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "On a currency-neutral basis, NIKE Direct revenues decreased 12% due to declines in NIKE Brand Digital sales of 20% from $12.1 billion in fiscal 2024 to $9.6 billion in fiscal 2025, while NIKE store sales were flat.",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 8.6,
+    "prior": 9.6,
+    "status": "Chờ người kiểm tra",
+    "page": 33,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "NIKE Brand Digital sales were $8.6 billion in fiscal 2026 compared to $9.6 billion in fiscal 2025, with declines primarily due to reduced traffic.",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Chưa có 10-K năm sau để so sánh.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "nike_direct_share_stated": {
+   "2020": {
+    "value": 0.35,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "On a reported basis, NIKE Direct revenues represented approximately 35% of our total NIKE Brand revenues for fiscal 2020, compared to 32% for fiscal 2019.",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,19 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 0.39,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 33,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "On a reported basis, NIKE Direct revenues represented approximately 39% of our total NIKE Brand revenues for fiscal 2021 compared to 35% for fiscal 2020.",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,29 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 0.42,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 28,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Over the last several years, as we have executed against the Consumer Direct Acceleration, we have grown our NIKE Direct business to be approximately 42% of total NIKE Brand revenues for fiscal 2022, and we have reduced the number of wholesale accounts globally.",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,14 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "10-K năm sau không trình bày lại số này.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 0.44,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 28,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "NIKE Direct revenues grew 14% from $18.7 billion in fiscal 2022 to $21.3 billion in fiscal 2023, and represented approximately 44% of total NIKE Brand revenues for fiscal 2023",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,30 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "10-K năm sau không trình bày lại số này.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 0.44,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 30,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "NIKE Direct revenues grew 1% from $21.3 billion in fiscal 2023 to $21.5 billion in fiscal 2024, and represented approximately 44% of total NIKE Brand revenues for fiscal 2024",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,37 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "10-K năm sau không trình bày lại số này.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": 0.42,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 29,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "NIKE Direct revenues declined 13% from $21.5 billion in fiscal 2024 to $18.8 billion in fiscal 2025, and represented approximately 42% of total NIKE Brand revenues for fiscal 2025",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,01 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "10-K năm sau không trình bày lại số này.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": null,
+    "prior": null,
+    "status": "Thiếu / không công bố",
+    "page": null,
+    "section": "—",
+    "evidence": "—",
+    "cross_check": "10-K FY2026 không công bố chỉ tiêu này.",
+    "restatement": "—",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "nike_direct_pct_change_reported": {
+   "2020": {
+    "value": 0.05,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 31,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 12,382 | 11,753 | 5 | 8 | 10,428 | 13 | 16",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,35 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 0.32,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 16,370 | 12,382 | 32 | 30 | 11,753 | 5 | 8",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,21 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 0.14,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 18,726 | 16,370 | 14 | 15 | 12,382 | 32 | 30",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,39 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 0.14,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 21,308 | 18,726 | 14 | 20 | 16,370 | 14 | 15",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,21 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 0.01,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 34,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 21,519 | 21,308 | 1 | 1 | 18,726 | 14 | 20",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,01 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": -0.13,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 33,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 18,783 | 21,519 | -13 | -12 | 21,308 | 1 | 1",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,29 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": -0.06,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 17,720 | 18,783 | -6 | -8 | 21,519 | -13 | -12",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,34 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "nike_direct_pct_change_cn": {
+   "2020": {
+    "value": 0.08,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 31,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 12,382 | 11,753 | 5 | 8 | 10,428 | 13 | 16",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 0.3,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 16,370 | 12,382 | 32 | 30 | 11,753 | 5 | 8",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 0.15,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 18,726 | 16,370 | 14 | 15 | 12,382 | 32 | 30",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 0.2,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 21,308 | 18,726 | 14 | 20 | 16,370 | 14 | 15",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 0.01,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 34,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 21,519 | 21,308 | 1 | 1 | 18,726 | 14 | 20",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": -0.12,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 33,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 18,783 | 21,519 | -13 | -12 | 21,308 | 1 | 1",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": -0.08,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales through NIKE Direct | 17,720 | 18,783 | -6 | -8 | 21,519 | -13 | -12",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "nike_brand_wholesale_pct_change_reported": {
+   "2020": {
+    "value": -0.09,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 31,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 23,156 | 25,423 | -9 | -7 | 23,969 | 6 | 10",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,08 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 0.12,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 25,898 | 23,156 | 12 | 10 | 25,423 | -9 | -7",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,16 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": -0.01,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 25,608 | 25,898 | -1 | -1 | 23,156 | 12 | 10",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,12 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 0.07,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 27,397 | 25,608 | 7 | 14 | 25,898 | -1 | -1",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,01 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 0.01,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 34,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 27,758 | 27,397 | 1 | 2 | 25,608 | 7 | 14",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,32 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": -0.07,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 33,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 25,883 | 27,758 | -7 | -6 | 27,397 | 1 | 2",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,25 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 0.06,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 27,453 | 25,883 | 6 | 4 | 27,758 | -7 | -6",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,07 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "nike_brand_wholesale_pct_change_cn": {
+   "2020": {
+    "value": -0.07,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 31,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 23,156 | 25,423 | -9 | -7 | 23,969 | 6 | 10",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 0.1,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 25,898 | 23,156 | 12 | 10 | 25,423 | -9 | -7",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": -0.01,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 25,608 | 25,898 | -1 | -1 | 23,156 | 12 | 10",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 0.14,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 27,397 | 25,608 | 7 | 14 | 25,898 | -1 | -1",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 0.02,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 34,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 27,758 | 27,397 | 1 | 2 | 25,608 | 7 | 14",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": -0.06,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 33,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 25,883 | 27,758 | -7 | -6 | 27,397 | 1 | 2",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 0.04,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Sales to Wholesale Customers | 27,453 | 25,883 | 6 | 4 | 27,758 | -7 | -6",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "nike_brand_pct_change_reported": {
+   "2020": {
+    "value": -0.04,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 31,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Total NIKE Brand Revenues | 35,568 | 37,218 | -4 | -2 | 34,485 | 8 | 11",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,43 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 0.19,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Total NIKE Brand Revenues | 42,293 | 35,568 | 19 | 17 | 37,218 | -4 | -2",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,09 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 0.05,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Total NIKE Brand Revenues | 44,436 | 42,293 | 5 | 6 | 35,568 | 19 | 17",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,07 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 0.1,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Total NIKE Brand Revenues | 48,763 | 44,436 | 10 | 16 | 42,293 | 5 | 6",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,26 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 0.01,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 34,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Total NIKE Brand Revenues | 49,322 | 48,763 | 1 | 1 | 44,436 | 10 | 16",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,15 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": -0.09,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 33,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE BRAND REVENUES | 44,714 | 49,322 | -9 | -9 | 48,763 | 1 | 1",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,34 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": 0.01,
+    "prior": null,
+    "status": "Khớp nguồn chính thức",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE BRAND REVENUES(3) | 45,222 | 44,714 | 1 | -1 | 49,322 | -9 | -9",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh +0,14 điểm %, ngưỡng ±1 điểm %).",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  },
+  "nike_brand_pct_change_cn": {
+   "2020": {
+    "value": -0.02,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 31,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Total NIKE Brand Revenues | 35,568 | 37,218 | -4 | -2 | 34,485 | 8 | 11",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2021": {
+    "value": 0.17,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Total NIKE Brand Revenues | 42,293 | 35,568 | 19 | 17 | 37,218 | -4 | -2",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2022": {
+    "value": 0.06,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Total NIKE Brand Revenues | 44,436 | 42,293 | 5 | 6 | 35,568 | 19 | 17",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2023": {
+    "value": 0.16,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Total NIKE Brand Revenues | 48,763 | 44,436 | 10 | 16 | 42,293 | 5 | 6",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2024": {
+    "value": 0.01,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 34,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "Total NIKE Brand Revenues | 49,322 | 48,763 | 1 | 1 | 44,436 | 10 | 16",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2025": {
+    "value": -0.09,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 33,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE BRAND REVENUES | 44,714 | 49,322 | -9 | -9 | 48,763 | 1 | 1",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   },
+   "2026": {
+    "value": -0.01,
+    "prior": null,
+    "status": "Chờ người kiểm tra",
+    "page": 32,
+    "section": "ITEM 7 – MD&A",
+    "evidence": "TOTAL NIKE BRAND REVENUES(3) | 45,222 | 44,714 | 1 | -1 | 49,322 | -9 | -9",
+    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
+    "verified_by": "",
+    "verified_on": ""
+   }
+  }
+ },
+ "kpis": {
+  "direct_share": {
+   "vi": "Tỷ trọng NIKE Direct trong doanh thu NIKE Brand",
+   "unit": "%",
+   "group": "channels",
+   "formula": "nike_direct_revenue / nike_brand_revenue",
+   "note": "Mẫu số là tổng doanh thu NIKE Brand (cùng cơ sở NIKE dùng khi nêu tỷ trọng), không phải NIKE, Inc.",
+   "values": {
+    "2020": 0.34812190733243364,
+    "2021": 0.3870616886955288,
+    "2022": 0.421415068863084,
+    "2023": 0.4369706539794516,
+    "2024": 0.4362961761485747,
+    "2025": 0.4200697768036856,
+    "2026": 0.39184467736942197
+   }
+  },
+  "wholesale_share": {
+   "vi": "Tỷ trọng bán buôn trong doanh thu NIKE Brand",
+   "unit": "%",
+   "group": "channels",
+   "formula": "nike_brand_wholesale_revenue / nike_brand_revenue",
+   "note": "Direct + Wholesale + Global Brand Divisions = 100% doanh thu NIKE Brand.",
+   "values": {
+    "2020": 0.6510346378767431,
+    "2021": 0.6123471969356631,
+    "2022": 0.5762894950040508,
+    "2023": 0.5618399196111806,
+    "2024": 0.5627914520903451,
+    "2025": 0.5788567339088428,
+    "2026": 0.6070717792225023
+   }
+  },
+  "gbd_share": {
+   "vi": "Tỷ trọng Global Brand Divisions trong doanh thu NIKE Brand",
+   "unit": "%",
+   "group": "channels",
+   "formula": "global_brand_divisions_revenue / nike_brand_revenue",
+   "note": "Phần còn lại, chủ yếu là doanh thu cấp phép; dưới 0,3%.",
+   "values": {
+    "2020": 0.0008434547908232119,
+    "2021": 0.000591114368808077,
+    "2022": 0.0022954361328652445,
+    "2023": 0.0011894264093677584,
+    "2024": 0.0009123717610802481,
+    "2025": 0.0010734892874714854,
+    "2026": 0.0010835434080757153
+   }
+  },
+  "direct_growth": {
+   "vi": "Tăng trưởng doanh thu NIKE Direct (theo báo cáo)",
+   "unit": "%",
+   "group": "channels",
+   "formula": "nike_direct_revenue / nike_direct_revenue__prior - 1",
+   "note": "So với số năm trước trình bày trong cùng 10-K. Không loại trừ tỷ giá.",
+   "values": {
+    "2020": 0.05351825065940611,
+    "2021": 0.32208043934743985,
+    "2022": 0.14392180818570555,
+    "2023": 0.1378831571077646,
+    "2024": 0.009902384081096302,
+    "2025": -0.1271434546214973,
+    "2026": -0.05659372837139967
+   }
+  },
+  "wholesale_growth": {
+   "vi": "Tăng trưởng doanh thu bán buôn NIKE Brand (theo báo cáo)",
+   "unit": "%",
+   "group": "channels",
+   "formula": "nike_brand_wholesale_revenue / nike_brand_wholesale_revenue__prior - 1",
+   "note": "So với số năm trước trình bày trong cùng 10-K. Không loại trừ tỷ giá.",
+   "values": {
+    "2020": -0.08917122290839004,
+    "2021": 0.11841423389186388,
+    "2022": -0.011197775890030117,
+    "2023": 0.06986098094345516,
+    "2024": 0.01317662517793919,
+    "2025": -0.06754809424310108,
+    "2026": 0.060657574469729164
+   }
+  },
+  "nike_brand_growth": {
+   "vi": "Tăng trưởng doanh thu NIKE Brand (theo báo cáo)",
+   "unit": "%",
+   "group": "channels",
+   "formula": "nike_brand_revenue / nike_brand_revenue__prior - 1",
+   "note": "So với số năm trước trình bày trong cùng 10-K.",
+   "values": {
+    "2020": -0.04433338707077221,
+    "2021": 0.18907444894286998,
+    "2022": 0.05067032369422836,
+    "2023": 0.09737600144027365,
+    "2024": 0.011463609704078913,
+    "2025": -0.09342686833461741,
+    "2026": 0.01136109495907322
+   }
+  },
+  "digital_share_of_direct": {
+   "vi": "Tỷ trọng Digital trong NIKE Direct (xấp xỉ)",
+   "unit": "%",
+   "group": "channels",
+   "formula": "nike_brand_digital_sales * 1000 / nike_direct_revenue",
+   "note": "Xấp xỉ: doanh số Digital chỉ được công bố làm tròn 0,1 tỷ USD (sai số khoảng ±0,3 điểm %). Nhân 1.000 để đổi tỷ USD sang triệu USD.",
+   "values": {
+    "2020": 0.4441931836536908,
+    "2021": 0.5558949297495418,
+    "2022": 0.5713980561785752,
+    "2023": 0.5913272010512484,
+    "2024": 0.5622937868860077,
+    "2025": 0.5111004631847947,
+    "2026": 0.4853273137697517
+   }
+  },
+  "revenue_growth": {
+   "vi": "Tăng trưởng doanh thu NIKE, Inc. (theo báo cáo)",
+   "unit": "%",
+   "group": "financial",
+   "formula": "revenues / revenues__prior - 1",
+   "note": "So với số năm trước trình bày trong cùng 10-K.",
+   "values": {
+    "2020": -0.043817266150267146,
+    "2021": 0.1907600994572628,
+    "2022": 0.048767344739323724,
+    "2023": 0.09648897452365661,
+    "2024": 0.0028310912392369722,
+    "2025": -0.09838012538452552,
+    "2026": 0.0019218726381480921
+   }
+  },
+  "gross_margin": {
+   "vi": "Biên lợi nhuận gộp",
+   "unit": "%",
+   "group": "financial",
+   "formula": "gross_profit / revenues",
+   "note": "Lợi nhuận gộp / Doanh thu, cùng phạm vi NIKE, Inc.",
+   "values": {
+    "2020": 0.43421650669732376,
+    "2021": 0.44820153576721,
+    "2022": 0.4598372939413402,
+    "2023": 0.43524610969014194,
+    "2024": 0.445601806783225,
+    "2025": 0.42734673605562634,
+    "2026": 0.42913487650329757
+   }
+  },
+  "sga_ratio": {
+   "vi": "Tỷ lệ chi phí bán hàng và quản lý / doanh thu",
+   "unit": "%",
+   "group": "financial",
+   "formula": "total_selling_admin_expense / revenues",
+   "note": "Chi phí hợp nhất; không phân bổ được theo kênh.",
+   "values": {
+    "2020": 0.3509344170253723,
+    "2021": 0.2924468992770219,
+    "2022": 0.3169342753157782,
+    "2023": 0.3197571118964406,
+    "2024": 0.3227288656983762,
+    "2025": 0.3474054719385001,
+    "2026": 0.34729945256261047
+   }
+  },
+  "demand_creation_ratio": {
+   "vi": "Tỷ lệ chi phí tạo nhu cầu / doanh thu",
+   "unit": "%",
+   "group": "financial",
+   "formula": "demand_creation_expense / revenues",
+   "note": "Cấu phần marketing của SG&A.",
+   "values": {
+    "2020": 0.09603507740020854,
+    "2021": 0.06991782298262159,
+    "2022": 0.08242346392635409,
+    "2023": 0.07927055469863521,
+    "2024": 0.0834274366262996,
+    "2025": 0.10125461573344274,
+    "2026": 0.10246131298762878
+   }
+  },
+  "operating_overhead_ratio": {
+   "vi": "Tỷ lệ chi phí vận hành chung / doanh thu",
+   "unit": "%",
+   "group": "financial",
+   "formula": "operating_overhead_expense / revenues",
+   "note": "Cấu phần vận hành của SG&A.",
+   "values": {
+    "2020": 0.25489933962516376,
+    "2021": 0.22252907629440027,
+    "2022": 0.23451081138942412,
+    "2023": 0.24048655719780543,
+    "2024": 0.23930142907207663,
+    "2025": 0.24615085620505733,
+    "2026": 0.24483813957498168
+   }
+  },
+  "ebit": {
+   "vi": "EBIT (tự tính theo định nghĩa của NIKE)",
+   "unit": "USD triệu",
+   "group": "financial",
+   "formula": "net_income + income_tax_expense + interest_expense_net",
+   "note": "Non-GAAP. NIKE không trình bày dòng “Operating income”; EBIT là thước đo NIKE dùng. Đối chiếu với EBIT do NIKE công bố.",
+   "values": {
+    "2020": 2976.0,
+    "2021": 6923.0,
+    "2022": 6856.0,
+    "2023": 6195.0,
+    "2024": 6539.0,
+    "2025": 3778.0,
+    "2026": 3850.0
+   }
+  },
+  "ebit_margin": {
+   "vi": "Biên EBIT",
+   "unit": "%",
+   "group": "financial",
+   "formula": "ebit / revenues",
+   "note": "Non-GAAP. EBIT / Doanh thu NIKE, Inc.",
+   "values": {
+    "2020": 0.07956581022912601,
+    "2021": 0.1554402981723472,
+    "2022": 0.14677799186469706,
+    "2023": 0.12095593260050373,
+    "2024": 0.12731202055994703,
+    "2025": 0.08158241378565721,
+    "2026": 0.08297771455666192
+   }
+  },
+  "net_income_margin": {
+   "vi": "Biên lợi nhuận sau thuế",
+   "unit": "%",
+   "group": "financial",
+   "formula": "net_income / revenues",
+   "note": "GAAP.",
+   "values": {
+    "2020": 0.06788225543405609,
+    "2021": 0.12858682473393507,
+    "2022": 0.12943695140226932,
+    "2023": 0.09899056953745826,
+    "2024": 0.11097698687745804,
+    "2025": 0.06951132609212032,
+    "2026": 0.06698564593301436
+   }
+  },
+  "inventory_growth": {
+   "vi": "Thay đổi hàng tồn kho so với đầu kỳ",
+   "unit": "%",
+   "group": "financial",
+   "formula": "inventories / inventories__prior - 1",
+   "note": "Số dư 31/5 năm nay so với 31/5 năm trước.",
+   "values": {
+    "2020": 0.3103877623621487,
+    "2021": -0.06963485815121488,
+    "2022": 0.2284797198716078,
+    "2023": 0.0040380047505938245,
+    "2024": -0.11059853323870357,
+    "2025": -0.0039898922729086315,
+    "2026": 0.0016023501134997996
+   }
+  },
+  "average_inventory": {
+   "vi": "Hàng tồn kho bình quân",
+   "unit": "USD triệu",
+   "group": "financial",
+   "formula": "(inventories + inventories__prior) / 2",
+   "note": "Bình quân số dư đầu kỳ và cuối kỳ.",
+   "values": {
+    "2020": 6494.5,
+    "2021": 7110.5,
+    "2022": 7637.0,
+    "2023": 8437.0,
+    "2024": 7986.5,
+    "2025": 7504.0,
+    "2026": 7495.0
+   }
+  },
+  "inventory_turnover": {
+   "vi": "Vòng quay hàng tồn kho",
+   "unit": "lần",
+   "group": "financial",
+   "formula": "cost_of_sales / average_inventory",
+   "note": "Giá vốn hàng bán / Hàng tồn kho bình quân.",
+   "values": {
+    "2020": 3.258449457233043,
+    "2021": 3.456297025525631,
+    "2022": 3.303784208458819,
+    "2023": 3.428351309707242,
+    "2024": 3.5653915983221687,
+    "2025": 3.5339818763326227,
+    "2026": 3.533955970647098
+   }
+  },
+  "days_inventory": {
+   "vi": "Số ngày tồn kho bình quân",
+   "unit": "ngày",
+   "group": "financial",
+   "formula": "365 / inventory_turnover",
+   "note": "365 / Vòng quay hàng tồn kho.",
+   "values": {
+    "2020": 112.01646819771288,
+    "2021": 105.60434977213542,
+    "2022": 110.47937061551266,
+    "2023": 106.46516853932584,
+    "2024": 102.37304653204565,
+    "2025": 103.28292922055884,
+    "2026": 103.28368633669348
+   }
+  }
+ },
+ "checks": {
+  "chk_gross_profit": {
+   "vi": "Doanh thu − Giá vốn − Lợi nhuận gộp",
+   "tol": 1,
+   "values": {
+    "2020": 0.0,
+    "2021": 0.0,
+    "2022": 0.0,
+    "2023": 0.0,
+    "2024": 0.0,
+    "2025": 0.0,
+    "2026": 0.0
+   }
+  },
+  "chk_sga": {
+   "vi": "Tạo nhu cầu + Vận hành chung − Tổng SG&A",
+   "tol": 1,
+   "values": {
+    "2020": 0.0,
+    "2021": 0.0,
+    "2022": 0.0,
+    "2023": 0.0,
+    "2024": 0.0,
+    "2025": 0.0,
+    "2026": 0.0
+   }
+  },
+  "chk_pretax": {
+   "vi": "Lợi nhuận gộp − SG&A − Lãi thuần − Khác thuần − LNTT",
+   "tol": 2,
+   "values": {
+    "2020": 0.0,
+    "2021": 0.0,
+    "2022": 0.0,
+    "2023": 0.0,
+    "2024": 0.0,
+    "2025": 0.0,
+    "2026": 0.0
+   }
+  },
+  "chk_net_income": {
+   "vi": "LNTT − Thuế − LNST",
+   "tol": 1,
+   "values": {
+    "2020": 0.0,
+    "2021": 0.0,
+    "2022": 0.0,
+    "2023": 0.0,
+    "2024": 0.0,
+    "2025": 0.0,
+    "2026": 0.0
+   }
+  },
+  "chk_channels": {
+   "vi": "Direct + Wholesale + GBD − Tổng NIKE Brand",
+   "tol": 1,
+   "values": {
+    "2020": 0.0,
+    "2021": 0.0,
+    "2022": 0.0,
+    "2023": 0.0,
+    "2024": 0.0,
+    "2025": 0.0,
+    "2026": 0.0
+   }
+  },
+  "chk_segments": {
+   "vi": "NIKE Brand + Converse + Corporate − Doanh thu NIKE, Inc.",
+   "tol": 1,
+   "values": {
+    "2020": 0.0,
+    "2021": 0.0,
+    "2022": 0.0,
+    "2023": 0.0,
+    "2024": 0.0,
+    "2025": 0.0,
+    "2026": 0.0
+   }
+  },
+  "chk_ebit": {
+   "vi": "EBIT tự tính − EBIT NIKE công bố",
+   "tol": 1,
+   "values": {
+    "2020": 0.0,
+    "2021": 0.0,
+    "2022": 0.0,
+    "2023": 0.0,
+    "2024": 0.0,
+    "2025": 0.0,
+    "2026": 0.0
+   }
+  },
+  "cmp_revenue_growth": {
+   "vi": "Tăng trưởng doanh thu tự tính − % NIKE công bố",
+   "tol": 0.01,
+   "values": {
+    "2020": -0.0038172661502671474,
+    "2021": 0.0007600994572627864,
+    "2022": -0.0012326552606762764,
+    "2023": -0.0035110254763433954,
+    "2024": 0.0028310912392369722,
+    "2025": 0.0016198746154744753,
+    "2026": 0.0019218726381480921
+   }
+  },
+  "cmp_direct_growth": {
+   "vi": "Tăng trưởng NIKE Direct tự tính − % NIKE công bố",
+   "tol": 0.01,
+   "values": {
+    "2020": 0.0035182506594061093,
+    "2021": 0.002080439347439832,
+    "2022": 0.003921808185705559,
+    "2023": -0.002116842892235395,
+    "2024": -9.761591890369815e-05,
+    "2025": 0.0028565453785027186,
+    "2026": 0.00340627162860033
+   }
+  },
+  "cmp_wholesale_growth": {
+   "vi": "Tăng trưởng bán buôn tự tính − % NIKE công bố",
+   "tol": 0.01,
+   "values": {
+    "2020": 0.0008287770916099595,
+    "2021": -0.0015857661081361202,
+    "2022": -0.001197775890030118,
+    "2023": -0.00013901905654482974,
+    "2024": 0.0031766251779391905,
+    "2025": 0.002451905756898912,
+    "2026": 0.0006575744697291659
+   }
+  },
+  "cmp_brand_growth": {
+   "vi": "Tăng trưởng NIKE Brand tự tính − % NIKE công bố",
+   "tol": 0.01,
+   "values": {
+    "2020": -0.004333387070772207,
+    "2021": -0.0009255510571300045,
+    "2022": 0.0006703236942283593,
+    "2023": -0.002623998559726348,
+    "2024": 0.0014636097040789122,
+    "2025": -0.003426868334617412,
+    "2026": 0.001361094959073221
+   }
+  },
+  "cmp_direct_share": {
+   "vi": "Tỷ trọng NIKE Direct tự tính − tỷ trọng NIKE nêu",
+   "tol": 0.01,
+   "values": {
+    "2020": -0.0018780926675663518,
+    "2021": -0.002938311304471189,
+    "2022": 0.001415068863083986,
+    "2023": -0.0030293460205483664,
+    "2024": -0.0037038238514253276,
+    "2025": 6.977680368564655e-05,
+    "2026": null
+   }
+  }
+ }
+}

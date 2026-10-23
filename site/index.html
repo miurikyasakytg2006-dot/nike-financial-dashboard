@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NIKE FY2020–FY2026: phân phối và kết quả tài chính</title>
+<meta name="description" content="Phân tích học thuật độc lập về cơ cấu kênh phân phối (NIKE Direct, bán buôn) và kết quả tài chính của NIKE, Inc. FY2020–FY2026, dựa trên báo cáo Form 10-K nộp SEC.">
+<meta name="theme-color" content="#ffffff">
+<link rel="preload" href="assets/fonts/source-sans-3-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/source-sans-3-vietnamese-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect x=%272%27 y=%2711%27 width=%2711%27 height=%2710%27 fill=%27%232a78d6%27/%3E%3Crect x=%2714%27 y=%2711%27 width=%2716%27 height=%2710%27 fill=%27%23eb6834%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/styles.css">
+<script src="assets/vendor/echarts-5.6.0.min.js" defer></script>
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#noi-dung">Bỏ qua đến nội dung chính</a>
+
+<header class="masthead">
+  <div class="wrap masthead-inner">
+    <div>
+      <h1>Phân phối và kết quả tài chính của NIKE, FY2020–FY2026</h1>
+      <p class="masthead-sub">Phân tích học thuật độc lập dựa trên báo cáo thường niên Form 10-K của NIKE, Inc. nộp Ủy ban Chứng khoán Mỹ (SEC). Năm tài chính kết thúc ngày 31/5.</p>
+    </div>
+    <nav class="masthead-links" aria-label="Tài liệu">
+      <a id="download-workbook" href="downloads/NIKE_Financial_Dataset_FY2020-2026.xlsx" download>Tải bộ dữ liệu Excel</a>
+      <a href="#nguon">Nguồn và phương pháp</a>
+    </nav>
+  </div>
+</header>
+
+<div class="controls" id="controls">
+  <div class="wrap controls-inner">
+    <div class="tabs" role="tablist" aria-label="Chọn góc nhìn">
+      <button type="button" role="tab" id="tab-channels" aria-controls="view-channels" aria-selected="true" data-view="channels">Chiến lược phân phối</button>
+      <button type="button" role="tab" id="tab-performance" aria-controls="view-performance" aria-selected="false" tabindex="-1" data-view="performance">Kết quả tài chính</button>
+    </div>
+    <form class="filters" id="filters" aria-label="Lọc theo năm tài chính">
+      <label for="year-from">Từ</label>
+      <select id="year-from" name="from" autocomplete="off"></select>
+      <label for="year-to">đến</label>
+      <select id="year-to" name="to" autocomplete="off"></select>
+      <button type="button" id="reset" class="text-button">Đặt lại</button>
+    </form>
+  </div>
+</div>
+<p class="visually-hidden" id="live" aria-live="polite"></p>
+
+<main id="noi-dung" tabindex="-1">
+  <div class="wrap">
+    <noscript><p class="notice">Trang này cần JavaScript để vẽ biểu đồ. Toàn bộ số liệu cũng có trong bộ dữ liệu Excel.</p></noscript>
+    <p class="notice" id="load-error" hidden></p>
+
+    <!-- View 1: distribution strategy -->
+    <section id="view-channels" role="tabpanel" aria-labelledby="tab-channels" class="view">
+      <header class="view-head">
+        <h2 class="question">Cơ cấu doanh thu giữa NIKE Direct và bán buôn đã thay đổi thế nào trong FY2020–FY2026?</h2>
+        <div class="summary">
+          <p class="summary-label">Mô tả số liệu, tự động theo khoảng năm đang chọn; không phải kết luận nghiên cứu.</p>
+          <p id="summary-channels"></p>
+        </div>
+      </header>
+
+      <figure class="figure figure-wide" id="fig-share">
+        <figcaption class="figure-head">
+          <div>
+            <h3>Cơ cấu doanh thu NIKE Brand theo kênh</h3>
+            <p class="figure-sub">Tỷ trọng trong tổng doanh thu NIKE Brand, %. Tính từ số liệu 10-K.</p>
+          </div>
+          <button type="button" class="text-button export-png" data-chart="share">Tải PNG</button>
+        </figcaption>
+        <div class="legend" data-legend="share"></div>
+        <div class="chart chart-share" data-chart="share" role="img"></div>
+        <p class="source" data-source="share"></p>
+      </figure>
+
+      <div class="grid-2">
+        <figure class="figure" id="fig-channel-revenue">
+          <figcaption class="figure-head">
+            <div>
+              <h3>Doanh thu theo kênh</h3>
+              <p class="figure-sub">Tỷ USD, phạm vi NIKE Brand. Số NIKE báo cáo.</p>
+            </div>
+            <button type="button" class="text-button export-png" data-chart="channelRevenue">Tải PNG</button>
+          </figcaption>
+          <div class="legend" data-legend="channelRevenue"></div>
+          <div class="chart" data-chart="channelRevenue" role="img"></div>
+          <p class="source" data-source="channelRevenue"></p>
+        </figure>
+
+        <figure class="figure" id="fig-growth">
+          <figcaption class="figure-head">
+            <div>
+              <h3>Tăng trưởng so với năm trước</h3>
+              <p class="figure-sub" id="growth-sub"></p>
+            </div>
+            <button type="button" class="text-button export-png" data-chart="growth">Tải PNG</button>
+          </figcaption>
+          <div class="figure-tools">
+            <div class="legend" data-legend="growth"></div>
+            <fieldset class="segmented" id="growth-basis">
+              <legend class="visually-hidden">Cơ sở tính tăng trưởng</legend>
+              <label><input type="radio" name="basis" value="reported" checked> Theo báo cáo</label>
+              <label><input type="radio" name="basis" value="cn"> Loại trừ tỷ giá</label>
+            </fieldset>
+          </div>
+          <div class="chart" data-chart="growth" role="img"></div>
+          <p class="source" data-source="growth"></p>
+        </figure>
+
+        <figure class="figure" id="fig-digital">
+          <figcaption class="figure-head">
+            <div>
+              <h3>NIKE Brand Digital trong NIKE Direct</h3>
+              <p class="figure-sub">Tỷ USD. Digital là một phần của NIKE Direct (cùng với cửa hàng do NIKE sở hữu).</p>
+            </div>
+            <button type="button" class="text-button export-png" data-chart="digital">Tải PNG</button>
+          </figcaption>
+          <div class="legend" data-legend="digital"></div>
+          <div class="chart" data-chart="digital" role="img"></div>
+          <p class="source" data-source="digital"></p>
+        </figure>
+
+        <aside class="reading-notes" aria-labelledby="notes-channels">
+          <h3 id="notes-channels">Cách đọc số liệu kênh</h3>
+          <dl>
+            <dt>NIKE Brand, không phải NIKE, Inc.</dt>
+            <dd>Tỷ trọng kênh dùng mẫu số là doanh thu NIKE Brand. Converse (có kênh trực tiếp riêng) và Corporate nằm ngoài các con số này.</dd>
+            <dt>NIKE Direct gồm cửa hàng và Digital</dt>
+            <dd>NIKE chỉ công bố doanh số Digital trong phần MD&amp;A, làm tròn 0,1 tỷ USD. Số FY2023 được trình bày lại từ 12,6 xuống 12,4 tỷ USD ở 10-K FY2024.</dd>
+            <dt>Theo báo cáo và loại trừ tỷ giá</dt>
+            <dd>Tăng trưởng theo báo cáo được tính từ doanh thu năm nay và số năm trước trong cùng 10-K. Tăng trưởng loại trừ tỷ giá là chỉ tiêu non-GAAP do NIKE tính, không tự tính lại được.</dd>
+            <dt>Doanh thu không phải lợi nhuận</dt>
+            <dd>NIKE không công bố lợi nhuận hay chi phí riêng của từng kênh, nên trang này không so sánh khả năng sinh lời giữa các kênh.</dd>
+          </dl>
+        </aside>
+      </div>
+
+      <section class="table-section" aria-labelledby="table-channels-title">
+        <div class="table-head">
+          <h3 id="table-channels-title">Bảng số liệu kênh phân phối</h3>
+          <button type="button" class="text-button" id="csv-channels">Tải CSV</button>
+        </div>
+        <p class="table-key">Số NIKE công bố có kèm số trang 10-K (bấm để mở báo cáo trên SEC). <i>Số in nghiêng</i> là tính toán. † chưa có đối chiếu độc lập, chờ nhóm kiểm tra.</p>
+        <div class="table-scroll" tabindex="0" role="region" aria-labelledby="table-channels-title">
+          <table class="data-table" id="table-channels"></table>
+        </div>
+      </section>
+    </section>
+
+    <!-- View 2: financial performance -->
+    <section id="view-performance" role="tabpanel" aria-labelledby="tab-performance" class="view" hidden>
+      <header class="view-head">
+        <h2 class="question">Kết quả tài chính hợp nhất của NIKE biến động ra sao trong cùng giai đoạn?</h2>
+        <div class="summary">
+          <p class="summary-label">Mô tả số liệu, tự động theo khoảng năm đang chọn; không phải kết luận nghiên cứu. Các biểu đồ dưới đây đặt cạnh nhau theo thời gian, không thể hiện quan hệ nhân quả với chiến lược kênh.</p>
+          <p id="summary-performance"></p>
+        </div>
+      </header>
+
+      <div class="grid-3">
+        <figure class="figure" id="fig-revenue">
+          <figcaption class="figure-head">
+            <div><h3>Doanh thu</h3><p class="figure-sub">Tỷ USD, NIKE, Inc.</p></div>
+            <button type="button" class="text-button export-png" data-chart="revenue">Tải PNG</button>
+          </figcaption>
+          <div class="chart chart-small" data-chart="revenue" role="img"></div>
+          <p class="source" data-source="revenue"></p>
+        </figure>
+        <figure class="figure" id="fig-gross-margin">
+          <figcaption class="figure-head">
+            <div><h3>Biên lợi nhuận gộp</h3><p class="figure-sub">% doanh thu, NIKE, Inc. Trục tung không bắt đầu từ 0.</p></div>
+            <button type="button" class="text-button export-png" data-chart="grossMargin">Tải PNG</button>
+          </figcaption>
+          <div class="chart chart-small" data-chart="grossMargin" role="img"></div>
+          <p class="source" data-source="grossMargin"></p>
+        </figure>
+        <figure class="figure" id="fig-sga">
+          <figcaption class="figure-head">
+            <div><h3>Chi phí bán hàng và quản lý</h3><p class="figure-sub">% doanh thu, NIKE, Inc. Hai cấu phần cộng lại bằng tổng SG&amp;A.</p></div>
+            <button type="button" class="text-button export-png" data-chart="sga">Tải PNG</button>
+          </figcaption>
+          <div class="legend" data-legend="sga"></div>
+          <div class="chart chart-small" data-chart="sga" role="img"></div>
+          <p class="source" data-source="sga"></p>
+        </figure>
+        <figure class="figure" id="fig-ebit">
+          <figcaption class="figure-head">
+            <div><h3>Biên EBIT (non-GAAP)</h3><p class="figure-sub">% doanh thu, NIKE, Inc. NIKE không trình bày dòng “lợi nhuận hoạt động”.</p></div>
+            <button type="button" class="text-button export-png" data-chart="ebit">Tải PNG</button>
+          </figcaption>
+          <div class="chart chart-small" data-chart="ebit" role="img"></div>
+          <p class="source" data-source="ebit"></p>
+        </figure>
+        <figure class="figure" id="fig-inventory">
+          <figcaption class="figure-head">
+            <div><h3>Hàng tồn kho cuối kỳ</h3><p class="figure-sub">Tỷ USD, số dư tại 31/5, NIKE, Inc.</p></div>
+            <button type="button" class="text-button export-png" data-chart="inventory">Tải PNG</button>
+          </figcaption>
+          <div class="chart chart-small" data-chart="inventory" role="img"></div>
+          <p class="source" data-source="inventory"></p>
+        </figure>
+        <figure class="figure" id="fig-days">
+          <figcaption class="figure-head">
+            <div><h3>Số ngày tồn kho bình quân</h3><p class="figure-sub">Ngày. Trục tung không bắt đầu từ 0.</p></div>
+            <button type="button" class="text-button export-png" data-chart="days">Tải PNG</button>
+          </figcaption>
+          <div class="chart chart-small" data-chart="days" role="img"></div>
+          <p class="source" data-source="days"></p>
+        </figure>
+      </div>
+
+      <aside class="reading-notes reading-notes-wide" aria-labelledby="notes-performance">
+        <h3 id="notes-performance">Lưu ý kế toán</h3>
+        <dl>
+          <dt>Không có dòng “operating income”</dt>
+          <dd>Báo cáo kết quả kinh doanh của NIKE đi thẳng từ chi phí bán hàng và quản lý xuống lợi nhuận trước thuế. EBIT (lợi nhuận sau thuế + chi phí lãi thuần + thuế) là thước đo NIKE tự dùng và ghi rõ là non-GAAP.</dd>
+          <dt>Chi phí là số hợp nhất</dt>
+          <dd>SG&amp;A không được NIKE phân bổ cho NIKE Direct hay bán buôn. Không nên suy ra chi phí hay biên lợi nhuận của từng kênh từ các biểu đồ này.</dd>
+          <dt>Số dư và số phát sinh</dt>
+          <dd>Hàng tồn kho là số dư tại 31/5. Số ngày tồn kho = 365 × hàng tồn kho bình quân đầu và cuối kỳ / giá vốn hàng bán.</dd>
+        </dl>
+      </aside>
+
+      <section class="table-section" aria-labelledby="table-performance-title">
+        <div class="table-head">
+          <h3 id="table-performance-title">Bảng số liệu kết quả tài chính (NIKE, Inc.)</h3>
+          <button type="button" class="text-button" id="csv-performance">Tải CSV</button>
+        </div>
+        <p class="table-key">Triệu USD trừ khi ghi khác. Số âm trong ngoặc đơn. Số NIKE công bố có kèm số trang 10-K. <i>Số in nghiêng</i> là tính toán. † chưa có đối chiếu độc lập.</p>
+        <div class="table-scroll" tabindex="0" role="region" aria-labelledby="table-performance-title">
+          <table class="data-table" id="table-performance"></table>
+        </div>
+      </section>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer" id="nguon">
+  <div class="wrap">
+    <h2>Nguồn và phương pháp</h2>
+    <div class="footer-grid">
+      <section aria-labelledby="footer-sources">
+        <h3 id="footer-sources">Báo cáo Form 10-K (SEC EDGAR)</h3>
+        <ul class="filing-list" id="filing-list"></ul>
+      </section>
+      <section aria-labelledby="footer-method">
+        <h3 id="footer-method">Phương pháp</h3>
+        <ul class="plain-list">
+          <li>Số của năm FY t lấy từ 10-K FY t; số năm trước lấy từ cột so sánh trong cùng báo cáo để tính tăng trưởng, giống cách NIKE tính.</li>
+          <li>Số liệu báo cáo đọc từ dữ liệu XBRL gắn trong 10-K, đối chiếu với API XBRL của SEC và với bảng trong phần MD&amp;A.</li>
+          <li>Mọi chỉ số tính toán dùng cùng một công thức với sheet 04 của bộ dữ liệu Excel; mỗi lần cập nhật đều chạy kiểm tra đối chiếu số học.</li>
+          <li>Số liệu thiếu được để trống, không thay bằng 0.</li>
+        </ul>
+      </section>
+      <section aria-labelledby="footer-status">
+        <h3 id="footer-status">Tình trạng dữ liệu</h3>
+        <p id="status-summary"></p>
+        <p class="fine">Sản phẩm học thuật độc lập; không liên kết với, không được tài trợ hay xác nhận bởi NIKE, Inc. NIKE là nhãn hiệu của NIKE, Inc.</p>
+      </section>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
