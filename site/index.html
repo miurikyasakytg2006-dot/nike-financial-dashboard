@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NIKE FY2020–FY2026: phân phối và kết quả tài chính</title>
-<meta name="description" content="Phân tích học thuật độc lập về cơ cấu kênh phân phối (NIKE Direct, bán buôn) và kết quả tài chính của NIKE, Inc. FY2020–FY2026, dựa trên báo cáo Form 10-K nộp SEC.">
+<meta name="description" content="Cơ cấu kênh phân phối (NIKE Direct, bán buôn) và kết quả tài chính của NIKE, Inc. FY2020–FY2026, theo báo cáo Form 10-K nộp SEC.">
 <meta name="theme-color" content="#ffffff">
 <link rel="preload" href="assets/fonts/source-sans-3-latin-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/source-sans-3-vietnamese-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -20,7 +20,7 @@
   <div class="wrap masthead-inner">
     <div>
       <h1>Phân phối và kết quả tài chính của NIKE, FY2020–FY2026</h1>
-      <p class="masthead-sub">Phân tích học thuật độc lập dựa trên báo cáo thường niên Form 10-K của NIKE, Inc. nộp Ủy ban Chứng khoán Mỹ (SEC). Năm tài chính kết thúc ngày 31/5.</p>
+      <p class="masthead-sub">Số liệu từ báo cáo thường niên Form 10-K của NIKE, Inc. nộp Ủy ban Chứng khoán Mỹ (SEC). Năm tài chính kết thúc ngày 31/5.</p>
     </div>
     <nav class="masthead-links" aria-label="Tài liệu">
       <a id="download-workbook" href="downloads/NIKE_Financial_Dataset_FY2020-2026.xlsx" download>Tải bộ dữ liệu Excel</a>
@@ -56,7 +56,7 @@
       <header class="view-head">
         <h2 class="question">Cơ cấu doanh thu giữa NIKE Direct và bán buôn đã thay đổi thế nào trong FY2020–FY2026?</h2>
         <div class="summary">
-          <p class="summary-label">Mô tả số liệu, tự động theo khoảng năm đang chọn; không phải kết luận nghiên cứu.</p>
+          <p class="summary-label">Tóm tắt theo khoảng năm đang chọn</p>
           <p id="summary-channels"></p>
         </div>
       </header>
@@ -141,7 +141,7 @@
           <h3 id="table-channels-title">Bảng số liệu kênh phân phối</h3>
           <button type="button" class="text-button" id="csv-channels">Tải CSV</button>
         </div>
-        <p class="table-key">Số NIKE công bố có kèm số trang 10-K (bấm để mở báo cáo trên SEC). <i>Số in nghiêng</i> là tính toán. † chưa có đối chiếu độc lập, chờ nhóm kiểm tra.</p>
+        <p class="table-key">Số NIKE công bố có kèm số trang 10-K (bấm để mở báo cáo trên SEC). <i>Số in nghiêng</i> là tính toán.<span class="pending-key"> † chưa được kiểm tra.</span></p>
         <div class="table-scroll" tabindex="0" role="region" aria-labelledby="table-channels-title">
           <table class="data-table" id="table-channels"></table>
         </div>
@@ -153,7 +153,7 @@
       <header class="view-head">
         <h2 class="question">Kết quả tài chính hợp nhất của NIKE biến động ra sao trong cùng giai đoạn?</h2>
         <div class="summary">
-          <p class="summary-label">Mô tả số liệu, tự động theo khoảng năm đang chọn; không phải kết luận nghiên cứu. Các biểu đồ dưới đây đặt cạnh nhau theo thời gian, không thể hiện quan hệ nhân quả với chiến lược kênh.</p>
+          <p class="summary-label">Tóm tắt theo khoảng năm đang chọn</p>
           <p id="summary-performance"></p>
         </div>
       </header>
@@ -186,7 +186,7 @@
         </figure>
         <figure class="figure" id="fig-ebit">
           <figcaption class="figure-head">
-            <div><h3>Biên EBIT (non-GAAP)</h3><p class="figure-sub">% doanh thu, NIKE, Inc. NIKE không trình bày dòng “lợi nhuận hoạt động”.</p></div>
+            <div><h3>Biên EBIT (non-GAAP)</h3><p class="figure-sub">% doanh thu, NIKE, Inc.</p></div>
             <button type="button" class="text-button export-png" data-chart="ebit">Tải PNG</button>
           </figcaption>
           <div class="chart chart-small" data-chart="ebit" role="img"></div>
@@ -216,7 +216,7 @@
           <dt>Không có dòng “operating income”</dt>
           <dd>Báo cáo kết quả kinh doanh của NIKE đi thẳng từ chi phí bán hàng và quản lý xuống lợi nhuận trước thuế. EBIT (lợi nhuận sau thuế + chi phí lãi thuần + thuế) là thước đo NIKE tự dùng và ghi rõ là non-GAAP.</dd>
           <dt>Chi phí là số hợp nhất</dt>
-          <dd>SG&amp;A không được NIKE phân bổ cho NIKE Direct hay bán buôn. Không nên suy ra chi phí hay biên lợi nhuận của từng kênh từ các biểu đồ này.</dd>
+          <dd>SG&amp;A không được NIKE phân bổ cho NIKE Direct hay bán buôn, nên các tỷ lệ chi phí và biên lợi nhuận ở đây là của toàn NIKE, Inc.</dd>
           <dt>Số dư và số phát sinh</dt>
           <dd>Hàng tồn kho là số dư tại 31/5. Số ngày tồn kho = 365 × hàng tồn kho bình quân đầu và cuối kỳ / giá vốn hàng bán.</dd>
         </dl>
@@ -227,7 +227,7 @@
           <h3 id="table-performance-title">Bảng số liệu kết quả tài chính (NIKE, Inc.)</h3>
           <button type="button" class="text-button" id="csv-performance">Tải CSV</button>
         </div>
-        <p class="table-key">Triệu USD trừ khi ghi khác. Số âm trong ngoặc đơn. Số NIKE công bố có kèm số trang 10-K. <i>Số in nghiêng</i> là tính toán. † chưa có đối chiếu độc lập.</p>
+        <p class="table-key">Triệu USD trừ khi ghi khác. Số âm trong ngoặc đơn. Số NIKE công bố có kèm số trang 10-K. <i>Số in nghiêng</i> là tính toán.<span class="pending-key"> † chưa được kiểm tra.</span></p>
         <div class="table-scroll" tabindex="0" role="region" aria-labelledby="table-performance-title">
           <table class="data-table" id="table-performance"></table>
         </div>
@@ -249,6 +249,7 @@
         <ul class="plain-list">
           <li>Số của năm FY t lấy từ 10-K FY t; số năm trước lấy từ cột so sánh trong cùng báo cáo để tính tăng trưởng, giống cách NIKE tính.</li>
           <li>Số liệu báo cáo đọc từ dữ liệu XBRL gắn trong 10-K, đối chiếu với API XBRL của SEC và với bảng trong phần MD&amp;A.</li>
+          <li>Số chỉ có trong phần MD&amp;A (tăng trưởng loại trừ tỷ giá, doanh số Digital) được đọc lại trực tiếp trên trang 10-K bằng một cách thứ hai; ảnh chụp đối chiếu lưu kèm bộ dữ liệu.</li>
           <li>Mọi chỉ số tính toán dùng cùng một công thức với sheet 04 của bộ dữ liệu Excel; mỗi lần cập nhật đều chạy kiểm tra đối chiếu số học.</li>
           <li>Số liệu thiếu được để trống, không thay bằng 0.</li>
         </ul>
@@ -256,7 +257,7 @@
       <section aria-labelledby="footer-status">
         <h3 id="footer-status">Tình trạng dữ liệu</h3>
         <p id="status-summary"></p>
-        <p class="fine">Sản phẩm học thuật độc lập; không liên kết với, không được tài trợ hay xác nhận bởi NIKE, Inc. NIKE là nhãn hiệu của NIKE, Inc.</p>
+        <p class="fine">Sản phẩm học tập của sinh viên, không liên kết với NIKE, Inc.</p>
       </section>
     </div>
   </div>

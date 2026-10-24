@@ -326,8 +326,8 @@
     var b = ys[ys.length - 1];
     setChart('growth', o, 'Biểu đồ cột phân kỳ: tăng trưởng ' + (cn ? 'loại trừ tỷ giá' : 'theo báo cáo') + ' của NIKE Direct và bán buôn; FY' + b +
       ': NIKE Direct ' + signedPct(growthValues('direct', b), cn ? 0 : 1) + ', bán buôn ' + signedPct(growthValues('wholesale', b), cn ? 0 : 1) + '.');
-    sourceLine('growth', cn ? 'Nguồn: bảng doanh thu trong MD&A (Item 7), cột “% change excluding currency changes”; NIKE làm tròn đến số nguyên, chưa có đối chiếu độc lập.'
-      : 'Nguồn: thuyết minh “Revenues” trong Form 10-K. Tăng trưởng tính từ số năm nay và số năm trước trong cùng 10-K; chênh lệch với % NIKE công bố không quá ±0,4 điểm %.', ys);
+    sourceLine('growth', cn ? 'Nguồn: bảng doanh thu trong MD&A (Item 7), cột “% change excluding currency changes”; NIKE làm tròn đến số nguyên.'
+      : 'Nguồn: thuyết minh “Revenues” trong Form 10-K. Tăng trưởng tính từ số năm nay và số năm trước trong cùng 10-K.', ys);
   }
 
   function renderDigital() {
@@ -344,7 +344,7 @@
         { color: C.digital, value: num(val('nike_brand_digital_sales', y), 1) + ' tỷ USD', label: 'NIKE Brand Digital' },
         { color: C.digital, value: '≈ ' + pct(kpi('digital_share_of_direct', y), 0), label: 'Digital trong NIKE Direct' }
       ], (restated ? 'Số gốc theo 10-K FY' + y + '. ' + dig.restatement.replace('ĐIỀU CHỈNH HỒI TỐ: ', '') + ' ' : '') +
-        'Digital chỉ được công bố làm tròn 0,1 tỷ USD trong MD&A. ' + srcNote('nike_brand_digital_sales', y));
+        srcNote('nike_brand_digital_sales', y));
     };
     o.series = [
       columnSeries('NIKE Direct', ys.map(function (y) { return val('nike_direct_revenue', y) / 1000; }), C.directLight,
@@ -739,7 +739,7 @@
         rowItems.push(it); rowW += w;
       });
       if (rowItems.length) legendRows.push(rowItems);
-      var srcL = lines(src + ' Phân tích học thuật độc lập.', fSrc, img.width);
+      var srcL = lines(src, fSrc, img.width);
       var h = pad + tL.length * 26 * scale + sL.length * 20 * scale + legendRows.length * 22 * scale + 8 * scale + img.height + 10 * scale + srcL.length * 17 * scale + pad;
       canvas.width = width; canvas.height = h;
       ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, width, h);
@@ -862,11 +862,13 @@
     });
     var c = D.meta.status_counts;
     var total = Object.keys(c).reduce(function (s, k) { return s + c[k]; }, 0);
+    // Only statuses that occur are listed; the † key disappears once nothing is pending.
+    var parts = [[c['Khớp nguồn chính thức'], ' khớp nguồn chính thức'], [c['Đã xác minh (người)'], ' đã được nhóm kiểm tra trên 10-K'],
+      [c[STATUS_PENDING], ' chưa được kiểm tra (†)'], [c['Thiếu / không công bố'], ' không được NIKE công bố']]
+      .filter(function (p) { return p[0]; }).map(function (p) { return p[0] + p[1]; });
     document.getElementById('status-summary').textContent =
-      total + ' số liệu báo cáo: ' + c['Khớp nguồn chính thức'] + ' khớp nguồn chính thức qua kiểm tra độc lập, ' +
-      c['Chờ người kiểm tra'] + ' chờ người kiểm tra (†), ' + c['Thiếu / không công bố'] + ' không được công bố, ' +
-      c['Đã xác minh (người)'] + ' đã được thành viên nhóm xác minh. Dữ liệu trích xuất ngày ' +
-      isoDate(D.meta.extracted_on) + '.';
+      total + ' số liệu báo cáo: ' + parts.join(', ') + '. Dữ liệu trích xuất ngày ' + isoDate(D.meta.extracted_on) + '.';
+    document.querySelectorAll('.pending-key').forEach(function (el) { el.hidden = !c[STATUS_PENDING]; });
   }
 
   function fail(msg) {

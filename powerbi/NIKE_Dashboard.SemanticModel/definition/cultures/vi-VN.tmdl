@@ -1,0 +1,838 @@
+cultureInfo vi-VN
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "bangkenh.giá_trị_bangkenh": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "BangKenh",
+			          "ConceptualProperty": "Giá trị BangKenh"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Giá trị": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.tỷ_trọng_nike_direct": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Tỷ trọng NIKE Direct"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "NIKE Direct": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.tỷ_trọng_bán_buôn": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Tỷ trọng bán buôn"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Bán buôn (Wholesale)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.tỷ_trọng_global_brand_divisions": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Tỷ trọng Global Brand Divisions"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Global Brand Divisions (dưới 0,3%)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.nike_direct_tỷ_usd": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "NIKE Direct (tỷ USD)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "NIKE Direct, tỷ USD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "NIKE Direct (tổng), tỷ USD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "NIKE Direct": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.bán_buôn_tỷ_usd": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Bán buôn (tỷ USD)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Bán buôn, tỷ USD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Bán buôn (Wholesale)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.nike_brand_tỷ_usd": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "NIKE Brand (tỷ USD)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Doanh thu NIKE Brand (mẫu số), tỷ USD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Tổng NIKE Brand, tỷ USD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.digital_tỷ_usd": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Digital (tỷ USD)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Trong đó: NIKE Brand Digital": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.phần_còn_lại_của_nike_direct_tỷ_usd": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Phần còn lại của NIKE Direct (tỷ USD)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Phần còn lại của NIKE Direct": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.digital_trong_nike_direct": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Digital trong NIKE Direct"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Digital trong NIKE Direct (≈)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.fy": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "FY"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Năm tài chính": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.tăng_trưởng_nike_direct": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Tăng trưởng NIKE Direct"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "NIKE Direct": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.tăng_trưởng_bán_buôn": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Tăng trưởng bán buôn"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Bán buôn (Wholesale)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.nike_direct_theo_báo_cáo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "NIKE Direct theo báo cáo"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "NIKE Direct, theo báo cáo": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.nike_direct_loại_trừ_tỷ_giá": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "NIKE Direct loại trừ tỷ giá"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "NIKE Direct, loại trừ tỷ giá": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.bán_buôn_theo_báo_cáo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Bán buôn theo báo cáo"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Bán buôn, theo báo cáo": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.bán_buôn_loại_trừ_tỷ_giá": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Bán buôn loại trừ tỷ giá"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Bán buôn, loại trừ tỷ giá": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.biên_lợi_nhuận_gộp": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Biên lợi nhuận gộp"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Biên lợi nhuận gộp": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.lợi_nhuận_gộp_tỷ_usd": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Lợi nhuận gộp (tỷ USD)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Lợi nhuận gộp, tỷ USD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.doanh_thu_tỷ_usd": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Doanh thu (tỷ USD)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Doanh thu, tỷ USD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Doanh thu": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.tăng_trưởng_doanh_thu": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Tăng trưởng doanh thu"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "So với năm trước, theo báo cáo": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.tăng_trưởng_doanh_thu_loại_trừ_tỷ_giá": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Tăng trưởng doanh thu loại trừ tỷ giá"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Loại trừ tỷ giá (NIKE, non-GAAP)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.biên_ebit": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Biên EBIT"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Biên EBIT (non-GAAP)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.ebit_do_nike_công_bố_tỷ_usd": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "EBIT do NIKE công bố (tỷ USD)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "EBIT do NIKE công bố, tỷ USD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.biên_lợi_nhuận_sau_thuế": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Biên lợi nhuận sau thuế"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Biên lợi nhuận sau thuế (GAAP)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.vận_hành_chung___doanh_thu": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Vận hành chung / doanh thu"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Vận hành chung": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.tạo_nhu_cầu___doanh_thu": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Tạo nhu cầu / doanh thu"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tạo nhu cầu (marketing)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.sga___doanh_thu": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "SG&A / doanh thu"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tổng SG&A / doanh thu": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.sga_tỷ_usd": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "SG&A (tỷ USD)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tổng SG&A, tỷ USD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.số_ngày_tồn_kho": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Số ngày tồn kho"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Số ngày tồn kho bình quân": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.tồn_kho_bình_quân_tỷ_usd": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Tồn kho bình quân (tỷ USD)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tồn kho bình quân đầu và cuối kỳ, tỷ USD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.giá_vốn_hàng_bán_tỷ_usd": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Giá vốn hàng bán (tỷ USD)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Giá vốn hàng bán, tỷ USD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.hàng_tồn_kho_tỷ_usd": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Hàng tồn kho (tỷ USD)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Hàng tồn kho": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.thay_đổi_hàng_tồn_kho": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Thay đổi hàng tồn kho"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "So với 31/5 năm trước": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "nam.vòng_quay_hàng_tồn_kho": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Nam",
+			          "ConceptualProperty": "Vòng quay hàng tồn kho"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Vòng quay hàng tồn kho (lần)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "coso.cơ_sở": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "CoSo",
+			          "ConceptualProperty": "Cơ sở"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Cơ sở tính tăng trưởng": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "bangketqua.giá_trị_bangketqua": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "BangKetQua",
+			          "ConceptualProperty": "Giá trị BangKetQua"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Giá trị": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

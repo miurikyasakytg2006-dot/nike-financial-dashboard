@@ -1,0 +1,16 @@
+model Model
+	culture: vi-VN
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: vi-VN
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["Nam","BangKenh","BangKetQua","CoSo"]
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+ref table Nam
+ref table BangKenh
+ref table BangKetQua
+ref table CoSo

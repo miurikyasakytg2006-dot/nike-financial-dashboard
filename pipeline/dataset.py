@@ -13,13 +13,14 @@ import re
 from decimal import Decimal
 from pathlib import Path
 
-from .metrics import (CHECK_CONFIRMS, CHECKS, COMPARISONS, KPIS, REPORTED, STATUS_MATCHED, STATUS_MISSING,
-                      STATUS_PENDING)
+from .metrics import (CHECK_CONFIRMS, CHECKS, COMPARISONS, KPIS, REPORTED, STATUS_CONFLICT, STATUS_MATCHED,
+                      STATUS_MISSING, STATUS_PENDING)
 from .sources import FIRST_FY, LAST_FY, filing
 
 ROOT = Path(__file__).resolve().parent.parent
 FACTS_CSV = ROOT / "data" / "extracted" / "facts.csv"
 SEC_CHECK_CSV = ROOT / "data" / "extracted" / "sec_api_check.csv"
+PAGE_CHECK_CSV = ROOT / "data" / "extracted" / "page_check.csv"
 YEARS = list(range(FIRST_FY, LAST_FY + 1))
 IDENT = re.compile(r"[a-z][a-z0-9_]*")
 
@@ -45,6 +46,14 @@ def load_facts(path=FACTS_CSV):
 def load_sec_check(path=SEC_CHECK_CSV):
     with open(path, encoding="utf-8") as fh:
         return {(int(r["filing_fy"]), r["metric_id"], int(r["period_fy"])): r["result"] for r in csv.DictReader(fh)}
+
+
+def load_page_check(path=PAGE_CHECK_CSV):
+    """Results of pipeline.recheck_pages: {(fiscal year, metric id): row}."""
+    if not path.exists():
+        return {}
+    with open(path, encoding="utf-8") as fh:
+        return {(int(r["filing_fy"]), r["metric_id"]): r for r in csv.DictReader(fh)}
 
 
 def vi_num(v, decimals=0, signed=False):
@@ -121,7 +130,7 @@ def build_observations(facts, sec_check):
             else:
                 o["restatement"] = restatement_note(facts, m, fy, cur["value"])
                 o["status"] = STATUS_PENDING
-                o["cross_check"] = "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập."
+                o["cross_check"] = "Số liệu trong phần MD&A, không gắn thẻ XBRL nên không đối chiếu tự động được; kiểm tra trực tiếp trên 10-K."
             obs.append(o)
     return obs
 
@@ -172,6 +181,28 @@ def apply_cross_check_statuses(obs, results):
         else:
             o["status"] = STATUS_PENDING
             o["cross_check"] = f"CHÊNH LỆCH với giá trị tự tính: {shown}."
+    return obs
+
+
+def apply_page_checks(obs, checks):
+    """Confirm MD&A-only values that a second reading of the rendered 10-K page matched.
+
+    The check must have read the same value that is in the dataset now; if the extraction
+    changed since, the value stays pending until recheck_pages is run again.
+    """
+    for o in obs:
+        c = checks.get((o["fy"], o["metric"]["id"]))
+        if c is None or o["status"] != STATUS_PENDING or o["value"] is None:
+            continue
+        if Decimal(c["extracted_value"]) != o["value"]:
+            continue
+        if c["result"] == "match":
+            o["status"] = STATUS_MATCHED
+            o["cross_check"] = (f"Đọc lại trực tiếp trên trang 10-K (tr. {c['page']}) bằng cách thứ hai: khớp. "
+                                f"Ảnh đối chiếu: handover/bang-chung-doi-chieu/{c['screenshot']}.")
+        else:
+            o["status"] = STATUS_CONFLICT
+            o["cross_check"] = f"CHÊNH LỆCH khi đọc lại trên trang 10-K (tr. {c['page']}): đọc được {c['read_value'] or 'không có số'}."
     return obs
 
 

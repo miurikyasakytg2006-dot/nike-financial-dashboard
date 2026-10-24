@@ -1,0 +1,170 @@
+table BangKenh
+
+	measure 'Giá trị BangKenh' = COALESCE ( SELECTEDVALUE ( BangKenh[Hiển thị] ), "" )
+
+	measure 'Liên kết BangKenh' = SELECTEDVALUE ( BangKenh[Liên kết] )
+
+	column 'Thứ tự'
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: Thứ tự
+
+	column 'Chỉ tiêu'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Chỉ tiêu
+		sortByColumn: 'Thứ tự'
+
+	column FY
+		dataType: int64
+		formatString: 0
+		isHidden
+		summarizeBy: none
+		sourceColumn: FY
+
+	column 'Hiển thị'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Hiển thị
+
+	column 'Liên kết'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Liên kết
+		dataCategory: WebUrl
+
+	partition BangKenh = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [#"Thứ tự" = Int64.Type, #"Chỉ tiêu" = text, #"FY" = Int64.Type, #"Hiển thị" = text, #"Liên kết" = text], {
+				        {1, "DOANH THU NIKE BRAND", 2020, "", null},
+				        {1, "DOANH THU NIKE BRAND", 2021, "", null},
+				        {1, "DOANH THU NIKE BRAND", 2022, "", null},
+				        {1, "DOANH THU NIKE BRAND", 2023, "", null},
+				        {1, "DOANH THU NIKE BRAND", 2024, "", null},
+				        {1, "DOANH THU NIKE BRAND", 2025, "", null},
+				        {1, "DOANH THU NIKE BRAND", 2026, "", null},
+				        {2, "NIKE Direct (triệu USD)", 2020, "12.382   tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {2, "NIKE Direct (triệu USD)", 2021, "16.370   tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {2, "NIKE Direct (triệu USD)", 2022, "18.726   tr. 85", "https://www.sec.gov/Archives/edgar/data/320187/000032018722000038/nke-20220531.htm"},
+				        {2, "NIKE Direct (triệu USD)", 2023, "21.308   tr. 83", "https://www.sec.gov/Archives/edgar/data/320187/000032018723000039/nke-20230531.htm"},
+				        {2, "NIKE Direct (triệu USD)", 2024, "21.519   tr. 84", "https://www.sec.gov/Archives/edgar/data/320187/000032018724000044/nke-20240531.htm"},
+				        {2, "NIKE Direct (triệu USD)", 2025, "18.783   tr. 82", "https://www.sec.gov/Archives/edgar/data/320187/000032018725000047/nke-20250531.htm"},
+				        {2, "NIKE Direct (triệu USD)", 2026, "17.720   tr. 83", "https://www.sec.gov/Archives/edgar/data/320187/000032018726000088/nke-20260531.htm"},
+				        {3, "Bán buôn (Wholesale) (triệu USD)", 2020, "23.156   tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {3, "Bán buôn (Wholesale) (triệu USD)", 2021, "25.898   tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {3, "Bán buôn (Wholesale) (triệu USD)", 2022, "25.608   tr. 85", "https://www.sec.gov/Archives/edgar/data/320187/000032018722000038/nke-20220531.htm"},
+				        {3, "Bán buôn (Wholesale) (triệu USD)", 2023, "27.397   tr. 83", "https://www.sec.gov/Archives/edgar/data/320187/000032018723000039/nke-20230531.htm"},
+				        {3, "Bán buôn (Wholesale) (triệu USD)", 2024, "27.758   tr. 84", "https://www.sec.gov/Archives/edgar/data/320187/000032018724000044/nke-20240531.htm"},
+				        {3, "Bán buôn (Wholesale) (triệu USD)", 2025, "25.883   tr. 82", "https://www.sec.gov/Archives/edgar/data/320187/000032018725000047/nke-20250531.htm"},
+				        {3, "Bán buôn (Wholesale) (triệu USD)", 2026, "27.453   tr. 83", "https://www.sec.gov/Archives/edgar/data/320187/000032018726000088/nke-20260531.htm"},
+				        {4, "Global Brand Divisions (triệu USD)", 2020, "30   tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {4, "Global Brand Divisions (triệu USD)", 2021, "25   tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {4, "Global Brand Divisions (triệu USD)", 2022, "102   tr. 85", "https://www.sec.gov/Archives/edgar/data/320187/000032018722000038/nke-20220531.htm"},
+				        {4, "Global Brand Divisions (triệu USD)", 2023, "58   tr. 83", "https://www.sec.gov/Archives/edgar/data/320187/000032018723000039/nke-20230531.htm"},
+				        {4, "Global Brand Divisions (triệu USD)", 2024, "45   tr. 84", "https://www.sec.gov/Archives/edgar/data/320187/000032018724000044/nke-20240531.htm"},
+				        {4, "Global Brand Divisions (triệu USD)", 2025, "48   tr. 82", "https://www.sec.gov/Archives/edgar/data/320187/000032018725000047/nke-20250531.htm"},
+				        {4, "Global Brand Divisions (triệu USD)", 2026, "49   tr. 83", "https://www.sec.gov/Archives/edgar/data/320187/000032018726000088/nke-20260531.htm"},
+				        {5, "Tổng doanh thu NIKE Brand (triệu USD)", 2020, "35.568   tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {5, "Tổng doanh thu NIKE Brand (triệu USD)", 2021, "42.293   tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {5, "Tổng doanh thu NIKE Brand (triệu USD)", 2022, "44.436   tr. 85", "https://www.sec.gov/Archives/edgar/data/320187/000032018722000038/nke-20220531.htm"},
+				        {5, "Tổng doanh thu NIKE Brand (triệu USD)", 2023, "48.763   tr. 83", "https://www.sec.gov/Archives/edgar/data/320187/000032018723000039/nke-20230531.htm"},
+				        {5, "Tổng doanh thu NIKE Brand (triệu USD)", 2024, "49.322   tr. 84", "https://www.sec.gov/Archives/edgar/data/320187/000032018724000044/nke-20240531.htm"},
+				        {5, "Tổng doanh thu NIKE Brand (triệu USD)", 2025, "44.714   tr. 82", "https://www.sec.gov/Archives/edgar/data/320187/000032018725000047/nke-20250531.htm"},
+				        {5, "Tổng doanh thu NIKE Brand (triệu USD)", 2026, "45.222   tr. 83", "https://www.sec.gov/Archives/edgar/data/320187/000032018726000088/nke-20260531.htm"},
+				        {6, "CƠ CẤU THEO KÊNH", 2020, "", null},
+				        {6, "CƠ CẤU THEO KÊNH", 2021, "", null},
+				        {6, "CƠ CẤU THEO KÊNH", 2022, "", null},
+				        {6, "CƠ CẤU THEO KÊNH", 2023, "", null},
+				        {6, "CƠ CẤU THEO KÊNH", 2024, "", null},
+				        {6, "CƠ CẤU THEO KÊNH", 2025, "", null},
+				        {6, "CƠ CẤU THEO KÊNH", 2026, "", null},
+				        {7, "Tỷ trọng NIKE Direct", 2020, "34,8%", null},
+				        {7, "Tỷ trọng NIKE Direct", 2021, "38,7%", null},
+				        {7, "Tỷ trọng NIKE Direct", 2022, "42,1%", null},
+				        {7, "Tỷ trọng NIKE Direct", 2023, "43,7%", null},
+				        {7, "Tỷ trọng NIKE Direct", 2024, "43,6%", null},
+				        {7, "Tỷ trọng NIKE Direct", 2025, "42,0%", null},
+				        {7, "Tỷ trọng NIKE Direct", 2026, "39,2%", null},
+				        {8, "Tỷ trọng bán buôn", 2020, "65,1%", null},
+				        {8, "Tỷ trọng bán buôn", 2021, "61,2%", null},
+				        {8, "Tỷ trọng bán buôn", 2022, "57,6%", null},
+				        {8, "Tỷ trọng bán buôn", 2023, "56,2%", null},
+				        {8, "Tỷ trọng bán buôn", 2024, "56,3%", null},
+				        {8, "Tỷ trọng bán buôn", 2025, "57,9%", null},
+				        {8, "Tỷ trọng bán buôn", 2026, "60,7%", null},
+				        {9, "Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)", 2020, "35%   tr. 32", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {9, "Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)", 2021, "39%   tr. 33", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {9, "Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)", 2022, "42%   tr. 28", "https://www.sec.gov/Archives/edgar/data/320187/000032018722000038/nke-20220531.htm"},
+				        {9, "Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)", 2023, "44%   tr. 28", "https://www.sec.gov/Archives/edgar/data/320187/000032018723000039/nke-20230531.htm"},
+				        {9, "Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)", 2024, "44%   tr. 30", "https://www.sec.gov/Archives/edgar/data/320187/000032018724000044/nke-20240531.htm"},
+				        {9, "Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)", 2025, "42%   tr. 29", "https://www.sec.gov/Archives/edgar/data/320187/000032018725000047/nke-20250531.htm"},
+				        {9, "Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)", 2026, "Không công bố", null},
+				        {10, "TĂNG TRƯỞNG SO VỚI NĂM TRƯỚC", 2020, "", null},
+				        {10, "TĂNG TRƯỞNG SO VỚI NĂM TRƯỚC", 2021, "", null},
+				        {10, "TĂNG TRƯỞNG SO VỚI NĂM TRƯỚC", 2022, "", null},
+				        {10, "TĂNG TRƯỞNG SO VỚI NĂM TRƯỚC", 2023, "", null},
+				        {10, "TĂNG TRƯỞNG SO VỚI NĂM TRƯỚC", 2024, "", null},
+				        {10, "TĂNG TRƯỞNG SO VỚI NĂM TRƯỚC", 2025, "", null},
+				        {10, "TĂNG TRƯỞNG SO VỚI NĂM TRƯỚC", 2026, "", null},
+				        {11, "NIKE Direct, theo báo cáo", 2020, "+5,4%", null},
+				        {11, "NIKE Direct, theo báo cáo", 2021, "+32,2%", null},
+				        {11, "NIKE Direct, theo báo cáo", 2022, "+14,4%", null},
+				        {11, "NIKE Direct, theo báo cáo", 2023, "+13,8%", null},
+				        {11, "NIKE Direct, theo báo cáo", 2024, "+1,0%", null},
+				        {11, "NIKE Direct, theo báo cáo", 2025, "−12,7%", null},
+				        {11, "NIKE Direct, theo báo cáo", 2026, "−5,7%", null},
+				        {12, "NIKE Direct, loại trừ tỷ giá (non-GAAP)", 2020, "+8%   tr. 31", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {12, "NIKE Direct, loại trừ tỷ giá (non-GAAP)", 2021, "+30%   tr. 32", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {12, "NIKE Direct, loại trừ tỷ giá (non-GAAP)", 2022, "+15%   tr. 32", "https://www.sec.gov/Archives/edgar/data/320187/000032018722000038/nke-20220531.htm"},
+				        {12, "NIKE Direct, loại trừ tỷ giá (non-GAAP)", 2023, "+20%   tr. 32", "https://www.sec.gov/Archives/edgar/data/320187/000032018723000039/nke-20230531.htm"},
+				        {12, "NIKE Direct, loại trừ tỷ giá (non-GAAP)", 2024, "+1%   tr. 34", "https://www.sec.gov/Archives/edgar/data/320187/000032018724000044/nke-20240531.htm"},
+				        {12, "NIKE Direct, loại trừ tỷ giá (non-GAAP)", 2025, "−12%   tr. 33", "https://www.sec.gov/Archives/edgar/data/320187/000032018725000047/nke-20250531.htm"},
+				        {12, "NIKE Direct, loại trừ tỷ giá (non-GAAP)", 2026, "−8%   tr. 32", "https://www.sec.gov/Archives/edgar/data/320187/000032018726000088/nke-20260531.htm"},
+				        {13, "Bán buôn, theo báo cáo", 2020, "−8,9%", null},
+				        {13, "Bán buôn, theo báo cáo", 2021, "+11,8%", null},
+				        {13, "Bán buôn, theo báo cáo", 2022, "−1,1%", null},
+				        {13, "Bán buôn, theo báo cáo", 2023, "+7,0%", null},
+				        {13, "Bán buôn, theo báo cáo", 2024, "+1,3%", null},
+				        {13, "Bán buôn, theo báo cáo", 2025, "−6,8%", null},
+				        {13, "Bán buôn, theo báo cáo", 2026, "+6,1%", null},
+				        {14, "Bán buôn, loại trừ tỷ giá (non-GAAP)", 2020, "−7%   tr. 31", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {14, "Bán buôn, loại trừ tỷ giá (non-GAAP)", 2021, "+10%   tr. 32", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {14, "Bán buôn, loại trừ tỷ giá (non-GAAP)", 2022, "−1%   tr. 32", "https://www.sec.gov/Archives/edgar/data/320187/000032018722000038/nke-20220531.htm"},
+				        {14, "Bán buôn, loại trừ tỷ giá (non-GAAP)", 2023, "+14%   tr. 32", "https://www.sec.gov/Archives/edgar/data/320187/000032018723000039/nke-20230531.htm"},
+				        {14, "Bán buôn, loại trừ tỷ giá (non-GAAP)", 2024, "+2%   tr. 34", "https://www.sec.gov/Archives/edgar/data/320187/000032018724000044/nke-20240531.htm"},
+				        {14, "Bán buôn, loại trừ tỷ giá (non-GAAP)", 2025, "−6%   tr. 33", "https://www.sec.gov/Archives/edgar/data/320187/000032018725000047/nke-20250531.htm"},
+				        {14, "Bán buôn, loại trừ tỷ giá (non-GAAP)", 2026, "+4%   tr. 32", "https://www.sec.gov/Archives/edgar/data/320187/000032018726000088/nke-20260531.htm"},
+				        {15, "NIKE Brand, theo báo cáo", 2020, "−4,4%", null},
+				        {15, "NIKE Brand, theo báo cáo", 2021, "+18,9%", null},
+				        {15, "NIKE Brand, theo báo cáo", 2022, "+5,1%", null},
+				        {15, "NIKE Brand, theo báo cáo", 2023, "+9,7%", null},
+				        {15, "NIKE Brand, theo báo cáo", 2024, "+1,1%", null},
+				        {15, "NIKE Brand, theo báo cáo", 2025, "−9,3%", null},
+				        {15, "NIKE Brand, theo báo cáo", 2026, "+1,1%", null},
+				        {16, "NIKE BRAND DIGITAL (MỘT PHẦN CỦA NIKE DIRECT)", 2020, "", null},
+				        {16, "NIKE BRAND DIGITAL (MỘT PHẦN CỦA NIKE DIRECT)", 2021, "", null},
+				        {16, "NIKE BRAND DIGITAL (MỘT PHẦN CỦA NIKE DIRECT)", 2022, "", null},
+				        {16, "NIKE BRAND DIGITAL (MỘT PHẦN CỦA NIKE DIRECT)", 2023, "", null},
+				        {16, "NIKE BRAND DIGITAL (MỘT PHẦN CỦA NIKE DIRECT)", 2024, "", null},
+				        {16, "NIKE BRAND DIGITAL (MỘT PHẦN CỦA NIKE DIRECT)", 2025, "", null},
+				        {16, "NIKE BRAND DIGITAL (MỘT PHẦN CỦA NIKE DIRECT)", 2026, "", null},
+				        {17, "Doanh số Digital (tỷ USD)", 2020, "5,5   tr. 32", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {17, "Doanh số Digital (tỷ USD)", 2021, "9,1   tr. 33", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {17, "Doanh số Digital (tỷ USD)", 2022, "10,7   tr. 33", "https://www.sec.gov/Archives/edgar/data/320187/000032018722000038/nke-20220531.htm"},
+				        {17, "Doanh số Digital (tỷ USD)", 2023, "12,6   tr. 33", "https://www.sec.gov/Archives/edgar/data/320187/000032018723000039/nke-20230531.htm"},
+				        {17, "Doanh số Digital (tỷ USD)", 2024, "12,1   tr. 35", "https://www.sec.gov/Archives/edgar/data/320187/000032018724000044/nke-20240531.htm"},
+				        {17, "Doanh số Digital (tỷ USD)", 2025, "9,6   tr. 34", "https://www.sec.gov/Archives/edgar/data/320187/000032018725000047/nke-20250531.htm"},
+				        {17, "Doanh số Digital (tỷ USD)", 2026, "8,6   tr. 33", "https://www.sec.gov/Archives/edgar/data/320187/000032018726000088/nke-20260531.htm"},
+				        {18, "Digital trong NIKE Direct (xấp xỉ)", 2020, "44%", null},
+				        {18, "Digital trong NIKE Direct (xấp xỉ)", 2021, "56%", null},
+				        {18, "Digital trong NIKE Direct (xấp xỉ)", 2022, "57%", null},
+				        {18, "Digital trong NIKE Direct (xấp xỉ)", 2023, "59%", null},
+				        {18, "Digital trong NIKE Direct (xấp xỉ)", 2024, "56%", null},
+				        {18, "Digital trong NIKE Direct (xấp xỉ)", 2025, "51%", null},
+				        {18, "Digital trong NIKE Direct (xấp xỉ)", 2026, "49%", null}
+				    })
+				in
+				    Source

@@ -27,6 +27,7 @@ from .sources import FILINGS, document_title, filing, ir_document_url, sec_docum
 ROOT = Path(__file__).resolve().parent.parent
 WORKBOOK = ROOT / "handover" / "NIKE_Financial_Dataset_FY2020-2026.xlsx"
 META = ROOT / "data" / "extracted" / "meta.json"
+DASHBOARD_URL = "https://miurikyasakytg2006-dot.github.io/nike-financial-dashboard/"
 
 SHEET_OVERVIEW = "01 Tổng quan"
 SHEET_FIN = "02 Dữ liệu tài chính"
@@ -109,6 +110,13 @@ def _vn_date(iso):
     return f"{d}/{mth}/{y}"
 
 
+def date_text(v):
+    """A verification date as typed by the team; Excel may have stored it as a date."""
+    if isinstance(v, (datetime.date, datetime.datetime)):
+        return v.strftime("%d/%m/%Y")
+    return "" if v is None else str(v)
+
+
 # ------------------------------------------------------------------ carry-over of human verification
 def previous_verifications(path):
     if not path.exists():
@@ -127,7 +135,7 @@ def previous_verifications(path):
             if not key:
                 continue
             out[key] = dict(status=r[idx["Trạng thái dữ liệu"]], value=r[idx["Giá trị"]],
-                            verified_by=r[idx["Người xác minh"]] or "", verified_on=r[idx["Ngày xác minh"]] or "",
+                            verified_by=r[idx["Người xác minh"]] or "", verified_on=date_text(r[idx["Ngày xác minh"]]),
                             team_note=r[idx["Ghi chú của nhóm"]] or "")
     return out
 
@@ -369,7 +377,7 @@ GLOSSARY = [
      "Là doanh thu, không phải lợi nhuận. NIKE không công bố lợi nhuận riêng của kênh này."),
     ("NIKE Brand Digital", "NIKE Brand Digital sales (FY2020–21: Digital commerce sales)",
      "Phần doanh số NIKE Direct qua ứng dụng và website của NIKE.",
-     "Là một phần của NIKE Direct. Chỉ công bố trong MD&A, làm tròn 0,1 tỷ USD. Số FY2023 đã được trình bày lại."),
+     "Là một phần của NIKE Direct. Chỉ công bố trong MD&A, làm tròn 0,1 tỷ USD."),
     ("Bán buôn (Wholesale)", "Sales to Wholesale Customers",
      "Doanh thu NIKE Brand bán cho nhà bán lẻ, nhà phân phối độc lập, bên nhận cấp phép.", "Không gồm bán buôn của Converse."),
     ("Global Brand Divisions", "Global Brand Divisions", "Doanh thu cấp phép thương hiệu NIKE và doanh thu khác không thuộc khu vực địa lý.",
@@ -407,39 +415,27 @@ GLOSSARY = [
 ]
 
 GAPS = [
-    ("Lợi nhuận theo kênh", "Không công bố",
-     "NIKE không công bố lợi nhuận, biên gộp hay chi phí riêng của NIKE Direct và Wholesale.",
+    ("Lợi nhuận và chi phí theo kênh", "Không công bố",
+     "NIKE không công bố lợi nhuận, biên gộp hay chi phí riêng của NIKE Direct và Wholesale; SG&A là chi phí hợp nhất.",
      "Không tính và không ước lượng. Mọi phân tích lợi nhuận chỉ ở phạm vi NIKE, Inc."),
-    ("Phân bổ SG&A theo kênh", "Không đủ cơ sở",
-     "SG&A là chi phí hợp nhất; tài liệu công bố không đủ để phân bổ tin cậy cho từng kênh.", "Không phân bổ."),
-    ("Operating income", "Không trình bày",
-     "Báo cáo kết quả kinh doanh của NIKE không có dòng lợi nhuận hoạt động.", "Dùng EBIT (non-GAAP, định nghĩa của NIKE)."),
     ("Tỷ trọng NIKE Direct FY2026 do NIKE nêu", "Thiếu",
      "10-K FY2026 không có câu “approximately …% of total NIKE Brand revenues”.",
      "Để trống, trạng thái “Thiếu / không công bố”. Tỷ trọng tự tính ở sheet 04 vẫn có đủ 7 năm."),
     ("Doanh số Digital", "Độ chính xác thấp",
      "Chỉ công bố trong MD&A, làm tròn 0,1 tỷ USD; FY2023 được trình bày lại từ 12,6 xuống 12,4 tỷ USD do phân loại lại giữa cửa hàng và Digital.",
      "Giữ số gốc, ghi chú trình bày lại; tỷ trọng Digital/Direct ghi rõ là xấp xỉ."),
-    ("Tăng trưởng loại trừ tỷ giá", "Không kiểm chứng độc lập được",
-     "Do NIKE tính bằng tỷ giá nội bộ; không có dữ liệu để tính lại.", "Ghi “Chờ người kiểm tra” cho đến khi nhóm đối chiếu với 10-K."),
-    ("Kênh trực tiếp của Converse", "Ngoài phạm vi",
-     "Converse có kênh trực tiếp riêng nhưng không thuộc NIKE Direct.", "Chỉ dùng doanh thu tổng của Converse để đối chiếu."),
-    ("Dữ liệu theo quý", "Ngoài phạm vi", "Bộ dữ liệu chỉ dùng số liệu năm từ 10-K.", "Không thu thập 10-Q."),
+    ("Tăng trưởng loại trừ tỷ giá", "Không tự tính lại được",
+     "Do NIKE tính bằng tỷ giá nội bộ; không có dữ liệu để tính lại.",
+     "Lấy nguyên văn từ bảng doanh thu trong MD&A, rồi đọc lại trên trang 10-K để đối chiếu (ảnh chụp trong handover/bang-chung-doi-chieu/)."),
 ]
 
 RESTATEMENT_LOG = [
-    ("10-K FY2022", "Thuyết minh doanh thu theo nhóm khách hàng",
-     "“Certain prior year amounts have been reclassified to conform to fiscal 2022 presentation. These changes had no impact on previously reported consolidated results of operations or shareholders' equity.” (phân loại Men's/Women's/Kids', Jordan Brand)",
-     "Không ảnh hưởng: các chỉ tiêu kênh và hợp nhất trong bộ dữ liệu không đổi khi trình bày lại (đã kiểm tra tự động)."),
     ("10-K FY2024", "NIKE Direct: cửa hàng và Digital",
      "“Within NIKE Direct revenues, there were certain reclassifications made between NIKE-owned retail stores and NIKE Brand Digital in the prior period to conform to current period presentation.”",
      "Doanh số Digital FY2023: 12,6 tỷ USD (10-K FY2023) được trình bày lại thành 12,4 tỷ USD. Tổng NIKE Direct không đổi."),
-    ("10-K FY2025", "Doanh thu tương đương bán buôn",
-     "NIKE bỏ chỉ tiêu non-GAAP “wholesale equivalent revenues”; “There is no change to our reported revenues or gross margin.”",
-     "Không ảnh hưởng: bộ dữ liệu không dùng chỉ tiêu này."),
-    ("10-K FY2026", "Note 1 – Reclassifications",
-     "“Certain prior year amounts have been reclassified to conform to the current year presentation. These reclassifications did not have a material impact on the previously reported Consolidated Financial Statements.”",
-     "Không phát hiện thay đổi ở bất kỳ chỉ tiêu nào trong bộ dữ liệu (đã so sánh tự động với 10-K FY2024 và FY2025)."),
+    ("10-K FY2022, FY2025, FY2026", "Các lần phân loại lại khác",
+     "Phân loại lại doanh thu theo nhóm khách hàng (FY2022), bỏ chỉ tiêu “wholesale equivalent revenues” (FY2025), phân loại lại ở Note 1 (FY2026).",
+     "Không làm thay đổi chỉ tiêu nào trong bộ dữ liệu."),
 ]
 
 
@@ -476,12 +472,10 @@ def write_sources_sheet(wb, st, obs, results, extracted_on):
         f = filing(fy)
         src_rows.append([f"FY{fy} ({_vn_date(f'{fy - 1}-06-01')} – {_vn_date(f['period_end'])})", document_title(f),
                          (sec_document_url(f), sec_document_url(f)), (ir_document_url(f), "Bản sao trên NIKE Investor Relations"),
-                         _vn_date(f["filed"]), f["accession"],
-                         "Truy cập được; gói XBRL tải từ NIKE IR, đối chiếu với API XBRL của SEC theo số accession.",
-                         "Tự động: khớp. Người: chưa xác minh."])
+                         _vn_date(f["filed"]), f["accession"]])
     table("A. Tài liệu nguồn chính thức (Form 10-K nộp SEC)",
           ["Năm tài chính và kỳ báo cáo", "Tài liệu", "Liên kết SEC EDGAR", "Bản sao trên NIKE Investor Relations",
-           "Ngày nộp SEC", "Số accession", "Tình trạng truy cập", "Tình trạng kiểm tra"], src_rows, link_cols=(2, 3))
+           "Ngày nộp SEC", "Số accession"], src_rows, link_cols=(2, 3))
     table("B. Thuật ngữ và định nghĩa", ["Thuật ngữ", "Tiếng Anh / tên trong 10-K", "Định nghĩa", "Lưu ý phạm vi và cách dùng"],
           [list(g) for g in GLOSSARY])
     table("C. Khoảng trống dữ liệu và giới hạn", ["Vấn đề", "Tình trạng", "Mô tả", "Cách xử lý trong bộ dữ liệu"],
@@ -490,7 +484,8 @@ def write_sources_sheet(wb, st, obs, results, extracted_on):
           [list(g) for g in RESTATEMENT_LOG])
     counts = {s: sum(1 for o in obs if o["status"] == s) for s in STATUSES}
     meaning = {
-        STATUS_MATCHED: ("Số liệu lấy tự động từ 10-K và được ít nhất một nguồn độc lập xác nhận (API XBRL của SEC, bảng MD&A, hoặc phép tính lại từ BCTC).",),
+        STATUS_MATCHED: ("Số liệu lấy tự động từ 10-K và được xác nhận bằng ít nhất một cách độc lập: API XBRL của SEC, bảng MD&A, "
+                         "phép tính lại từ BCTC, hoặc đọc lại trực tiếp trên trang 10-K (có ảnh chụp đối chiếu).",),
         STATUS_PENDING: ("Số liệu chính thức nhưng chưa có kiểm tra độc lập (ví dụ tăng trưởng loại trừ tỷ giá, doanh số Digital). Cần người đối chiếu.",),
         STATUS_HUMAN: ("Thành viên nhóm đã tự mở 10-K, tìm đúng trang và xác nhận số liệu; ghi tên và ngày.",),
         STATUS_MISSING: ("NIKE không công bố số liệu này trong 10-K tương ứng. Ô giá trị để trống, không thay bằng 0.",),
@@ -501,13 +496,20 @@ def write_sources_sheet(wb, st, obs, results, extracted_on):
     checks_ok = all(all(results[y][c["id"]] is None or abs(results[y][c["id"]]) <= Decimal(str(c["tol"])) for y in dataset.YEARS)
                     for c in CHECKS + COMPARISONS)
     sec_rows = list(dataset.load_sec_check().values())
-    table("F. Kiểm tra tự động (lần chạy gần nhất)", ["Kiểm tra", "Kết quả", "Chi tiết", "Ngày trích xuất"], [
+    pages = list(dataset.load_page_check().values())
+    page_ok = sum(r["result"] == "match" for r in pages)
+    page_on = max((r.get("checked_on") or extracted_on for r in pages), default=extracted_on)
+    table("F. Kiểm tra tự động (lần chạy gần nhất)", ["Kiểm tra", "Kết quả", "Chi tiết", "Ngày kiểm tra"], [
         ["Đối chiếu với API XBRL của SEC", f"{sec_rows.count('match')}/{len(sec_rows)} khớp",
          "Mọi giá trị hợp nhất (không chia theo kênh) của 7 báo cáo, kể cả cột so sánh, so với dữ liệu SEC theo cùng số accession.", _vn_date(extracted_on)],
         ["Thuyết minh XBRL so với bảng MD&A", "Khớp toàn bộ",
          "Doanh thu NIKE Direct, bán buôn, Global Brand Divisions, NIKE Brand, Converse, Corporate và NIKE, Inc. ở hai vị trí khác nhau trong cùng 10-K.", _vn_date(extracted_on)],
         ["Đối chiếu số học và tỷ lệ NIKE công bố", "Đạt" if checks_ok else "Có lỗi",
          "Xem mục D và E ở sheet 04.", _vn_date(extracted_on)],
+        ["Đọc lại trên trang 10-K", f"{page_ok}/{len(pages)} khớp",
+         "Các số chỉ có trong MD&A (tăng trưởng loại trừ tỷ giá, doanh số Digital): mở từng 10-K, tìm trang theo chân trang, đọc lại "
+         "theo vị trí cột “% CHANGE EXCLUDING CURRENCY CHANGES” đầu tiên và theo câu về doanh số Digital. Ảnh chụp và bảng so sánh: "
+         "handover/bang-chung-doi-chieu/doi-chieu-35-so.html.", _vn_date(page_on)],
     ])
     ws.set_landscape()
     ws.fit_to_pages(1, 0)
@@ -531,8 +533,7 @@ def write_overview_sheet(wb, st, obs, extracted_on):
     blocks = [
         ("Thông tin chung", [
             ("Mục đích", "Tập hợp số liệu chính thức về doanh thu theo kênh phân phối (NIKE Direct, bán buôn) và kết quả tài chính hợp nhất "
-                         "của NIKE, Inc. để nhóm dùng trong báo cáo, thuyết trình và dashboard. Bộ dữ liệu chỉ trình bày số liệu và phép tính, "
-                         "không đưa ra kết luận nghiên cứu."),
+                         "của NIKE, Inc. để nhóm dùng trong báo cáo, thuyết trình và dashboard."),
             ("Kỳ nghiên cứu", "FY2020–FY2026. Năm tài chính của NIKE kết thúc ngày 31/5, ví dụ FY2026 = 01/06/2025 – 31/05/2026. "
                               "FY không trùng với năm dương lịch."),
             ("Đơn vị", "Triệu USD, trừ khi cột “Đơn vị” ghi khác (tỷ USD cho doanh số Digital; % cho tỷ lệ). Không quy đổi sang VND."),
@@ -547,8 +548,6 @@ def write_overview_sheet(wb, st, obs, extracted_on):
             ("Tình trạng dữ liệu", f"Trích xuất tự động ngày {_vn_date(extracted_on)}. {total} quan sát: {n[STATUS_MATCHED]} khớp nguồn chính thức, "
                                    f"{n[STATUS_PENDING]} chờ người kiểm tra, {n[STATUS_MISSING]} không được công bố, "
                                    f"{n[STATUS_HUMAN]} đã được người xác minh, {n[STATUS_CONFLICT]} mâu thuẫn."),
-            ("Tính độc lập", "Sản phẩm học thuật độc lập của nhóm sinh viên; không liên kết với, không được tài trợ hay xác nhận bởi NIKE, Inc. "
-                             "NIKE là nhãn hiệu của NIKE, Inc."),
         ]),
         ("Cách sử dụng", [
             ("1. Đọc số liệu", "Sheet 02 (hợp nhất NIKE, Inc.) và 03 (kênh phân phối NIKE Brand). Mỗi dòng là một số liệu của một năm. "
@@ -586,8 +585,7 @@ def write_overview_sheet(wb, st, obs, extracted_on):
             row += 1
         row += 1
     ws.write(row, 0, "Liên kết dashboard", label)
-    ws.write_blank(row, 1, None, st(bg_color="#FFF2CC", border=1, border_color="#BFBFBF"))
-    ws.write(row + 1, 1, "Điền đường dẫn GitHub Pages sau khi dashboard được triển khai.", st(font_color="#6B6B6B", italic=True))
+    ws.write_url(row, 1, DASHBOARD_URL, st(font_color="#1F4E9A", underline=1), DASHBOARD_URL)
     ws.set_landscape()
     ws.fit_to_pages(1, 0)
     ws.activate()
@@ -601,6 +599,7 @@ def build(path=WORKBOOK, active_sheet=None):
     obs = dataset.build_observations(facts, dataset.load_sec_check())
     results = dataset.compute(obs)
     dataset.apply_cross_check_statuses(obs, results)
+    dataset.apply_page_checks(obs, dataset.load_page_check())
     merge_verifications(obs, previous_verifications(path))
     extracted_on = json.loads(META.read_text())["extracted_on"]
 

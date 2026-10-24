@@ -142,7 +142,10 @@ def test_source_links_and_missing_state(page, site_data):
     assert all(h.startswith("https://www.sec.gov/Archives/edgar/data/320187/") for h in hrefs)
     rows = {r[0]: r for r in table(page, "channels")}
     assert rows["Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)"][-1].startswith("Không công bố")
-    assert page.locator("#table-channels .mark-slot", has_text="†").count() > 0
+    # † marks and their key appear only while some figures are still pending review.
+    pending = site_data["meta"]["status_counts"]["Chờ người kiểm tra"]
+    assert (page.locator("#table-channels .mark-slot", has_text="†").count() > 0) == (pending > 0)
+    assert page.locator("#view-channels .pending-key").is_hidden() == (pending == 0)
     assert page.locator("#filing-list a").count() == 7
 
 

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "NIKE_Dashboard"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "a4b7561d-3844-4f55-9c83-60a38ab55e3e"
+  }
+}

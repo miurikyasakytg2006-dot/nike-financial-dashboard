@@ -1,0 +1,509 @@
+table Nam
+
+	measure 'Tỷ trọng NIKE Direct' = SUM ( Nam[direct_share] )
+		formatString: 0.0%
+
+	measure 'Tỷ trọng bán buôn' = SUM ( Nam[wholesale_share] )
+		formatString: 0.0%
+
+	measure 'Tỷ trọng Global Brand Divisions' = SUM ( Nam[gbd_share] )
+		formatString: 0.00%
+
+	measure 'NIKE Direct (tỷ USD)' = DIVIDE ( SUM ( Nam[nike_direct_revenue] ), 1000 )
+		formatString: #,0.0
+
+	measure 'Bán buôn (tỷ USD)' = DIVIDE ( SUM ( Nam[nike_brand_wholesale_revenue] ), 1000 )
+		formatString: #,0.0
+
+	measure 'NIKE Brand (tỷ USD)' = DIVIDE ( SUM ( Nam[nike_brand_revenue] ), 1000 )
+		formatString: #,0.0
+
+	measure 'Cơ sở đang chọn' = SELECTEDVALUE ( CoSo[Cơ sở], "Theo báo cáo" )
+
+	measure 'Tăng trưởng NIKE Direct' = IF ( [Cơ sở đang chọn] = "Loại trừ tỷ giá", SUM ( Nam[nike_direct_pct_change_cn] ), SUM ( Nam[direct_growth] ) )
+		formatString: +0.0%;-0.0%;0.0%
+
+	measure 'Tăng trưởng bán buôn' = IF ( [Cơ sở đang chọn] = "Loại trừ tỷ giá", SUM ( Nam[nike_brand_wholesale_pct_change_cn] ), SUM ( Nam[wholesale_growth] ) )
+		formatString: +0.0%;-0.0%;0.0%
+
+	measure 'NIKE Direct theo báo cáo' = SUM ( Nam[direct_growth] )
+		formatString: +0.0%;-0.0%;0.0%
+
+	measure 'NIKE Direct loại trừ tỷ giá' = SUM ( Nam[nike_direct_pct_change_cn] )
+		formatString: +0%;-0%;0%
+
+	measure 'Bán buôn theo báo cáo' = SUM ( Nam[wholesale_growth] )
+		formatString: +0.0%;-0.0%;0.0%
+
+	measure 'Bán buôn loại trừ tỷ giá' = SUM ( Nam[nike_brand_wholesale_pct_change_cn] )
+		formatString: +0%;-0%;0%
+
+	measure 'Digital (tỷ USD)' = SUM ( Nam[nike_brand_digital_sales] )
+		formatString: #,0.0
+
+	measure 'Phần còn lại của NIKE Direct (tỷ USD)' = [NIKE Direct (tỷ USD)] - [Digital (tỷ USD)]
+		formatString: #,0.0
+
+	measure 'Digital trong NIKE Direct' = SUM ( Nam[digital_share_of_direct] )
+		formatString: 0%
+
+	measure 'Doanh thu (tỷ USD)' = DIVIDE ( SUM ( Nam[revenues] ), 1000 )
+		formatString: #,0.0
+
+	measure 'Tăng trưởng doanh thu' = SUM ( Nam[revenue_growth] )
+		formatString: +0.0%;-0.0%;0.0%
+
+	measure 'Tăng trưởng doanh thu loại trừ tỷ giá' = SUM ( Nam[revenues_pct_change_cn] )
+		formatString: +0%;-0%;0%
+
+	measure 'Biên lợi nhuận gộp' = SUM ( Nam[gross_margin] )
+		formatString: 0.0%
+
+	measure 'Lợi nhuận gộp (tỷ USD)' = DIVIDE ( SUM ( Nam[gross_profit] ), 1000 )
+		formatString: #,0.0
+
+	measure 'SG&A / doanh thu' = SUM ( Nam[sga_ratio] )
+		formatString: 0.0%
+
+	measure 'Vận hành chung / doanh thu' = SUM ( Nam[operating_overhead_ratio] )
+		formatString: 0.0%
+
+	measure 'Tạo nhu cầu / doanh thu' = SUM ( Nam[demand_creation_ratio] )
+		formatString: 0.0%
+
+	measure 'SG&A (tỷ USD)' = DIVIDE ( SUM ( Nam[total_selling_admin_expense] ), 1000 )
+		formatString: #,0.0
+
+	measure 'Biên EBIT' = SUM ( Nam[ebit_margin] )
+		formatString: 0.0%
+
+	measure 'EBIT do NIKE công bố (tỷ USD)' = DIVIDE ( SUM ( Nam[ebit_reported] ), 1000 )
+		formatString: #,0.00
+
+	measure 'Biên lợi nhuận sau thuế' = SUM ( Nam[net_income_margin] )
+		formatString: 0.0%
+
+	measure 'Hàng tồn kho (tỷ USD)' = DIVIDE ( SUM ( Nam[inventories] ), 1000 )
+		formatString: #,0.0
+
+	measure 'Thay đổi hàng tồn kho' = SUM ( Nam[inventory_growth] )
+		formatString: +0.0%;-0.0%;0.0%
+
+	measure 'Vòng quay hàng tồn kho' = SUM ( Nam[inventory_turnover] )
+		formatString: 0.00
+
+	measure 'Số ngày tồn kho' = SUM ( Nam[days_inventory] )
+		formatString: 0.0
+
+	measure 'Tồn kho bình quân (tỷ USD)' = DIVIDE ( SUM ( Nam[average_inventory] ), 1000 )
+		formatString: #,0.00
+
+	measure 'Giá vốn hàng bán (tỷ USD)' = DIVIDE ( SUM ( Nam[cost_of_sales] ), 1000 )
+		formatString: #,0.0
+
+	measure 'Tóm tắt kênh' =
+			VAR a = MIN ( Nam[FY] )
+			VAR b = MAX ( Nam[FY] )
+			VAR n = DISTINCTCOUNT ( Nam[FY] )
+			VAR shA = CALCULATE ( SUM ( Nam[direct_share] ), Nam[FY] = a )
+			VAR shB = CALCULATE ( SUM ( Nam[direct_share] ), Nam[FY] = b )
+			VAR hi = MINX ( TOPN ( 1, VALUES ( Nam[FY] ), CALCULATE ( SUM ( Nam[direct_share] ) ), DESC ), Nam[FY] )
+			VAR lo = MINX ( TOPN ( 1, VALUES ( Nam[FY] ), CALCULATE ( SUM ( Nam[direct_share] ) ), ASC ), Nam[FY] )
+			VAR shHi = CALCULATE ( SUM ( Nam[direct_share] ), Nam[FY] = hi )
+			VAR shLo = CALCULATE ( SUM ( Nam[direct_share] ), Nam[FY] = lo )
+			VAR wsA = CALCULATE ( SUM ( Nam[wholesale_share] ), Nam[FY] = a )
+			VAR dA = CALCULATE ( SUM ( Nam[nike_direct_revenue] ), Nam[FY] = a ) / 1000
+			VAR dB = CALCULATE ( SUM ( Nam[nike_direct_revenue] ), Nam[FY] = b ) / 1000
+			VAR wA = CALCULATE ( SUM ( Nam[nike_brand_wholesale_revenue] ), Nam[FY] = a ) / 1000
+			VAR wB = CALCULATE ( SUM ( Nam[nike_brand_wholesale_revenue] ), Nam[FY] = b ) / 1000
+			RETURN
+			    IF (
+			        a = b,
+			        "Trong FY" & a & ", NIKE Direct chiếm " & FORMAT ( shA, "0.0%", "vi-VN" ) & " doanh thu NIKE Brand ("
+			            & FORMAT ( dA, "#,0.0", "vi-VN" ) & " tỷ USD); bán buôn chiếm " & FORMAT ( wsA, "0.0%", "vi-VN" ) & " ("
+			            & FORMAT ( wA, "#,0.0", "vi-VN" ) & " tỷ USD).",
+			        "Tỷ trọng NIKE Direct trong doanh thu NIKE Brand là " & FORMAT ( shA, "0.0%", "vi-VN" ) & " ở FY" & a & " và "
+			            & FORMAT ( shB, "0.0%", "vi-VN" ) & " ở FY" & b
+			            & IF ( n > 2, "; cao nhất " & FORMAT ( shHi, "0.0%", "vi-VN" ) & " (FY" & hi & "), thấp nhất "
+			                & FORMAT ( shLo, "0.0%", "vi-VN" ) & " (FY" & lo & ")" )
+			            & ". Doanh thu NIKE Direct từ " & FORMAT ( dA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( dB, "#,0.0", "vi-VN" )
+			            & " tỷ USD; bán buôn từ " & FORMAT ( wA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( wB, "#,0.0", "vi-VN" ) & " tỷ USD."
+			    )
+
+	measure 'Tóm tắt kết quả' =
+			VAR a = MIN ( Nam[FY] )
+			VAR b = MAX ( Nam[FY] )
+			VAR n = DISTINCTCOUNT ( Nam[FY] )
+			VAR rA = CALCULATE ( SUM ( Nam[revenues] ), Nam[FY] = a ) / 1000
+			VAR rB = CALCULATE ( SUM ( Nam[revenues] ), Nam[FY] = b ) / 1000
+			VAR gA = CALCULATE ( SUM ( Nam[gross_margin] ), Nam[FY] = a )
+			VAR gB = CALCULATE ( SUM ( Nam[gross_margin] ), Nam[FY] = b )
+			VAR eA = CALCULATE ( SUM ( Nam[ebit_margin] ), Nam[FY] = a )
+			VAR eB = CALCULATE ( SUM ( Nam[ebit_margin] ), Nam[FY] = b )
+			VAR yHi = MINX ( TOPN ( 1, VALUES ( Nam[FY] ), CALCULATE ( SUM ( Nam[ebit_margin] ) ), DESC ), Nam[FY] )
+			VAR eHi = CALCULATE ( SUM ( Nam[ebit_margin] ), Nam[FY] = yHi )
+			VAR iA = CALCULATE ( SUM ( Nam[inventories] ), Nam[FY] = a ) / 1000
+			VAR iB = CALCULATE ( SUM ( Nam[inventories] ), Nam[FY] = b ) / 1000
+			RETURN
+			    IF (
+			        a = b,
+			        "Trong FY" & a & ", doanh thu NIKE, Inc. là " & FORMAT ( rA, "#,0.0", "vi-VN" ) & " tỷ USD, biên lợi nhuận gộp "
+			            & FORMAT ( gA, "0.0%", "vi-VN" ) & ", biên EBIT (non-GAAP) " & FORMAT ( eA, "0.0%", "vi-VN" )
+			            & ", hàng tồn kho cuối kỳ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " tỷ USD.",
+			        "Doanh thu NIKE, Inc. từ " & FORMAT ( rA, "#,0.0", "vi-VN" ) & " (FY" & a & ") đến " & FORMAT ( rB, "#,0.0", "vi-VN" )
+			            & " tỷ USD (FY" & b & "). Biên lợi nhuận gộp " & FORMAT ( gA, "0.0%", "vi-VN" ) & " và " & FORMAT ( gB, "0.0%", "vi-VN" )
+			            & "; biên EBIT (non-GAAP) " & FORMAT ( eA, "0.0%", "vi-VN" ) & " và " & FORMAT ( eB, "0.0%", "vi-VN" )
+			            & IF ( n > 2, ", cao nhất " & FORMAT ( eHi, "0.0%", "vi-VN" ) & " (FY" & yHi & ")" )
+			            & ". Hàng tồn kho cuối kỳ từ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( iB, "#,0.0", "vi-VN" ) & " tỷ USD."
+			    )
+
+	measure 'Phụ đề tăng trưởng' = IF ( [Cơ sở đang chọn] = "Loại trừ tỷ giá", "% so với năm trước loại trừ tỷ giá, NIKE Brand. Số NIKE công bố (non-GAAP).", "% so với năm trước theo báo cáo, NIKE Brand. Tính toán từ 10-K." )
+
+	column FY
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: FY
+
+	column 'Năm'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Năm
+		sortByColumn: FY
+
+	column 'Năm (ngắn)'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Năm (ngắn)
+		sortByColumn: FY
+
+	column 'Báo cáo'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Báo cáo
+		sortByColumn: FY
+
+	column 'Kỳ báo cáo'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Kỳ báo cáo
+
+	column 'Ngày nộp SEC'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Ngày nộp SEC
+
+	column 'Số accession'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Số accession
+
+	column 'Liên kết SEC EDGAR'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Liên kết SEC EDGAR
+		dataCategory: WebUrl
+
+	column revenues
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: revenues
+
+	column cost_of_sales
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: cost_of_sales
+
+	column gross_profit
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: gross_profit
+
+	column demand_creation_expense
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: demand_creation_expense
+
+	column operating_overhead_expense
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: operating_overhead_expense
+
+	column total_selling_admin_expense
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: total_selling_admin_expense
+
+	column interest_expense_net
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: interest_expense_net
+
+	column other_expense_net
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: other_expense_net
+
+	column income_before_taxes
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: income_before_taxes
+
+	column income_tax_expense
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: income_tax_expense
+
+	column net_income
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: net_income
+
+	column inventories
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: inventories
+
+	column ebit_reported
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: ebit_reported
+
+	column revenues_pct_change_reported
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: revenues_pct_change_reported
+
+	column revenues_pct_change_cn
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: revenues_pct_change_cn
+
+	column nike_direct_revenue
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: nike_direct_revenue
+
+	column nike_brand_wholesale_revenue
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: nike_brand_wholesale_revenue
+
+	column global_brand_divisions_revenue
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: global_brand_divisions_revenue
+
+	column nike_brand_revenue
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: nike_brand_revenue
+
+	column converse_revenue
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: converse_revenue
+
+	column corporate_revenue
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: corporate_revenue
+
+	column nike_brand_digital_sales
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: nike_brand_digital_sales
+
+	column nike_direct_share_stated
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: nike_direct_share_stated
+
+	column nike_direct_pct_change_reported
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: nike_direct_pct_change_reported
+
+	column nike_direct_pct_change_cn
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: nike_direct_pct_change_cn
+
+	column nike_brand_wholesale_pct_change_reported
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: nike_brand_wholesale_pct_change_reported
+
+	column nike_brand_wholesale_pct_change_cn
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: nike_brand_wholesale_pct_change_cn
+
+	column nike_brand_pct_change_reported
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: nike_brand_pct_change_reported
+
+	column nike_brand_pct_change_cn
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: nike_brand_pct_change_cn
+
+	column direct_share
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: direct_share
+
+	column wholesale_share
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: wholesale_share
+
+	column gbd_share
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: gbd_share
+
+	column direct_growth
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: direct_growth
+
+	column wholesale_growth
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: wholesale_growth
+
+	column nike_brand_growth
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: nike_brand_growth
+
+	column digital_share_of_direct
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: digital_share_of_direct
+
+	column revenue_growth
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: revenue_growth
+
+	column gross_margin
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: gross_margin
+
+	column sga_ratio
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: sga_ratio
+
+	column demand_creation_ratio
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: demand_creation_ratio
+
+	column operating_overhead_ratio
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: operating_overhead_ratio
+
+	column ebit
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: ebit
+
+	column ebit_margin
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: ebit_margin
+
+	column net_income_margin
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: net_income_margin
+
+	column inventory_growth
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: inventory_growth
+
+	column average_inventory
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: average_inventory
+
+	column inventory_turnover
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: inventory_turnover
+
+	column days_inventory
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: days_inventory
+
+	partition Nam = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [#"FY" = Int64.Type, #"Năm" = text, #"Năm (ngắn)" = text, #"Báo cáo" = text, #"Kỳ báo cáo" = text, #"Ngày nộp SEC" = text, #"Số accession" = text, #"Liên kết SEC EDGAR" = text, #"revenues" = number, #"cost_of_sales" = number, #"gross_profit" = number, #"demand_creation_expense" = number, #"operating_overhead_expense" = number, #"total_selling_admin_expense" = number, #"interest_expense_net" = number, #"other_expense_net" = number, #"income_before_taxes" = number, #"income_tax_expense" = number, #"net_income" = number, #"inventories" = number, #"ebit_reported" = number, #"revenues_pct_change_reported" = number, #"revenues_pct_change_cn" = number, #"nike_direct_revenue" = number, #"nike_brand_wholesale_revenue" = number, #"global_brand_divisions_revenue" = number, #"nike_brand_revenue" = number, #"converse_revenue" = number, #"corporate_revenue" = number, #"nike_brand_digital_sales" = number, #"nike_direct_share_stated" = number, #"nike_direct_pct_change_reported" = number, #"nike_direct_pct_change_cn" = number, #"nike_brand_wholesale_pct_change_reported" = number, #"nike_brand_wholesale_pct_change_cn" = number, #"nike_brand_pct_change_reported" = number, #"nike_brand_pct_change_cn" = number, #"direct_share" = number, #"wholesale_share" = number, #"gbd_share" = number, #"direct_growth" = number, #"wholesale_growth" = number, #"nike_brand_growth" = number, #"digital_share_of_direct" = number, #"revenue_growth" = number, #"gross_margin" = number, #"sga_ratio" = number, #"demand_creation_ratio" = number, #"operating_overhead_ratio" = number, #"ebit" = number, #"ebit_margin" = number, #"net_income_margin" = number, #"inventory_growth" = number, #"average_inventory" = number, #"inventory_turnover" = number, #"days_inventory" = number], {
+				        {2020, "FY2020", "FY20", "Form 10-K FY2020", "01/06/2019 – 31/05/2020", "24/07/2020", "0000320187-20-000047", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm", 37403.0, 21162.0, 16241.0, 3592.0, 9534.0, 13126.0, 89.0, 139.0, 2887.0, 348.0, 2539.0, 7367.0, 2976.0, -0.04, -0.02, 12382.0, 23156.0, 30.0, 35568.0, 1846.0, -11.0, 5.5, 0.35, 0.05, 0.08, -0.09, -0.07, -0.04, -0.02, 0.34812190733243364, 0.6510346378767431, 0.0008434547908232119, 0.05351825065940611, -0.08917122290839004, -0.04433338707077221, 0.4441931836536908, -0.043817266150267146, 0.43421650669732376, 0.3509344170253723, 0.09603507740020854, 0.25489933962516376, 2976.0, 0.07956581022912601, 0.06788225543405609, 0.3103877623621487, 6494.5, 3.258449457233043, 112.01646819771288},
+				        {2021, "FY2021", "FY21", "Form 10-K FY2021", "01/06/2020 – 31/05/2021", "20/07/2021", "0000320187-21-000028", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm", 44538.0, 24576.0, 19962.0, 3114.0, 9911.0, 13025.0, 262.0, 14.0, 6661.0, 934.0, 5727.0, 6854.0, 6923.0, 0.19, 0.17, 16370.0, 25898.0, 25.0, 42293.0, 2205.0, 40.0, 9.1, 0.39, 0.32, 0.3, 0.12, 0.1, 0.19, 0.17, 0.3870616886955288, 0.6123471969356631, 0.000591114368808077, 0.32208043934743985, 0.11841423389186388, 0.18907444894286998, 0.5558949297495418, 0.1907600994572628, 0.44820153576721, 0.2924468992770219, 0.06991782298262159, 0.22252907629440027, 6923.0, 0.1554402981723472, 0.12858682473393507, -0.06963485815121488, 7110.5, 3.456297025525631, 105.60434977213542},
+				        {2022, "FY2022", "FY22", "Form 10-K FY2022", "01/06/2021 – 31/05/2022", "21/07/2022", "0000320187-22-000038", "https://www.sec.gov/Archives/edgar/data/320187/000032018722000038/nke-20220531.htm", 46710.0, 25231.0, 21479.0, 3850.0, 10954.0, 14804.0, 205.0, -181.0, 6651.0, 605.0, 6046.0, 8420.0, 6856.0, 0.05, 0.06, 18726.0, 25608.0, 102.0, 44436.0, 2346.0, -72.0, 10.7, 0.42, 0.14, 0.15, -0.01, -0.01, 0.05, 0.06, 0.421415068863084, 0.5762894950040508, 0.0022954361328652445, 0.14392180818570555, -0.011197775890030117, 0.05067032369422836, 0.5713980561785752, 0.048767344739323724, 0.4598372939413402, 0.3169342753157782, 0.08242346392635409, 0.23451081138942412, 6856.0, 0.14677799186469706, 0.12943695140226932, 0.2284797198716078, 7637.0, 3.303784208458819, 110.47937061551266},
+				        {2023, "FY2023", "FY23", "Form 10-K FY2023", "01/06/2022 – 31/05/2023", "20/07/2023", "0000320187-23-000039", "https://www.sec.gov/Archives/edgar/data/320187/000032018723000039/nke-20230531.htm", 51217.0, 28925.0, 22292.0, 4060.0, 12317.0, 16377.0, -6.0, -280.0, 6201.0, 1131.0, 5070.0, 8454.0, 6195.0, 0.1, 0.16, 21308.0, 27397.0, 58.0, 48763.0, 2427.0, 27.0, 12.6, 0.44, 0.14, 0.2, 0.07, 0.14, 0.1, 0.16, 0.4369706539794516, 0.5618399196111806, 0.0011894264093677584, 0.1378831571077646, 0.06986098094345516, 0.09737600144027365, 0.5913272010512484, 0.09648897452365661, 0.43524610969014194, 0.3197571118964406, 0.07927055469863521, 0.24048655719780543, 6195.0, 0.12095593260050373, 0.09899056953745826, 0.0040380047505938245, 8437.0, 3.428351309707242, 106.46516853932584},
+				        {2024, "FY2024", "FY24", "Form 10-K FY2024", "01/06/2023 – 31/05/2024", "25/07/2024", "0000320187-24-000044", "https://www.sec.gov/Archives/edgar/data/320187/000032018724000044/nke-20240531.htm", 51362.0, 28475.0, 22887.0, 4285.0, 12291.0, 16576.0, -161.0, -228.0, 6700.0, 1000.0, 5700.0, 7519.0, 6539.0, 0.0, 0.01, 21519.0, 27758.0, 45.0, 49322.0, 2082.0, -42.0, 12.1, 0.44, 0.01, 0.01, 0.01, 0.02, 0.01, 0.01, 0.4362961761485747, 0.5627914520903451, 0.0009123717610802481, 0.009902384081096302, 0.01317662517793919, 0.011463609704078913, 0.5622937868860077, 0.0028310912392369722, 0.445601806783225, 0.3227288656983762, 0.0834274366262996, 0.23930142907207663, 6539.0, 0.12731202055994703, 0.11097698687745804, -0.11059853323870357, 7986.5, 3.5653915983221687, 102.37304653204565},
+				        {2025, "FY2025", "FY25", "Form 10-K FY2025", "01/06/2024 – 31/05/2025", "17/07/2025", "0000320187-25-000047", "https://www.sec.gov/Archives/edgar/data/320187/000032018725000047/nke-20250531.htm", 46309.0, 26519.0, 19790.0, 4689.0, 11399.0, 16088.0, -107.0, -76.0, 3885.0, 666.0, 3219.0, 7489.0, 3778.0, -0.1, -0.09, 18783.0, 25883.0, 48.0, 44714.0, 1692.0, -97.0, 9.6, 0.42, -0.13, -0.12, -0.07, -0.06, -0.09, -0.09, 0.4200697768036856, 0.5788567339088428, 0.0010734892874714854, -0.1271434546214973, -0.06754809424310108, -0.09342686833461741, 0.5111004631847947, -0.09838012538452552, 0.42734673605562634, 0.3474054719385001, 0.10125461573344274, 0.24615085620505733, 3778.0, 0.08158241378565721, 0.06951132609212032, -0.0039898922729086315, 7504.0, 3.5339818763326227, 103.28292922055884},
+				        {2026, "FY2026", "FY26", "Form 10-K FY2026", "01/06/2025 – 31/05/2026", "15/07/2026", "0000320187-26-000088", "https://www.sec.gov/Archives/edgar/data/320187/000032018726000088/nke-20260531.htm", 46398.0, 26487.0, 19911.0, 4754.0, 11360.0, 16114.0, -50.0, -53.0, 3900.0, 792.0, 3108.0, 7501.0, 3850.0, 0.0, -0.02, 17720.0, 27453.0, 49.0, 45222.0, 1174.0, 2.0, 8.6, null, -0.06, -0.08, 0.06, 0.04, 0.01, -0.01, 0.39184467736942197, 0.6070717792225023, 0.0010835434080757153, -0.05659372837139967, 0.060657574469729164, 0.01136109495907322, 0.4853273137697517, 0.0019218726381480921, 0.42913487650329757, 0.34729945256261047, 0.10246131298762878, 0.24483813957498168, 3850.0, 0.08297771455666192, 0.06698564593301436, 0.0016023501134997996, 7495.0, 3.533955970647098, 103.28368633669348}
+				    })
+				in
+				    Source

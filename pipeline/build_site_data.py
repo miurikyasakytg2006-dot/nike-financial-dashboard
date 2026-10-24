@@ -19,7 +19,7 @@ import pandas as pd
 from openpyxl import load_workbook
 
 from . import dataset
-from .build_workbook import FIELD_COL, HEADER_ROW, OBS_COLUMNS, SHEET_CH, SHEET_FIN, SHEET_KPI, WORKBOOK
+from .build_workbook import FIELD_COL, HEADER_ROW, OBS_COLUMNS, SHEET_CH, SHEET_FIN, SHEET_KPI, WORKBOOK, date_text
 from .metrics import (CHECKS, COMPARISONS, KPIS, REPORTED, REPORTED_BY_ID, STATUS_CONFLICT, STATUS_MISSING, STATUSES)
 from .sources import FILINGS, document_title, filing, sec_document_url
 
@@ -120,7 +120,7 @@ def observations_from(df):
                         page=None if r.page is pd.NA else int(r.page), section=r.section, evidence=r.evidence,
                         cross_check=r.cross_check, restatement=r.restatement,
                         verified_by="" if pd.isna(r.verified_by) else str(r.verified_by),
-                        verified_on="" if pd.isna(r.verified_on) else str(r.verified_on)))
+                        verified_on="" if pd.isna(r.verified_on) else date_text(r.verified_on)))
     return obs
 
 

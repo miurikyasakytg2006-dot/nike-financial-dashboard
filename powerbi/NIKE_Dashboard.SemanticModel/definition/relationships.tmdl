@@ -1,0 +1,8 @@
+relationship 193313af-57b8-59ca-abc1-98bb64193192
+	fromColumn: BangKenh.FY
+	toColumn: Nam.FY
+
+relationship 7a0a2594-e278-5007-acf1-903c5ca653d1
+	fromColumn: BangKetQua.FY
+	toColumn: Nam.FY
+

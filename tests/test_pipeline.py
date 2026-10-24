@@ -32,7 +32,12 @@ def observations(facts):
     obs = dataset.build_observations(facts, dataset.load_sec_check())
     results = dataset.compute(obs)
     dataset.apply_cross_check_statuses(obs, results)
+    dataset.apply_page_checks(obs, dataset.load_page_check())
     return obs, results
+
+
+def _mdna_only(o):
+    return o["metric"]["id"].endswith("_pct_change_cn") or o["metric"]["id"] == "nike_brand_digital_sales"
 
 
 def test_every_metric_and_year_present_once(observations):
@@ -87,11 +92,24 @@ def test_missing_values_never_become_zero(observations):
     assert dataset.evaluate("a / b", {"a": Decimal(1), "b": None}) is None
 
 
-def test_mdna_only_values_are_not_marked_matched_without_a_check(observations):
+def test_mdna_only_values_are_matched_only_through_the_page_check(observations):
     obs, _ = observations
+    checks = dataset.load_page_check()
     for o in obs:
-        if o["metric"]["id"].endswith("_pct_change_cn") or o["metric"]["id"] == "nike_brand_digital_sales":
-            assert o["status"] != STATUS_MATCHED, o["key"]
+        if _mdna_only(o) and o["status"] == STATUS_MATCHED:
+            assert checks[(o["fy"], o["metric"]["id"])]["result"] == "match", o["key"]
+            assert o["cross_check"].startswith("Đọc lại trực tiếp trên trang 10-K"), o["key"]
+
+
+def test_page_check_covers_every_mdna_only_value_with_evidence(observations):
+    obs, _ = observations
+    checks = dataset.load_page_check()
+    mdna = [o for o in obs if _mdna_only(o)]
+    assert len(mdna) == 35
+    for o in mdna:
+        c = checks[(o["fy"], o["metric"]["id"])]
+        assert c["result"] == "match" and Decimal(c["extracted_value"]) == o["value"], o["key"]
+        assert (dataset.ROOT / "handover" / "bang-chung-doi-chieu" / c["screenshot"]).exists(), c["screenshot"]
 
 
 # ---------------------------------------------------------------- workbook validation
@@ -135,6 +153,23 @@ def test_workbook_formulas_recalculate_independently():
     from pipeline.verify_workbook import verify
     n, problems = verify(WORKBOOK)
     assert n > 400 and problems == []
+
+
+def test_excel_dashboard_matches_site_data(tmp_path, site_data):
+    from pipeline.build_excel_dashboard import SHEET_CH, SHEET_DATA, SHEET_PERF, SHEET_SRC, build
+    path = tmp_path / "dashboard.xlsx"
+    build(path, add_slicers=False)
+    wb = load_workbook(path)
+    assert wb.sheetnames == [SHEET_CH, SHEET_PERF, SHEET_SRC, SHEET_DATA]
+    ws = wb[SHEET_DATA]
+    rows = list(ws[ws.tables["tblNam"].ref])
+    header = [c.value for c in rows[0]]
+    years = site_data["years"]
+    assert [r[header.index("Năm")].value for r in rows[1:]] == years
+    for col, kid in (("Tỷ trọng NIKE Direct", "direct_share"), ("Biên EBIT", "ebit_margin")):
+        # XlsxWriter stores 16 significant digits, so compare with a relative tolerance.
+        want = [site_data["kpis"][kid]["values"][str(y)] for y in years]
+        assert [r[header.index(col)].value for r in rows[1:]] == pytest.approx(want, rel=1e-12)
 
 
 def test_site_json_matches_workbook(observations, site_data):

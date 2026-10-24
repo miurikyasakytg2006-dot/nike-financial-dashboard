@@ -1,0 +1,36 @@
+filing_fy,metric_id,page,read_value,extracted_value,result,checked_on,screenshot,read_text
+2020,revenues_pct_change_cn,31,-0.02,-0.02,match,2026-10-24,FY2020-bang-doanh-thu-tr31.png,-2
+2020,nike_brand_pct_change_cn,31,-0.02,-0.02,match,2026-10-24,FY2020-bang-doanh-thu-tr31.png,-2
+2020,nike_direct_pct_change_cn,31,0.08,0.08,match,2026-10-24,FY2020-bang-doanh-thu-tr31.png,8
+2020,nike_brand_wholesale_pct_change_cn,31,-0.07,-0.07,match,2026-10-24,FY2020-bang-doanh-thu-tr31.png,-7
+2020,nike_brand_digital_sales,32,5.5,5.5,match,2026-10-24,FY2020-digital-tr32.png,"On a reported basis, NIKE Direct revenues represented approximately 35% of our total NIKE Brand revenues for fiscal 2020, compared to 32% for fiscal 2019. Digital commerce sales were $5.5 billion for fiscal 2020 compared to $3.8 billion for fiscal 2019. On a currency-neutral basis, NIKE Direct reven"
+2021,revenues_pct_change_cn,32,0.17,0.17,match,2026-10-24,FY2021-bang-doanh-thu-tr32.png,17 %
+2021,nike_brand_pct_change_cn,32,0.17,0.17,match,2026-10-24,FY2021-bang-doanh-thu-tr32.png,17 %
+2021,nike_direct_pct_change_cn,32,0.3,0.3,match,2026-10-24,FY2021-bang-doanh-thu-tr32.png,30 %
+2021,nike_brand_wholesale_pct_change_cn,32,0.1,0.1,match,2026-10-24,FY2021-bang-doanh-thu-tr32.png,10 %
+2021,nike_brand_digital_sales,33,9.1,9.1,match,2026-10-24,FY2021-digital-tr33.png,"On a reported basis, NIKE Direct revenues represented approximately 39% of our total NIKE Brand revenues for fiscal 2021 compared to 35% for fiscal 2020. Digital commerce sales were $9.1 billion for fiscal 2021 compared to $5.5 billion for fiscal 2020. On a currency-neutral basis, NIKE Direct revenu"
+2022,revenues_pct_change_cn,32,0.06,0.06,match,2026-10-24,FY2022-bang-doanh-thu-tr32.png,6 %
+2022,nike_brand_pct_change_cn,32,0.06,0.06,match,2026-10-24,FY2022-bang-doanh-thu-tr32.png,6 %
+2022,nike_direct_pct_change_cn,32,0.15,0.15,match,2026-10-24,FY2022-bang-doanh-thu-tr32.png,15 %
+2022,nike_brand_wholesale_pct_change_cn,32,-0.01,-0.01,match,2026-10-24,FY2022-bang-doanh-thu-tr32.png,-1 %
+2022,nike_brand_digital_sales,33,10.7,10.7,match,2026-10-24,FY2022-digital-tr33.png,"On a reported basis, NIKE Direct revenues represented approximately 42% of our total NIKE Brand revenues for fiscal 2022 compared to 39% for fiscal 2021. NIKE Brand Digital sales were $10.7 billion for fiscal 2022 compared to $9.1 billion for fiscal 2021. On a currency-neutral basis, NIKE Direct rev"
+2023,revenues_pct_change_cn,32,0.16,0.16,match,2026-10-24,FY2023-bang-doanh-thu-tr32.png,16 %
+2023,nike_brand_pct_change_cn,32,0.16,0.16,match,2026-10-24,FY2023-bang-doanh-thu-tr32.png,16 %
+2023,nike_direct_pct_change_cn,32,0.2,0.2,match,2026-10-24,FY2023-bang-doanh-thu-tr32.png,20 %
+2023,nike_brand_wholesale_pct_change_cn,32,0.14,0.14,match,2026-10-24,FY2023-bang-doanh-thu-tr32.png,14 %
+2023,nike_brand_digital_sales,33,12.6,12.6,match,2026-10-24,FY2023-digital-tr33.png,"•NIKE Direct revenues increased 14% from $18.7 billion in fiscal 2022 to $21.3 billion in fiscal 2023. On a currency-neutral basis, NIKE Direct revenues increased 20% primarily driven by NIKE Brand Digital sales growth of 24%, comparable store sales growth of 14% and the addition of new stores. For "
+2024,revenues_pct_change_cn,34,0.01,0.01,match,2026-10-24,FY2024-bang-doanh-thu-tr34.png,1 %
+2024,nike_brand_pct_change_cn,34,0.01,0.01,match,2026-10-24,FY2024-bang-doanh-thu-tr34.png,1 %
+2024,nike_direct_pct_change_cn,34,0.01,0.01,match,2026-10-24,FY2024-bang-doanh-thu-tr34.png,1 %
+2024,nike_brand_wholesale_pct_change_cn,34,0.02,0.02,match,2026-10-24,FY2024-bang-doanh-thu-tr34.png,2 %
+2024,nike_brand_digital_sales,35,12.1,12.1,match,2026-10-24,FY2024-digital-tr35.png,"•NIKE Direct revenues increased 1% to $21.5 billion in fiscal 2024 compared to $21.3 billion in fiscal 2023. On a currency-neutral basis, NIKE Direct revenues increased 1%, primarily driven by comparable store sales growth of 3% and the addition of new stores, partially offset by declines in NIKE Br"
+2025,revenues_pct_change_cn,33,-0.09,-0.09,match,2026-10-24,FY2025-bang-doanh-thu-tr33.png,-9 %
+2025,nike_brand_pct_change_cn,33,-0.09,-0.09,match,2026-10-24,FY2025-bang-doanh-thu-tr33.png,-9 %
+2025,nike_direct_pct_change_cn,33,-0.12,-0.12,match,2026-10-24,FY2025-bang-doanh-thu-tr33.png,-12 %
+2025,nike_brand_wholesale_pct_change_cn,33,-0.06,-0.06,match,2026-10-24,FY2025-bang-doanh-thu-tr33.png,-6 %
+2025,nike_brand_digital_sales,34,9.6,9.6,match,2026-10-24,FY2025-digital-tr34.png,"•NIKE Direct revenues were $18.8 billion in fiscal 2025 compared to $21.5 billion in fiscal 2024. On a currency-neutral basis, NIKE Direct revenues decreased 12% due to declines in NIKE Brand Digital sales of 20% from $12.1 billion in fiscal 2024 to $9.6 billion in fiscal 2025, while NIKE store sale"
+2026,revenues_pct_change_cn,32,-0.02,-0.02,match,2026-10-24,FY2026-bang-doanh-thu-tr32.png,-2 %
+2026,nike_brand_pct_change_cn,32,-0.01,-0.01,match,2026-10-24,FY2026-bang-doanh-thu-tr32.png,-1 %
+2026,nike_direct_pct_change_cn,32,-0.08,-0.08,match,2026-10-24,FY2026-bang-doanh-thu-tr32.png,-8 %
+2026,nike_brand_wholesale_pct_change_cn,32,0.04,0.04,match,2026-10-24,FY2026-bang-doanh-thu-tr32.png,4 %
+2026,nike_brand_digital_sales,33,8.6,8.6,match,2026-10-24,FY2026-digital-tr33.png,"•NIKE Direct revenues were $17.7 billion in fiscal 2026 compared to $18.8 billion in fiscal 2025, down 6% on a reported basis. On a currency-neutral basis, NIKE Direct revenues were down 8% due to declines in NIKE Brand Digital sales of 12% and declines in NIKE store sales of 4%. NIKE Brand Digital "

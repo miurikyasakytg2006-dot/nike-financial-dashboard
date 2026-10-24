@@ -1,14 +1,14 @@
 {
  "meta": {
   "title": "NIKE, Inc. – phân phối và kết quả tài chính FY2020–FY2026",
-  "generated_on": "2026-10-23",
+  "generated_on": "2026-10-24",
   "extracted_on": "2026-10-23",
   "workbook": "downloads/NIKE_Financial_Dataset_FY2020-2026.xlsx",
   "currency": "USD",
   "fiscal_year_end": "31/5",
   "status_counts": {
-   "Khớp nguồn chính thức": 167,
-   "Chờ người kiểm tra": 35,
+   "Khớp nguồn chính thức": 202,
+   "Chờ người kiểm tra": 0,
    "Đã xác minh (người)": 0,
    "Thiếu / không công bố": 1,
    "Bằng chứng mâu thuẫn": 0
@@ -1582,11 +1582,11 @@
    "2020": {
     "value": -0.02,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 31,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 37,403 | 39,117 | -4 | -2 | 36,397 | 7 | 11",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 31) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2020-bang-doanh-thu-tr31.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1594,11 +1594,11 @@
    "2021": {
     "value": 0.17,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 44,538 | 37,403 | 19 | 17 | 39,117 | -4 | -2",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2021-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1606,11 +1606,11 @@
    "2022": {
     "value": 0.06,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 46,710 | 44,538 | 5 | 6 | 37,403 | 19 | 17",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2022-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1618,11 +1618,11 @@
    "2023": {
     "value": 0.16,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 51,217 | 46,710 | 10 | 16 | 44,538 | 5 | 6",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2023-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1630,11 +1630,11 @@
    "2024": {
     "value": 0.01,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 34,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 51,362 | 51,217 | 0 | 1 | 46,710 | 10 | 16",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 34) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2024-bang-doanh-thu-tr34.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1642,11 +1642,11 @@
    "2025": {
     "value": -0.09,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 46,309 | 51,362 | -10 | -9 | 51,217 | 0 | 1",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2025-bang-doanh-thu-tr33.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1654,11 +1654,11 @@
    "2026": {
     "value": -0.02,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 46,398 | 46,309 | 0 | -2 | 51,362 | -10 | -9",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2026-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2184,11 +2184,11 @@
    "2020": {
     "value": 5.5,
     "prior": 3.8,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Digital commerce sales were $5.5 billion for fiscal 2020 compared to $3.8 billion for fiscal 2019.",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2020-digital-tr32.png.",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021.",
     "verified_by": "",
     "verified_on": ""
@@ -2196,11 +2196,11 @@
    "2021": {
     "value": 9.1,
     "prior": 5.5,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "Digital commerce sales were $9.1 billion for fiscal 2021 compared to $5.5 billion for fiscal 2020.",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2021-digital-tr33.png.",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -2208,11 +2208,11 @@
    "2022": {
     "value": 10.7,
     "prior": 9.1,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "NIKE Brand Digital sales were $10.7 billion for fiscal 2022 compared to $9.1 billion for fiscal 2021.",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2022-digital-tr33.png.",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -2220,11 +2220,11 @@
    "2023": {
     "value": 12.6,
     "prior": 10.7,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "NIKE Brand Digital sales were $12.6 billion for fiscal 2023 compared to $10.7 billion for fiscal 2022.",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2023-digital-tr33.png.",
     "restatement": "ĐIỀU CHỈNH HỒI TỐ: 10-K FY2024 trình bày lại là 12,4 tỷ USD (chênh -0,2 tỷ USD).",
     "verified_by": "",
     "verified_on": ""
@@ -2232,11 +2232,11 @@
    "2024": {
     "value": 12.1,
     "prior": 12.4,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 35,
     "section": "ITEM 7 – MD&A",
     "evidence": "NIKE Brand Digital sales were $12.1 billion for fiscal 2024 compared to $12.4 billion for fiscal 2023.",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 35) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2024-digital-tr35.png.",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -2244,11 +2244,11 @@
    "2025": {
     "value": 9.6,
     "prior": 12.1,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 34,
     "section": "ITEM 7 – MD&A",
     "evidence": "On a currency-neutral basis, NIKE Direct revenues decreased 12% due to declines in NIKE Brand Digital sales of 20% from $12.1 billion in fiscal 2024 to $9.6 billion in fiscal 2025, while NIKE store sales were flat.",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 34) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2025-digital-tr34.png.",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -2256,11 +2256,11 @@
    "2026": {
     "value": 8.6,
     "prior": 9.6,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "NIKE Brand Digital sales were $8.6 billion in fiscal 2026 compared to $9.6 billion in fiscal 2025, with declines primarily due to reduced traffic.",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2026-digital-tr33.png.",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -2442,11 +2442,11 @@
    "2020": {
     "value": 0.08,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 31,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 12,382 | 11,753 | 5 | 8 | 10,428 | 13 | 16",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 31) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2020-bang-doanh-thu-tr31.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2454,11 +2454,11 @@
    "2021": {
     "value": 0.3,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 16,370 | 12,382 | 32 | 30 | 11,753 | 5 | 8",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2021-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2466,11 +2466,11 @@
    "2022": {
     "value": 0.15,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 18,726 | 16,370 | 14 | 15 | 12,382 | 32 | 30",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2022-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2478,11 +2478,11 @@
    "2023": {
     "value": 0.2,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 21,308 | 18,726 | 14 | 20 | 16,370 | 14 | 15",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2023-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2490,11 +2490,11 @@
    "2024": {
     "value": 0.01,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 34,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 21,519 | 21,308 | 1 | 1 | 18,726 | 14 | 20",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 34) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2024-bang-doanh-thu-tr34.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2502,11 +2502,11 @@
    "2025": {
     "value": -0.12,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 18,783 | 21,519 | -13 | -12 | 21,308 | 1 | 1",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2025-bang-doanh-thu-tr33.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2514,11 +2514,11 @@
    "2026": {
     "value": -0.08,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 17,720 | 18,783 | -6 | -8 | 21,519 | -13 | -12",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2026-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2614,11 +2614,11 @@
    "2020": {
     "value": -0.07,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 31,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 23,156 | 25,423 | -9 | -7 | 23,969 | 6 | 10",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 31) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2020-bang-doanh-thu-tr31.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2626,11 +2626,11 @@
    "2021": {
     "value": 0.1,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 25,898 | 23,156 | 12 | 10 | 25,423 | -9 | -7",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2021-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2638,11 +2638,11 @@
    "2022": {
     "value": -0.01,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 25,608 | 25,898 | -1 | -1 | 23,156 | 12 | 10",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2022-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2650,11 +2650,11 @@
    "2023": {
     "value": 0.14,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 27,397 | 25,608 | 7 | 14 | 25,898 | -1 | -1",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2023-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2662,11 +2662,11 @@
    "2024": {
     "value": 0.02,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 34,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 27,758 | 27,397 | 1 | 2 | 25,608 | 7 | 14",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 34) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2024-bang-doanh-thu-tr34.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2674,11 +2674,11 @@
    "2025": {
     "value": -0.06,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 25,883 | 27,758 | -7 | -6 | 27,397 | 1 | 2",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2025-bang-doanh-thu-tr33.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2686,11 +2686,11 @@
    "2026": {
     "value": 0.04,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 27,453 | 25,883 | 6 | 4 | 27,758 | -7 | -6",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2026-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2786,11 +2786,11 @@
    "2020": {
     "value": -0.02,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 31,
     "section": "ITEM 7 – MD&A",
     "evidence": "Total NIKE Brand Revenues | 35,568 | 37,218 | -4 | -2 | 34,485 | 8 | 11",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 31) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2020-bang-doanh-thu-tr31.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2798,11 +2798,11 @@
    "2021": {
     "value": 0.17,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Total NIKE Brand Revenues | 42,293 | 35,568 | 19 | 17 | 37,218 | -4 | -2",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2021-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2810,11 +2810,11 @@
    "2022": {
     "value": 0.06,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Total NIKE Brand Revenues | 44,436 | 42,293 | 5 | 6 | 35,568 | 19 | 17",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2022-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2822,11 +2822,11 @@
    "2023": {
     "value": 0.16,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Total NIKE Brand Revenues | 48,763 | 44,436 | 10 | 16 | 42,293 | 5 | 6",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2023-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2834,11 +2834,11 @@
    "2024": {
     "value": 0.01,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 34,
     "section": "ITEM 7 – MD&A",
     "evidence": "Total NIKE Brand Revenues | 49,322 | 48,763 | 1 | 1 | 44,436 | 10 | 16",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 34) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2024-bang-doanh-thu-tr34.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2846,11 +2846,11 @@
    "2025": {
     "value": -0.09,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE BRAND REVENUES | 44,714 | 49,322 | -9 | -9 | 48,763 | 1 | 1",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2025-bang-doanh-thu-tr33.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2858,11 +2858,11 @@
    "2026": {
     "value": -0.01,
     "prior": null,
-    "status": "Chờ người kiểm tra",
+    "status": "Khớp nguồn chính thức",
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE BRAND REVENUES(3) | 45,222 | 44,714 | 1 | -1 | 49,322 | -9 | -9",
-    "cross_check": "Số liệu trong phần thuyết minh, không gắn thẻ XBRL; chưa có đối chiếu độc lập.",
+    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2026-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""

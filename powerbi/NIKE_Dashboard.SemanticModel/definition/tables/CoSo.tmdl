@@ -1,0 +1,24 @@
+table CoSo
+
+	column 'Cơ sở'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Cơ sở
+		sortByColumn: 'Thứ tự'
+
+	column 'Thứ tự'
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: Thứ tự
+
+	partition CoSo = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [#"Cơ sở" = text, #"Thứ tự" = Int64.Type], {
+				        {"Theo báo cáo", 1},
+				        {"Loại trừ tỷ giá", 2}
+				    })
+				in
+				    Source
