@@ -15,7 +15,9 @@ import math
 import re
 import subprocess
 import sys
+import zipfile
 from pathlib import Path
+from xml.sax.saxutils import escape
 
 import xlsxwriter
 from lxml import html
@@ -873,7 +875,38 @@ def build(path=OUT, add_slicers=True):
                    basis=f"1:{ch.growth_slicer_cell}:{bw}:{bh}")
     if add_slicers:
         run_slicer_script(path, anchors)
+    set_author(path, git_user_name())
     return anchors
+
+
+def git_user_name():
+    """The builder's name as set in git (the repository's own setting first)."""
+    try:
+        out = subprocess.run(["git", "config", "user.name"], cwd=ROOT, capture_output=True, encoding="utf-8")
+    except OSError:
+        return ""
+    return out.stdout.strip()
+
+
+def set_author(path, name):
+    """Author and 'last modified by' in the file properties. Excel stamps its own user name there when the slicer
+    script saves the workbook; the builder's name belongs there instead."""
+    if not name:
+        return
+    tmp = Path(path).with_suffix(".tmp.xlsx")
+    value = escape(name)
+    with zipfile.ZipFile(path) as zin, zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as zout:
+        for item in zin.infolist():
+            data = zin.read(item.filename)
+            if item.filename == "docProps/core.xml":
+                xml = data.decode("utf-8")
+                for tag in ("dc:creator", "cp:lastModifiedBy"):
+                    xml, n = re.subn(rf"<{tag}\s*/>|<{tag}>.*?</{tag}>", f"<{tag}>{value}</{tag}>", xml, flags=re.S)
+                    if not n:
+                        xml = xml.replace("</cp:coreProperties>", f"<{tag}>{value}</{tag}></cp:coreProperties>")
+                data = xml.encode("utf-8")
+            zout.writestr(item, data)
+    tmp.replace(path)
 
 
 def run_slicer_script(path, anchors):
