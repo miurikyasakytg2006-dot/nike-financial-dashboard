@@ -354,6 +354,24 @@
               }
             }
           }
+        },
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#15191e'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Nam.Tỷ trọng bán buôn"
+          }
         }
       ],
       "dataPoint": [
@@ -581,7 +599,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Tỷ trọng trong tổng doanh thu NIKE Brand, %. Tính từ số liệu 10-K.'"
+                  "Value": "'Tỷ trọng trong tổng doanh thu NIKE Brand (%), nhóm tự tính từ số liệu 10-K.'"
                 }
               }
             },

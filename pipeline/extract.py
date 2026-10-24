@@ -14,6 +14,7 @@ import csv
 import datetime
 import io
 import json
+import os
 import re
 import sys
 import urllib.request
@@ -32,8 +33,8 @@ USER_AGENT = "NIKE-FY2020-2026 academic dataset (university coursework; non-comm
 MILLION = Decimal(10) ** 6
 
 
-def _get(url):
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+def _get(url, user_agent=USER_AGENT):
+    req = urllib.request.Request(url, headers={"User-Agent": user_agent})
     with urllib.request.urlopen(req, timeout=120) as r:
         return r.read()
 
@@ -52,10 +53,17 @@ def filing_document(f):
 
 
 def companyfacts():
+    """SEC "company facts" JSON. SEC's fair-access policy asks automated clients to give a contact
+    e-mail in the User-Agent: set SEC_CONTACT_EMAIL, or save the file from a browser to data/cache/."""
     target = CACHE / "companyfacts.json"
     if not target.exists():
+        url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{int(CIK):010d}.json"
+        email = os.environ.get("SEC_CONTACT_EMAIL", "").strip()
+        if not email:
+            raise SystemExit(f"Set SEC_CONTACT_EMAIL to a contact e-mail (SEC fair-access policy), "
+                             f"or open {url} in a browser and save it as {target}.")
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(_get(f"https://data.sec.gov/api/xbrl/companyfacts/CIK{int(CIK):010d}.json"))
+        target.write_bytes(_get(url, user_agent=f"{USER_AGENT} {email}"))
     return json.loads(target.read_text())
 
 

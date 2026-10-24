@@ -21,22 +21,22 @@ table Nam
 	measure 'Cơ sở đang chọn' = SELECTEDVALUE ( CoSo[Cơ sở], "Theo báo cáo" )
 
 	measure 'Tăng trưởng NIKE Direct' = IF ( [Cơ sở đang chọn] = "Loại trừ tỷ giá", SUM ( Nam[nike_direct_pct_change_cn] ), SUM ( Nam[direct_growth] ) )
-		formatString: +0.0%;-0.0%;0.0%
+		formatString: +0.0%;−0.0%;0.0%
 
 	measure 'Tăng trưởng bán buôn' = IF ( [Cơ sở đang chọn] = "Loại trừ tỷ giá", SUM ( Nam[nike_brand_wholesale_pct_change_cn] ), SUM ( Nam[wholesale_growth] ) )
-		formatString: +0.0%;-0.0%;0.0%
+		formatString: +0.0%;−0.0%;0.0%
 
 	measure 'NIKE Direct theo báo cáo' = SUM ( Nam[direct_growth] )
-		formatString: +0.0%;-0.0%;0.0%
+		formatString: +0.0%;−0.0%;0.0%
 
 	measure 'NIKE Direct loại trừ tỷ giá' = SUM ( Nam[nike_direct_pct_change_cn] )
-		formatString: +0%;-0%;0%
+		formatString: +0%;−0%;0%
 
 	measure 'Bán buôn theo báo cáo' = SUM ( Nam[wholesale_growth] )
-		formatString: +0.0%;-0.0%;0.0%
+		formatString: +0.0%;−0.0%;0.0%
 
 	measure 'Bán buôn loại trừ tỷ giá' = SUM ( Nam[nike_brand_wholesale_pct_change_cn] )
-		formatString: +0%;-0%;0%
+		formatString: +0%;−0%;0%
 
 	measure 'Digital (tỷ USD)' = SUM ( Nam[nike_brand_digital_sales] )
 		formatString: #,0.0
@@ -51,10 +51,10 @@ table Nam
 		formatString: #,0.0
 
 	measure 'Tăng trưởng doanh thu' = SUM ( Nam[revenue_growth] )
-		formatString: +0.0%;-0.0%;0.0%
+		formatString: +0.0%;−0.0%;0.0%
 
 	measure 'Tăng trưởng doanh thu loại trừ tỷ giá' = SUM ( Nam[revenues_pct_change_cn] )
-		formatString: +0%;-0%;0%
+		formatString: +0%;−0%;0%
 
 	measure 'Biên lợi nhuận gộp' = SUM ( Nam[gross_margin] )
 		formatString: 0.0%
@@ -87,7 +87,7 @@ table Nam
 		formatString: #,0.0
 
 	measure 'Thay đổi hàng tồn kho' = SUM ( Nam[inventory_growth] )
-		formatString: +0.0%;-0.0%;0.0%
+		formatString: +0.0%;−0.0%;0.0%
 
 	measure 'Vòng quay hàng tồn kho' = SUM ( Nam[inventory_turnover] )
 		formatString: 0.00
@@ -151,17 +151,18 @@ table Nam
 			            & FORMAT ( gA, "0.0%", "vi-VN" ) & ", biên EBIT (non-GAAP) " & FORMAT ( eA, "0.0%", "vi-VN" )
 			            & ", hàng tồn kho cuối kỳ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " tỷ USD.",
 			        "Doanh thu NIKE, Inc. từ " & FORMAT ( rA, "#,0.0", "vi-VN" ) & " (FY" & a & ") đến " & FORMAT ( rB, "#,0.0", "vi-VN" )
-			            & " tỷ USD (FY" & b & "). Biên lợi nhuận gộp " & FORMAT ( gA, "0.0%", "vi-VN" ) & " và " & FORMAT ( gB, "0.0%", "vi-VN" )
-			            & "; biên EBIT (non-GAAP) " & FORMAT ( eA, "0.0%", "vi-VN" ) & " và " & FORMAT ( eB, "0.0%", "vi-VN" )
+			            & " tỷ USD (FY" & b & "). Biên lợi nhuận gộp " & FORMAT ( gA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
+			            & FORMAT ( gB, "0.0%", "vi-VN" ) & " (FY" & b & "); biên EBIT (non-GAAP) " & FORMAT ( eA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
+			            & FORMAT ( eB, "0.0%", "vi-VN" ) & " (FY" & b & ")"
 			            & IF ( n > 2, ", cao nhất " & FORMAT ( eHi, "0.0%", "vi-VN" ) & " (FY" & yHi & ")" )
 			            & ". Hàng tồn kho cuối kỳ từ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( iB, "#,0.0", "vi-VN" ) & " tỷ USD."
 			    )
 
-	measure 'Phụ đề tăng trưởng' = IF ( [Cơ sở đang chọn] = "Loại trừ tỷ giá", "% so với năm trước loại trừ tỷ giá, NIKE Brand. Số NIKE công bố (non-GAAP).", "% so với năm trước theo báo cáo, NIKE Brand. Tính toán từ 10-K." )
+	measure 'Phụ đề tăng trưởng' = IF ( [Cơ sở đang chọn] = "Loại trừ tỷ giá", "Thay đổi so với năm trước (%), loại trừ tỷ giá, phạm vi NIKE Brand; số NIKE công bố (non-GAAP).", "Thay đổi so với năm trước (%), theo báo cáo, phạm vi NIKE Brand; nhóm tự tính từ 10-K." )
 
 	column FY
 		dataType: int64
-		formatString: 0
+		formatString: \F\Y0
 		summarizeBy: none
 		sourceColumn: FY
 

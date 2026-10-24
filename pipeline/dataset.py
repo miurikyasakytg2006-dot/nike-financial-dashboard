@@ -10,11 +10,11 @@ Selection rule (documented in the workbook):
 import csv
 import json
 import re
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 from .metrics import (CHECK_CONFIRMS, CHECKS, COMPARISONS, KPIS, REPORTED, STATUS_CONFLICT, STATUS_MATCHED,
-                      STATUS_MISSING, STATUS_PENDING)
+                      STATUS_MISSING, STATUS_PENDING, USD_B)
 from .sources import FIRST_FY, LAST_FY, filing
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -56,11 +56,19 @@ def load_page_check(path=PAGE_CHECK_CSV):
         return {(int(r["filing_fy"]), r["metric_id"]): r for r in csv.DictReader(fh)}
 
 
+MINUS = "−"
+
+
 def vi_num(v, decimals=0, signed=False):
-    """Vietnamese number format: '.' groups thousands, ',' marks decimals (27.758; 12,4)."""
-    signed = signed and round(v, decimals) != 0
-    s = f"{v:{'+' if signed else ''},.{decimals}f}"
-    return s.replace(",", "§").replace(".", ",").replace("§", ".")
+    """Vietnamese number format: '.' groups thousands, ',' marks decimals, '−' for negatives (27.758; 12,4; −0,38).
+
+    Rounds half away from zero, as JavaScript (Intl), Excel and DAX do, so every version shows the same digits.
+    """
+    q = Decimal(str(v)).quantize(Decimal(1).scaleb(-decimals), rounding=ROUND_HALF_UP)
+    s = f"{abs(q):,.{decimals}f}".replace(",", "§").replace(".", ",").replace("§", ".")
+    if q < 0:
+        return MINUS + s
+    return ("+" + s) if signed and q > 0 else s
 
 
 def _fmt_num(v, unit, signed=False):
@@ -68,7 +76,7 @@ def _fmt_num(v, unit, signed=False):
         return "—"
     if unit == "%":
         return vi_num(v * 100, 0, signed) + "%"
-    if unit == "USD tỷ":
+    if unit == USD_B:
         return vi_num(v, 1, signed) + " tỷ USD"
     return vi_num(v, 0, signed) + " triệu USD"
 
@@ -112,6 +120,9 @@ def build_observations(facts, sec_check):
                      evidence=cur["evidence"] if cur else "", concept=cur["concept"] if cur else "",
                      dims=cur["dims"] if cur else "", method=method, cross_check="", status=None,
                      restatement="", verified_by="", verified_on="", team_note="")
+            # An XBRL tag holds the digits only; the filing prints negative amounts in parentheses outside the tag.
+            if method == "xbrl" and cur and cur["value"] is not None and cur["value"] < 0 and o["evidence"][:1] != "(":
+                o["evidence"] = f"({o['evidence']})"
             if cur is None:
                 o["status"] = STATUS_MISSING
                 o["cross_check"] = f"10-K FY{fy} không công bố chỉ tiêu này."

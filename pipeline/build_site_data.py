@@ -20,12 +20,15 @@ from openpyxl import load_workbook
 
 from . import dataset
 from .build_workbook import FIELD_COL, HEADER_ROW, OBS_COLUMNS, SHEET_CH, SHEET_FIN, SHEET_KPI, WORKBOOK, date_text
-from .metrics import (CHECKS, COMPARISONS, KPIS, REPORTED, REPORTED_BY_ID, STATUS_CONFLICT, STATUS_MISSING, STATUSES)
+from .metrics import (CHECKS, COMPARISONS, KPIS, REPORTED, REPORTED_BY_ID, STATUS_CONFLICT, STATUS_HUMAN, STATUS_MISSING,
+                      STATUSES)
 from .sources import FILINGS, document_title, filing, sec_document_url
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE_DATA = ROOT / "site" / "data" / "nike-financials.json"
 SITE_DOWNLOAD = ROOT / "site" / "downloads" / WORKBOOK.name
+EVIDENCE = ROOT / "handover" / "bang-chung-doi-chieu"
+SITE_EVIDENCE = ROOT / "site" / "bang-chung-doi-chieu"
 HEADERS = {field: h for h, field, _ in OBS_COLUMNS}
 MAY_BE_NEGATIVE = {"interest_expense_net", "other_expense_net", "corporate_revenue"}
 
@@ -50,6 +53,10 @@ def _num(v):
     if v is None or (isinstance(v, float) and math.isnan(v)):
         return None
     return Decimal(str(v))
+
+
+def _blank(v):
+    return v is None or pd.isna(v) or not str(v).strip()
 
 
 def validate(df, facts):
@@ -90,6 +97,8 @@ def validate(df, facts):
             errors.append(f"{where}: has a value but is marked missing")
         if r.status == STATUS_CONFLICT:
             errors.append(f"{where}: conflicting evidence must be resolved before publishing")
+        if r.status == STATUS_HUMAN and (_blank(r.verified_by) or _blank(r.verified_on)):
+            errors.append(f"{where}: human verification needs the verifier's name and the date")
         if value is not None:
             if value < 0 and mid not in MAY_BE_NEGATIVE and m["unit"] != "%":
                 errors.append(f"{where}: unexpected negative value {value}")
@@ -104,6 +113,8 @@ def validate(df, facts):
             if src is None or src["value"] != value:
                 errors.append(f"{where}: value {value} differs from the 10-K extraction "
                               f"({src['value'] if src else 'not found'}); correct the workbook or re-run extraction")
+            elif r.page is not pd.NA and src["page"] is not None and int(r.page) != src["page"]:
+                errors.append(f"{where}: page {r.page} differs from the 10-K extraction (page {src['page']})")
             prior = _num(r.prior)
             src_prior = facts.get((fy, mid, fy - 1, method))
             if m["unit"] != "%" and src_prior is not None and prior != src_prior["value"]:
@@ -147,11 +158,14 @@ def compare_with_workbook_formulas(results, path=WORKBOOK):
     header = rows[0]
     cols = {int(str(h)[2:]): i for i, h in enumerate(header) if isinstance(h, str) and h.startswith("FY")}
     ids = {k["id"] for k in KPIS + CHECKS + COMPARISONS}
+    points = {c["id"] for c in COMPARISONS}    # shown on sheet 04 in percentage points (×100)
     for row in rows[1:]:
         if row[0] not in ids:
             continue
         for y, i in cols.items():
             want, got = results[y][row[0]], row[i]
+            if want is not None and row[0] in points:
+                want *= 100
             compared += 1
             if want is None:
                 if got not in ("–", None):
@@ -201,6 +215,8 @@ def export(obs, results, extracted_on):
     SITE_DATA.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     SITE_DOWNLOAD.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(WORKBOOK, SITE_DOWNLOAD)
+    if EVIDENCE.exists():   # the evidence page for the MD&A-only figures, so dashboard viewers can open it
+        shutil.copytree(EVIDENCE, SITE_EVIDENCE, dirs_exist_ok=True)
     return data
 
 
@@ -231,7 +247,7 @@ def main():
     print(f"✓ {len(CHECKS)} arithmetic reconciliations and {len(COMPARISONS)} comparisons with NIKE-reported "
           f"figures pass for FY{dataset.YEARS[0]}–FY{dataset.YEARS[-1]}")
     print(f"✓ {compared} sheet 04 formula results match the recomputed KPIs")
-    print(f"✓ Wrote {SITE_DATA.relative_to(ROOT)} and {SITE_DOWNLOAD.relative_to(ROOT)}")
+    print(f"✓ Wrote {SITE_DATA.relative_to(ROOT)}, {SITE_DOWNLOAD.relative_to(ROOT)} and {SITE_EVIDENCE.relative_to(ROOT)}")
     return 0
 
 

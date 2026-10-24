@@ -85,7 +85,7 @@
   "revenues": {
    "vi": "Doanh thu",
    "en": "Revenues",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -95,7 +95,7 @@
   "cost_of_sales": {
    "vi": "Giá vốn hàng bán",
    "en": "Cost of sales",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -105,7 +105,7 @@
   "gross_profit": {
    "vi": "Lợi nhuận gộp",
    "en": "Gross profit",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -115,7 +115,7 @@
   "demand_creation_expense": {
    "vi": "Chi phí tạo nhu cầu",
    "en": "Demand creation expense",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -125,7 +125,7 @@
   "operating_overhead_expense": {
    "vi": "Chi phí vận hành chung",
    "en": "Operating overhead expense",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -135,7 +135,7 @@
   "total_selling_admin_expense": {
    "vi": "Tổng chi phí bán hàng và quản lý (SG&A)",
    "en": "Total selling and administrative expense",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -145,17 +145,17 @@
   "interest_expense_net": {
    "vi": "Chi phí (thu nhập) lãi thuần",
    "en": "Interest expense (income), net",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
    "definition": "Số dương = chi phí lãi thuần; số âm = thu nhập lãi thuần. Giữ đúng quy ước dấu của NIKE.",
-   "location": "Item 8 – Consolidated Statements of Income, dòng “Interest expense (income), net” (từ FY2024 ghi là “Interest (income) expense, net”)"
+   "location": "Item 8 – Consolidated Statements of Income, dòng “Interest expense (income), net” (10-K FY2026 ghi là “Interest (income) expense, net”)"
   },
   "other_expense_net": {
    "vi": "Chi phí (thu nhập) khác thuần",
    "en": "Other (income) expense, net",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -165,7 +165,7 @@
   "income_before_taxes": {
    "vi": "Lợi nhuận trước thuế",
    "en": "Income before income taxes",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -175,7 +175,7 @@
   "income_tax_expense": {
    "vi": "Chi phí thuế thu nhập",
    "en": "Income tax expense",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -185,17 +185,17 @@
   "net_income": {
    "vi": "Lợi nhuận sau thuế",
    "en": "Net income",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
-   "definition": "Lợi nhuận thuần của NIKE, Inc.",
+   "definition": "Lợi nhuận sau thuế của NIKE, Inc.",
    "location": "Item 8 – Consolidated Statements of Income, dòng “Net income”"
   },
   "inventories": {
    "vi": "Hàng tồn kho cuối kỳ",
    "en": "Inventories",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -205,7 +205,7 @@
   "ebit_reported": {
    "vi": "EBIT do NIKE công bố",
    "en": "Total NIKE, Inc. Earnings Before Interest and Taxes (EBIT)",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "Non-GAAP – NIKE định nghĩa",
@@ -223,19 +223,19 @@
    "location": "Item 7 – MD&A, bảng doanh thu NIKE, Inc., cột “% CHANGE”"
   },
   "revenues_pct_change_cn": {
-   "vi": "% thay đổi doanh thu loại trừ biến động tỷ giá",
+   "vi": "% thay đổi doanh thu loại trừ tỷ giá",
    "en": "TOTAL NIKE, INC. REVENUES – % change excluding currency changes",
    "unit": "%",
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "Non-GAAP – NIKE định nghĩa",
-   "definition": "Tăng trưởng trung lập tỷ giá (currency-neutral), chỉ tiêu non-GAAP do NIKE tính theo tỷ giá năm trước. Không thể tự tính lại từ BCTC.",
+   "definition": "Tăng trưởng loại trừ tỷ giá (NIKE gọi là currency-neutral), chỉ tiêu non-GAAP do NIKE tính theo tỷ giá năm trước. Không thể tự tính lại từ BCTC.",
    "location": "Item 7 – MD&A, bảng doanh thu NIKE, Inc., cột “% CHANGE EXCLUDING CURRENCY CHANGES”"
   },
   "nike_direct_revenue": {
    "vi": "Doanh thu NIKE Direct",
    "en": "Sales through Direct to Consumer (NIKE Brand)",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE Brand",
    "channel": "NIKE Direct",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -245,7 +245,7 @@
   "nike_brand_wholesale_revenue": {
    "vi": "Doanh thu bán buôn NIKE Brand",
    "en": "Sales to Wholesale Customers (NIKE Brand)",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE Brand",
    "channel": "Bán buôn (Wholesale)",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -255,7 +255,7 @@
   "global_brand_divisions_revenue": {
    "vi": "Doanh thu Global Brand Divisions",
    "en": "Other / Global Brand Divisions (NIKE Brand)",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE Brand",
    "channel": "Global Brand Divisions",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -265,7 +265,7 @@
   "nike_brand_revenue": {
    "vi": "Tổng doanh thu NIKE Brand",
    "en": "Total NIKE Brand revenues",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "NIKE Brand",
    "channel": "Tổng NIKE Brand",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -275,7 +275,7 @@
   "converse_revenue": {
    "vi": "Doanh thu Converse",
    "en": "Converse revenues",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "Converse",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -285,7 +285,7 @@
   "corporate_revenue": {
    "vi": "Doanh thu Corporate",
    "en": "Corporate revenues",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "scope": "Corporate",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
@@ -295,11 +295,11 @@
   "nike_brand_digital_sales": {
    "vi": "Doanh số NIKE Brand Digital",
    "en": "NIKE Brand Digital sales (FY2020–21: “Digital commerce sales”)",
-   "unit": "USD tỷ",
+   "unit": "tỷ USD",
    "scope": "NIKE Brand",
    "channel": "NIKE Direct – Digital",
-   "kind": "MD&A – thuyết minh",
-   "definition": "Doanh số qua nền tảng số của NIKE Brand – một phần của NIKE Direct. NIKE chỉ công bố dạng làm tròn đến 0,1 tỷ USD trong phần thuyết minh.",
+   "kind": "MD&A – ban điều hành nêu, không kiểm toán",
+   "definition": "Doanh số qua nền tảng số của NIKE Brand – một phần của NIKE Direct. NIKE chỉ công bố dạng làm tròn đến 0,1 tỷ USD trong phần MD&A.",
    "location": "Item 7 – MD&A, đoạn văn về NIKE Direct (câu trích ở cột “Số hoặc câu hiển thị trong tài liệu”)"
   },
   "nike_direct_share_stated": {
@@ -308,7 +308,7 @@
    "unit": "%",
    "scope": "NIKE Brand",
    "channel": "NIKE Direct",
-   "kind": "MD&A – thuyết minh",
+   "kind": "MD&A – ban điều hành nêu, không kiểm toán",
    "definition": "Tỷ trọng làm tròn do NIKE tự nêu trong MD&A. Dùng để đối chiếu với tỷ trọng tự tính ở sheet 04.",
    "location": "Item 7 – MD&A, câu “NIKE Direct revenues represented approximately …% of total NIKE Brand revenues”"
   },
@@ -329,7 +329,7 @@
    "scope": "NIKE Brand",
    "channel": "NIKE Direct",
    "kind": "Non-GAAP – NIKE định nghĩa",
-   "definition": "Tăng trưởng trung lập tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
+   "definition": "Tăng trưởng loại trừ tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
    "location": "Item 7 – MD&A, bảng doanh thu, mục Supplemental NIKE Brand Revenues Details, cột “% CHANGE EXCLUDING CURRENCY CHANGES”"
   },
   "nike_brand_wholesale_pct_change_reported": {
@@ -349,7 +349,7 @@
    "scope": "NIKE Brand",
    "channel": "Bán buôn (Wholesale)",
    "kind": "Non-GAAP – NIKE định nghĩa",
-   "definition": "Tăng trưởng trung lập tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
+   "definition": "Tăng trưởng loại trừ tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
    "location": "Item 7 – MD&A, bảng doanh thu, mục Supplemental NIKE Brand Revenues Details, cột “% CHANGE EXCLUDING CURRENCY CHANGES”"
   },
   "nike_brand_pct_change_reported": {
@@ -369,7 +369,7 @@
    "scope": "NIKE Brand",
    "channel": "Tổng NIKE Brand",
    "kind": "Non-GAAP – NIKE định nghĩa",
-   "definition": "Tăng trưởng trung lập tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
+   "definition": "Tăng trưởng loại trừ tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
    "location": "Item 7 – MD&A, bảng doanh thu, mục Supplemental NIKE Brand Revenues Details, cột “% CHANGE EXCLUDING CURRENCY CHANGES”"
   }
  },
@@ -933,7 +933,7 @@
     "status": "Khớp nguồn chính thức",
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
-    "evidence": "6",
+    "evidence": "(6)",
     "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
@@ -945,7 +945,7 @@
     "status": "Khớp nguồn chính thức",
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
-    "evidence": "161",
+    "evidence": "(161)",
     "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
@@ -957,7 +957,7 @@
     "status": "Khớp nguồn chính thức",
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
-    "evidence": "107",
+    "evidence": "(107)",
     "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
@@ -969,7 +969,7 @@
     "status": "Khớp nguồn chính thức",
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
-    "evidence": "50",
+    "evidence": "(50)",
     "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
@@ -1007,7 +1007,7 @@
     "status": "Khớp nguồn chính thức",
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
-    "evidence": "181",
+    "evidence": "(181)",
     "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
     "verified_by": "",
@@ -1019,7 +1019,7 @@
     "status": "Khớp nguồn chính thức",
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
-    "evidence": "280",
+    "evidence": "(280)",
     "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
@@ -1031,7 +1031,7 @@
     "status": "Khớp nguồn chính thức",
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
-    "evidence": "228",
+    "evidence": "(228)",
     "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
@@ -1043,7 +1043,7 @@
     "status": "Khớp nguồn chính thức",
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
-    "evidence": "76",
+    "evidence": "(76)",
     "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
@@ -1055,7 +1055,7 @@
     "status": "Khớp nguồn chính thức",
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
-    "evidence": "53",
+    "evidence": "(53)",
     "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
@@ -1500,7 +1500,7 @@
     "page": 31,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 37,403 | 39,117 | -4 | -2 | 36,397 | 7 | 11",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,38 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,38 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1524,7 +1524,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 46,710 | 44,538 | 5 | 6 | 37,403 | 19 | 17",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,12 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,12 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1536,7 +1536,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 51,217 | 46,710 | 10 | 16 | 44,538 | 5 | 6",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,35 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,35 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2101,7 +2101,7 @@
     "status": "Khớp nguồn chính thức",
     "page": 88,
     "section": "NOTE 16 — REVENUES",
-    "evidence": "11",
+    "evidence": "(11)",
     "cross_check": "Khớp bảng doanh thu trong MD&A (trang 31).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
     "verified_by": "",
@@ -2125,7 +2125,7 @@
     "status": "Khớp nguồn chính thức",
     "page": 85,
     "section": "NOTE 16 — REVENUES",
-    "evidence": "72",
+    "evidence": "(72)",
     "cross_check": "Khớp bảng doanh thu trong MD&A (trang 32).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
     "verified_by": "",
@@ -2149,7 +2149,7 @@
     "status": "Khớp nguồn chính thức",
     "page": 84,
     "section": "NOTE 14 — REVENUES",
-    "evidence": "42",
+    "evidence": "(42)",
     "cross_check": "Khớp bảng doanh thu trong MD&A (trang 34).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
@@ -2161,7 +2161,7 @@
     "status": "Khớp nguồn chính thức",
     "page": 82,
     "section": "NOTE 14 — REVENUES",
-    "evidence": "97",
+    "evidence": "(97)",
     "cross_check": "Khớp bảng doanh thu trong MD&A (trang 33).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
@@ -2225,7 +2225,7 @@
     "section": "ITEM 7 – MD&A",
     "evidence": "NIKE Brand Digital sales were $12.6 billion for fiscal 2023 compared to $10.7 billion for fiscal 2022.",
     "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2023-digital-tr33.png.",
-    "restatement": "ĐIỀU CHỈNH HỒI TỐ: 10-K FY2024 trình bày lại là 12,4 tỷ USD (chênh -0,2 tỷ USD).",
+    "restatement": "ĐIỀU CHỈNH HỒI TỐ: 10-K FY2024 trình bày lại là 12,4 tỷ USD (chênh −0,2 tỷ USD).",
     "verified_by": "",
     "verified_on": ""
    },
@@ -2274,7 +2274,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "On a reported basis, NIKE Direct revenues represented approximately 35% of our total NIKE Brand revenues for fiscal 2020, compared to 32% for fiscal 2019.",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,19 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,19 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021.",
     "verified_by": "",
     "verified_on": ""
@@ -2286,7 +2286,7 @@
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "On a reported basis, NIKE Direct revenues represented approximately 39% of our total NIKE Brand revenues for fiscal 2021 compared to 35% for fiscal 2020.",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,29 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,29 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -2310,7 +2310,7 @@
     "page": 28,
     "section": "ITEM 7 – MD&A",
     "evidence": "NIKE Direct revenues grew 14% from $18.7 billion in fiscal 2022 to $21.3 billion in fiscal 2023, and represented approximately 44% of total NIKE Brand revenues for fiscal 2023",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,30 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,30 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "10-K năm sau không trình bày lại số này.",
     "verified_by": "",
     "verified_on": ""
@@ -2322,7 +2322,7 @@
     "page": 30,
     "section": "ITEM 7 – MD&A",
     "evidence": "NIKE Direct revenues grew 1% from $21.3 billion in fiscal 2023 to $21.5 billion in fiscal 2024, and represented approximately 44% of total NIKE Brand revenues for fiscal 2024",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,37 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,37 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "10-K năm sau không trình bày lại số này.",
     "verified_by": "",
     "verified_on": ""
@@ -2396,7 +2396,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 21,308 | 18,726 | 14 | 20 | 16,370 | 14 | 15",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,21 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,21 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2408,7 +2408,7 @@
     "page": 34,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 21,519 | 21,308 | 1 | 1 | 18,726 | 14 | 20",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,01 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,01 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2544,7 +2544,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 25,898 | 23,156 | 12 | 10 | 25,423 | -9 | -7",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,16 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,16 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2556,7 +2556,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 25,608 | 25,898 | -1 | -1 | 23,156 | 12 | 10",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,12 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,12 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2568,7 +2568,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 27,397 | 25,608 | 7 | 14 | 25,898 | -1 | -1",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,01 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,01 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2704,7 +2704,7 @@
     "page": 31,
     "section": "ITEM 7 – MD&A",
     "evidence": "Total NIKE Brand Revenues | 35,568 | 37,218 | -4 | -2 | 34,485 | 8 | 11",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,43 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,43 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2716,7 +2716,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Total NIKE Brand Revenues | 42,293 | 35,568 | 19 | 17 | 37,218 | -4 | -2",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,09 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,09 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2740,7 +2740,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Total NIKE Brand Revenues | 48,763 | 44,436 | 10 | 16 | 42,293 | 5 | 6",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,26 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,26 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2764,7 +2764,7 @@
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE BRAND REVENUES | 44,714 | 49,322 | -9 | -9 | 48,763 | 1 | 1",
-    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh -0,34 điểm %, ngưỡng ±1 điểm %).",
+    "cross_check": "Khớp với giá trị tự tính từ BCTC (chênh −0,34 điểm %, ngưỡng ±1 điểm %).",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -3064,7 +3064,7 @@
   },
   "ebit": {
    "vi": "EBIT (tự tính theo định nghĩa của NIKE)",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "group": "financial",
    "formula": "net_income + income_tax_expense + interest_expense_net",
    "note": "Non-GAAP. NIKE không trình bày dòng “Operating income”; EBIT là thước đo NIKE dùng. Đối chiếu với EBIT do NIKE công bố.",
@@ -3128,7 +3128,7 @@
   },
   "average_inventory": {
    "vi": "Hàng tồn kho bình quân",
-   "unit": "USD triệu",
+   "unit": "triệu USD",
    "group": "financial",
    "formula": "(inventories + inventories__prior) / 2",
    "note": "Bình quân số dư đầu kỳ và cuối kỳ.",

@@ -184,7 +184,9 @@ class Wording:
         self.legends = {k: re.findall(r"name: '([^']*)', label: '([^']*)'", body)
                         for k, body in re.findall(r"(\w+): function \(\) \{\s*return \[(.*?)\];", js, re.S)}
         self.legends["growth"] = self.legends["channelRevenue"]
-        m = re.search(r"\? '(% so với năm trước loại trừ[^']*)'\s*:\s*'([^']*)'", js)
+        m = re.search(r"getElementById\('growth-sub'\)\.textContent = cn\s*\?\s*'([^']*)'\s*:\s*'([^']*)'", js)
+        if not m:
+            raise SystemExit("app.js: growth subtitle not found")
         self.growth_sub_cn, self.growth_sub = m.group(1), m.group(2)
         for k in ("share", "channelRevenue", "digital", "revenue", "grossMargin", "sga", "ebit", "inventory", "days"):
             if k not in self.sources:
@@ -305,15 +307,17 @@ RETURN
             & FORMAT ( gA, "0.0%", "vi-VN" ) & ", biên EBIT (non-GAAP) " & FORMAT ( eA, "0.0%", "vi-VN" )
             & ", hàng tồn kho cuối kỳ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " tỷ USD.",
         "Doanh thu NIKE, Inc. từ " & FORMAT ( rA, "#,0.0", "vi-VN" ) & " (FY" & a & ") đến " & FORMAT ( rB, "#,0.0", "vi-VN" )
-            & " tỷ USD (FY" & b & "). Biên lợi nhuận gộp " & FORMAT ( gA, "0.0%", "vi-VN" ) & " và " & FORMAT ( gB, "0.0%", "vi-VN" )
-            & "; biên EBIT (non-GAAP) " & FORMAT ( eA, "0.0%", "vi-VN" ) & " và " & FORMAT ( eB, "0.0%", "vi-VN" )
+            & " tỷ USD (FY" & b & "). Biên lợi nhuận gộp " & FORMAT ( gA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
+            & FORMAT ( gB, "0.0%", "vi-VN" ) & " (FY" & b & "); biên EBIT (non-GAAP) " & FORMAT ( eA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
+            & FORMAT ( eB, "0.0%", "vi-VN" ) & " (FY" & b & ")"
             & IF ( n > 2, ", cao nhất " & FORMAT ( eHi, "0.0%", "vi-VN" ) & " (FY" & yHi & ")" )
             & ". Hàng tồn kho cuối kỳ từ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( iB, "#,0.0", "vi-VN" ) & " tỷ USD."
     )
 """
 
 
-SIGNED = "+0.0%;-0.0%;0.0%"
+SIGNED = "+0.0%;−0.0%;0.0%"
+SIGNED0 = "+0%;−0%;0%"
 CN = 'IF ( [Cơ sở đang chọn] = "Loại trừ tỷ giá", SUM ( Nam[{cn}] ), SUM ( Nam[{rep}] ) )'
 MEASURES = [
     # Distribution strategy (NIKE Brand)
@@ -327,16 +331,16 @@ MEASURES = [
     dict(name="Tăng trưởng NIKE Direct", expr=CN.format(cn="nike_direct_pct_change_cn", rep="direct_growth"), format=SIGNED),
     dict(name="Tăng trưởng bán buôn", expr=CN.format(cn="nike_brand_wholesale_pct_change_cn", rep="wholesale_growth"), format=SIGNED),
     dict(name="NIKE Direct theo báo cáo", expr="SUM ( Nam[direct_growth] )", format=SIGNED),
-    dict(name="NIKE Direct loại trừ tỷ giá", expr="SUM ( Nam[nike_direct_pct_change_cn] )", format="+0%;-0%;0%"),
+    dict(name="NIKE Direct loại trừ tỷ giá", expr="SUM ( Nam[nike_direct_pct_change_cn] )", format=SIGNED0),
     dict(name="Bán buôn theo báo cáo", expr="SUM ( Nam[wholesale_growth] )", format=SIGNED),
-    dict(name="Bán buôn loại trừ tỷ giá", expr="SUM ( Nam[nike_brand_wholesale_pct_change_cn] )", format="+0%;-0%;0%"),
+    dict(name="Bán buôn loại trừ tỷ giá", expr="SUM ( Nam[nike_brand_wholesale_pct_change_cn] )", format=SIGNED0),
     dict(name="Digital (tỷ USD)", expr="SUM ( Nam[nike_brand_digital_sales] )", format="#,0.0"),
     dict(name="Phần còn lại của NIKE Direct (tỷ USD)", expr="[NIKE Direct (tỷ USD)] - [Digital (tỷ USD)]", format="#,0.0"),
     dict(name="Digital trong NIKE Direct", expr="SUM ( Nam[digital_share_of_direct] )", format="0%"),
     # Financial performance (NIKE, Inc.)
     dict(name="Doanh thu (tỷ USD)", expr="DIVIDE ( SUM ( Nam[revenues] ), 1000 )", format="#,0.0"),
     dict(name="Tăng trưởng doanh thu", expr="SUM ( Nam[revenue_growth] )", format=SIGNED),
-    dict(name="Tăng trưởng doanh thu loại trừ tỷ giá", expr="SUM ( Nam[revenues_pct_change_cn] )", format="+0%;-0%;0%"),
+    dict(name="Tăng trưởng doanh thu loại trừ tỷ giá", expr="SUM ( Nam[revenues_pct_change_cn] )", format=SIGNED0),
     dict(name="Biên lợi nhuận gộp", expr="SUM ( Nam[gross_margin] )", format="0.0%"),
     dict(name="Lợi nhuận gộp (tỷ USD)", expr="DIVIDE ( SUM ( Nam[gross_profit] ), 1000 )", format="#,0.0"),
     dict(name="SG&A / doanh thu", expr="SUM ( Nam[sga_ratio] )", format="0.0%"),
@@ -361,7 +365,7 @@ MEASURES = [
 def semantic_model(d, w, out):
     years = d["years"]
     obs, kpis, filings = d["observations"], d["kpis"], d["filings"]
-    nam_cols = [col("FY", "int64", format="0"), col("Năm", "string", sort_by="FY"), col("Năm (ngắn)", "string", sort_by="FY"),
+    nam_cols = [col("FY", "int64", format=r"\F\Y0"), col("Năm", "string", sort_by="FY"), col("Năm (ngắn)", "string", sort_by="FY"),
                 col("Báo cáo", "string", sort_by="FY"), col("Kỳ báo cáo", "string"), col("Ngày nộp SEC", "string"),
                 col("Số accession", "string"), col("Liên kết SEC EDGAR", "string", category="WebUrl")]
     nam_cols += [col(k, "double", hidden=True) for k in list(obs) + list(kpis)]
@@ -385,7 +389,7 @@ def semantic_model(d, w, out):
                     continue
                 kind, mid, label, unit, fmt = row
                 # Percentages carry their own sign; other units go into the row label (one row level only).
-                label = label if unit == "%" else f"{label} ({unit})"
+                label = label if unit == "%" else f"{label}, {unit}"
                 link = None
                 if kind == "kpi":
                     v = kpis[mid]["values"][str(y)]
@@ -397,7 +401,7 @@ def semantic_model(d, w, out):
                     else:
                         shown = FORMATS[fmt](o["value"]) + (" †" if o["status"] == STATUS_PENDING else "")
                         if o.get("page"):
-                            shown += f"   tr. {o['page']}"
+                            shown += f" · tr. {o['page']}"
                             link = filings[str(y)]["url"]
                 rows.append({"Thứ tự": order, "Chỉ tiêu": label, "FY": y, "Hiển thị": shown, "Liên kết": link})
         cols = [col("Thứ tự", "int64", hidden=True), col("Chỉ tiêu", "string", sort_by="Thứ tự"),
@@ -537,6 +541,11 @@ def cartesian(kind, series, title, subtitle=None, subtitle_measure=None, tooltip
         # Thicker bars than the theme's 50% gap, so the share labels fit inside them.
         objects["categoryAxis"][0]["properties"]["innerPadding"] = lit(25.0)
         objects["labels"][0]["properties"].update(color=fill("#FFFFFF"), labelPrecision=lit(1))
+        # Dark ink on the orange wholesale bar would read at about 5.3:1 (white is 3.2:1), but Power BI Desktop
+        # 2.159 draws labels inside 100% stacked bars in white whatever colour is set; the rule is kept because
+        # it is harmless and takes effect if a later build honours it.
+        objects["labels"].append({"properties": {"color": fill(C["ink"])},
+                                  "selector": {"metadata": ref(measure("Tỷ trọng bán buôn"))}})
     if totals:
         objects["totals"] = props(show=True, fontFamily=SANS, fontSize=9.0, color=fill(C["ink2"]))
     query = {"Category": {"projections": [proj(axis)]},
@@ -618,7 +627,8 @@ def notes(page, name, x, y, w, h, title, items):
 
 def table_section(page, w, view, table, y, rows):
     page.text("bang_tieu_de", MARGIN, y, 1200, 32, [para(run(w.table_title[view], 13, C["ink"], True))])
-    key = w.table_key[view].replace("(bấm để", "(Ctrl + bấm để").replace(" Số in nghiêng là tính toán.", " Số tính toán không kèm số trang.")
+    key = w.table_key[view].replace("(bấm để", "(Ctrl + bấm để").replace(" Số in nghiêng là số nhóm tự tính.",
+                                                                         " Số nhóm tự tính không kèm số trang.")
     if w.pending:
         key += " " + w.pending_key
     page.text("bang_chu_thich", MARGIN, y + 32, 1200, 28, [para(run(key, 9.5, C["muted"]))])
@@ -664,7 +674,7 @@ def page_channels(w):
     t, s = w.fig["fig-digital"]
     p.add("digital", L, 1130, CW, 340, cartesian(
         "columnChart", [("Digital (tỷ USD)", w.legend("digital", "Digital"), C["digital"]),
-                        ("Phần còn lại của NIKE Direct (tỷ USD)", "Phần còn lại của NIKE Direct", C["directLight"])],
+                        ("Phần còn lại của NIKE Direct (tỷ USD)", "Phần còn lại của NIKE Direct (nhóm tự tính, xấp xỉ)", C["directLight"])],
         t, s + " Chiều cao cả cột = doanh thu NIKE Direct.", labels=False, totals=True,
         tooltips=[("NIKE Direct (tỷ USD)", "NIKE Direct (tổng), tỷ USD"), ("Digital trong NIKE Direct", "Digital trong NIKE Direct (≈)")]))
     source(p, "nguon_digital", L, 1474, CW, w.sources["digital"], h=58)

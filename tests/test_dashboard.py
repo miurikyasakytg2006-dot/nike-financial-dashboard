@@ -149,12 +149,21 @@ def test_source_links_and_missing_state(page, site_data):
     assert page.locator("#filing-list a").count() == 7
 
 
-def test_csv_and_png_exports(page):
+def test_xlsx_and_png_exports(page, site_data, tmp_path):
+    from openpyxl import load_workbook
     page.open()
     with page.expect_download() as d:
-        page.click("#csv-channels")
-    text = open(d.value.path(), encoding="utf-8-sig").read()
-    assert text.startswith("Chỉ tiêu,Mã,Loại") and "nike_direct_revenue" in text and "21519" in text
+        page.click("#xlsx-channels")
+    assert d.value.suggested_filename == "NIKE_kenh-phan-phoi_FY2020-FY2026.xlsx"
+    saved = tmp_path / d.value.suggested_filename
+    d.value.save_as(saved)
+    ws = load_workbook(saved).active
+    rows = [[c.value for c in r] for r in ws.iter_rows()]
+    assert rows[0][:4] == ["Chỉ tiêu", "Đơn vị", "Loại", "FY2020"]
+    direct = next(r for r in rows if r[0] == "NIKE Direct")
+    assert direct[3:10] == [site_data["observations"]["nike_direct_revenue"][str(y)]["value"] for y in site_data["years"]]
+    stated = next(r for r in rows if r[0] == "Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)")
+    assert stated[9] == "Không công bố"
     with page.expect_download() as d:
         page.click('.export-png[data-chart="share"]')
     data = open(d.value.path(), "rb").read()
@@ -179,6 +188,29 @@ def test_accessible_names_and_headings(page):
     levels = page.eval_on_selector_all("h1, h2, h3", "hs => hs.filter(h => h.offsetParent !== null).map(h => +h.tagName[1])")
     assert levels[0] == 1 and all(b - a <= 1 for a, b in zip(levels, levels[1:]))
     assert page.locator("#table-channels thead th[scope=col]").count() == 9
+
+
+def test_tables_fit_without_scrolling_on_desktop(page):
+    for q in ("", "?view=performance"):
+        page.open(q)
+        view = "performance" if q else "channels"
+        width, client = page.evaluate(f"() => {{ const s = document.querySelector('#view-{view} .table-scroll'); "
+                                      f"return [s.scrollWidth, s.clientWidth]; }}")
+        assert width <= client, (view, width, client)
+
+
+def test_print_draws_both_views(page):
+    page.open()
+    page.evaluate("() => window.dispatchEvent(new Event('beforeprint'))")
+    page.emulate_media(media="print")
+    for chart in ("revenue", "grossMargin", "sga", "ebit", "inventory", "days"):
+        size = page.evaluate(f"() => {{ const c = document.querySelector('.chart[data-chart=\"{chart}\"] canvas'); "
+                             f"return c ? c.width * c.height : 0; }}")
+        assert size > 0, chart
+    assert page.locator("#table-performance tbody tr").count() > 20
+    page.emulate_media(media="screen")
+    page.evaluate("() => window.dispatchEvent(new Event('afterprint'))")
+    assert page.is_hidden("#view-performance")
 
 
 def test_mobile_layout_has_no_page_overflow(browser, server):

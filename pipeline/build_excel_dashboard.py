@@ -11,6 +11,8 @@ create slicers, so on Windows the script then runs pipeline/excel_slicers.ps1, w
 them with the installed Excel and saves the workbook (this also caches formula results).
 """
 import json
+import math
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -24,6 +26,8 @@ from .dataset import vi_num
 ROOT = Path(__file__).resolve().parent.parent
 SITE_DATA = ROOT / "site" / "data" / "nike-financials.json"
 INDEX_HTML = ROOT / "site" / "index.html"
+APP_JS = ROOT / "site" / "assets" / "app.js"
+EVIDENCE_PAGE = "bang-chung-doi-chieu/doi-chieu-35-so.html"
 OUT = ROOT / "handover" / "NIKE_Dashboard_FY2020-2026.xlsx"
 SLICER_SCRIPT = Path(__file__).resolve().parent / "excel_slicers.ps1"
 
@@ -45,24 +49,14 @@ GRID_W = 13.57
 COL_PX = 100
 ROW_PX = 20
 
-# Chart source lines, as written by sourceLine() in app.js.
-SOURCES = {
-    "share": "Nguồn: thuyết minh “Revenues” trong Form 10-K (bảng phân tách doanh thu, cột Total NIKE Brand). Tỷ trọng là tính toán.",
-    "channelRevenue": "Nguồn: thuyết minh “Revenues” trong Form 10-K.",
-    "growth_reported": "Nguồn: thuyết minh “Revenues” trong Form 10-K. Tăng trưởng tính từ số năm nay và số năm trước trong cùng 10-K.",
-    "growth_cn": "Nguồn: bảng doanh thu trong MD&A (Item 7), cột “% change excluding currency changes”; NIKE làm tròn đến số nguyên.",
-    "digital": "Nguồn: MD&A (Item 7), đoạn về NIKE Direct; NIKE Direct từ thuyết minh “Revenues”. Số FY2023 là số gốc, được trình bày lại ở 10-K FY2024.",
-    "revenue": "Nguồn: Consolidated Statements of Income.",
-    "grossMargin": "Nguồn: Consolidated Statements of Income; biên gộp là tính toán.",
-    "sga": "Nguồn: Consolidated Statements of Income; tỷ lệ là tính toán. Nhãn trên cột là tổng SG&A / doanh thu.",
-    "ebit": "Nguồn: bảng EBIT trong MD&A (Item 7) và Consolidated Statements of Income; biên là tính toán.",
-    "inventory": "Nguồn: Consolidated Balance Sheets.",
-    "days": "Nguồn: Consolidated Balance Sheets và Statements of Income; chỉ số là tính toán.",
-}
-GROWTH_SUB = {
-    "reported": "% so với năm trước theo báo cáo, NIKE Brand. Tính toán từ 10-K.",
-    "cn": "% so với năm trước loại trừ tỷ giá, NIKE Brand. Số NIKE công bố (non-GAAP).",
-}
+def app_texts():
+    """Chart source lines and the growth subtitle, read from app.js so the versions cannot drift apart."""
+    js = APP_JS.read_text(encoding="utf-8")
+    sources = dict(re.findall(r"sourceLine\('(\w+)', '([^']*)'", js))
+    m = re.search(r"sourceLine\('growth', cn \? '([^']*)'\s*:\s*'([^']*)'", js)
+    sources["growth_cn"], sources["growth_reported"] = m.group(1), m.group(2)
+    m = re.search(r"getElementById\('growth-sub'\)\.textContent = cn\s*\?\s*'([^']*)'\s*:\s*'([^']*)'", js)
+    return sources, {"cn": m.group(1), "reported": m.group(2)}
 
 
 # ------------------------------------------------------------------ number formatting (vi-VN, as in app.js)
@@ -190,6 +184,7 @@ class Book:
         self.wb.formats[0].set_font_size(10)
         self.cache = {}
         self.texts = page_texts()
+        self.sources, self.growth_sub = app_texts()
 
     def f(self, **p):
         base = {"font_name": FONT, "font_size": 10, "font_color": C["ink2"], "valign": "top"}
@@ -274,7 +269,6 @@ class DataSheet:
     def series(self, header):
         c = self.col[header]
         return [SHEET_DATA, self.first, c, self.last, c]
-
     def write(self):
         b, ws = self.b, self.ws
         ws.write(0, 0, "Dữ liệu cho biểu đồ và tóm tắt", b.f(bold=True, font_size=14, font_color=C["ink"]))
@@ -333,8 +327,8 @@ class DataSheet:
         row = h + 1 + len(helpers)
         self.summary_cells = {}
         for name, formula in (("channels", self.channels_summary()), ("performance", self.performance_summary()),
-                              ("growth_sub", f'=IF({self.qh("Cơ sở tăng trưởng")}="cn","{GROWTH_SUB["cn"]}","{GROWTH_SUB["reported"]}")'),
-                              ("growth_source", f'=IF({self.qh("Cơ sở tăng trưởng")}="cn","{SOURCES["growth_cn"]}","{SOURCES["growth_reported"]}")'),
+                              ("growth_sub", f'=IF({self.qh("Cơ sở tăng trưởng")}="cn","{b.growth_sub["cn"]}","{b.growth_sub["reported"]}")'),
+                              ("growth_source", f'=IF({self.qh("Cơ sở tăng trưởng")}="cn","{b.sources["growth_cn"]}","{b.sources["growth_reported"]}")'),
                               ("reports", f'=" Báo cáo: 10-K FY"&{self.qh("Năm đầu")}&IF({self.qh("Năm đầu")}={self.qh("Năm cuối")},"","–FY"&{self.qh("Năm cuối")})'
                                           f'&" (danh sách ở sheet “{SHEET_SRC}”)."')):
             ws.write(row, 1, name)
@@ -367,8 +361,9 @@ class DataSheet:
         one = (f'"Trong FY"&{a}&", doanh thu NIKE, Inc. là "&{T("Doanh thu (chữ)", a)}&" tỷ USD, biên lợi nhuận gộp "&{T("Biên lợi nhuận gộp (chữ)", a)}&'
                f'", biên EBIT (non-GAAP) "&{T("Biên EBIT (chữ)", a)}&", hàng tồn kho cuối kỳ "&{T("Hàng tồn kho (chữ)", a)}&" tỷ USD."')
         many = (f'"Doanh thu NIKE, Inc. từ "&{T("Doanh thu (chữ)", a)}&" (FY"&{a}&") đến "&{T("Doanh thu (chữ)", b_)}&" tỷ USD (FY"&{b_}&'
-                f'"). Biên lợi nhuận gộp "&{T("Biên lợi nhuận gộp (chữ)", a)}&" và "&{T("Biên lợi nhuận gộp (chữ)", b_)}&"; biên EBIT (non-GAAP) "&'
-                f'{T("Biên EBIT (chữ)", a)}&" và "&{T("Biên EBIT (chữ)", b_)}&IF({n}>2,", cao nhất "&{T("Biên EBIT (chữ)", ehi)}&" (FY"&{ehi}&")","")&'
+                f'"). Biên lợi nhuận gộp "&{T("Biên lợi nhuận gộp (chữ)", a)}&" (FY"&{a}&") và "&{T("Biên lợi nhuận gộp (chữ)", b_)}&" (FY"&{b_}&'
+                f'"); biên EBIT (non-GAAP) "&{T("Biên EBIT (chữ)", a)}&" (FY"&{a}&") và "&{T("Biên EBIT (chữ)", b_)}&" (FY"&{b_}&")"&'
+                f'IF({n}>2,", cao nhất "&{T("Biên EBIT (chữ)", ehi)}&" (FY"&{ehi}&")","")&'
                 f'". Hàng tồn kho cuối kỳ từ "&{T("Hàng tồn kho (chữ)", a)}&" đến "&{T("Hàng tồn kho (chữ)", b_)}&" tỷ USD."')
         return f"=IF({a}={b_},{one},{many})"
 
@@ -400,7 +395,7 @@ class DataSheet:
                         continue
                     mark = " †" if o.get("status") == STATUS_PENDING else ""
                     page = o.get("page")
-                    texts.append(fmt(o["value"]) + mark + (f" · tr.{page}" if page else ""))
+                    texts.append(fmt(o["value"]) + mark + (f" · tr. {page}" if page else ""))
                     links.append(b.d["filings"][str(y)]["url"] if page else "")
                 ws.write_row(r, 0, [sheet, mid] + texts + links)
                 self.text_rows[(sheet, mid)] = (xlsxwriter.utility.xl_range_abs(r, 2, r, 1 + ny),
@@ -472,7 +467,7 @@ class Dashboard:
         self.year_slicer_cell = "B8"
         for r in range(7, 10):
             ws.set_row(r, 18)
-        ws.merge_range(7, 9, 9, 12, "Bấm một năm để lọc, giữ Ctrl để chọn nhiều năm. Nút xoá lọc ở góc slicer đưa về đủ 7 năm.",
+        ws.merge_range(7, 9, 9, 12, "Bấm một năm để lọc, giữ Ctrl để chọn nhiều năm. Nút xóa lọc ở góc slicer đưa về đủ 7 năm.",
                        b.f(font_size=9, font_color=C["muted"], text_wrap=True, valign="vcenter"))
         ws.set_row(10, 12)
         # Question and summary
@@ -499,7 +494,7 @@ class Dashboard:
         self.ws.set_row(r + 1, 27)
 
     def source(self, r, c1, c2, key=None, formula=None):
-        src = formula or f'"{SOURCES[key]}"'
+        src = formula or f'"{self.b.sources[key]}"'
         self.formula(r, c1, r, c2, f"={src}&{self.data.summary_cells['reports']}",
                      self.b.f(font_size=8.5, font_color=C["muted"], text_wrap=True))
         self.ws.set_row(r, 26 if c2 - c1 > 3 else 38)   # narrow (three-column) figures need a third line
@@ -520,10 +515,10 @@ class Dashboard:
         view_rows = TABLES[self.name]
         title = b.texts["table_ch"] if self.view == "channels" else b.texts["table_perf"]
         self.text(r, 1, 12, title, b.f(bold=True, font_size=13, font_color=C["ink"]), 22)
-        key = ("Số NIKE công bố (chữ xanh) có kèm số trang 10-K, bấm vào để mở báo cáo trên SEC. Số in nghiêng là tính toán."
+        key = ("Số NIKE công bố (chữ xanh) có kèm số trang 10-K, bấm vào để mở báo cáo trên SEC. Số in nghiêng là số nhóm tự tính."
                if self.view == "channels" else
                "Triệu USD trừ khi ghi khác. Số âm trong ngoặc đơn. Số NIKE công bố (chữ xanh) có kèm số trang 10-K, bấm vào để mở báo cáo trên SEC. "
-               "Số in nghiêng là tính toán.")
+               "Số in nghiêng là số nhóm tự tính.")
         if b.pending_count():
             key += " † chưa được kiểm tra."
         self.text(r + 1, 1, 12, key, b.f(font_size=9, font_color=C["muted"]), 18)
@@ -595,8 +590,11 @@ def category_axis(**extra):
     return {"num_font": axis_font(), "line": {"color": C["axis"]}, "major_tick_mark": "none", **extra}
 
 
-def labels(fmt, color=None, position=None, size=8):
-    lab = {"value": True, "num_format": fmt, "font": {"name": FONT, "size": size, "color": color or C["ink2"]}}
+def labels(fmt, color=None, position=None, size=8, bold=False):
+    # Numeric labels, not labels taken from text cells: Excel attaches per-point custom labels to the
+    # visible points in order, so with years filtered out they would land on the wrong columns.
+    # The decimal mark therefore follows the viewer's Excel language (34,8% or 34.8%).
+    lab = {"value": True, "num_format": fmt, "font": {"name": FONT, "size": size, "color": color or C["ink2"], "bold": bold}}
     if position:
         lab["position"] = position
     return lab
@@ -617,11 +615,12 @@ def build_charts(b, d):
     charts = {}
 
     ch = base_chart(b, "bar", "percent_stacked")
-    white = {"name": FONT, "size": 9, "color": "#FFFFFF", "bold": True}
     ch.add_series(column("NIKE Direct", s("Tỷ trọng NIKE Direct"), C["direct"], categories=cats, gap=45,
-                         border={"color": "#FFFFFF", "width": 1}, data_labels={"value": True, "num_format": "0.0%", "font": white, "position": "center"}))
+                         border={"color": "#FFFFFF", "width": 1},
+                         data_labels=labels("0.0%", "#FFFFFF", "center", 9, True)))
     ch.add_series(column("Bán buôn (Wholesale)", s("Tỷ trọng bán buôn"), C["wholesale"], categories=cats,
-                         border={"color": "#FFFFFF", "width": 1}, data_labels={"value": True, "num_format": "0.0%", "font": white, "position": "center"}))
+                         border={"color": "#FFFFFF", "width": 1},   # dark labels: white on orange is only 3.2:1
+                         data_labels=labels("0.0%", C["ink"], "center", 9, True)))
     ch.add_series(column("Global Brand Divisions (dưới 0,3%)", s("Tỷ trọng Global Brand Divisions"), C["gbd"], categories=cats))
     ch.set_x_axis(value_axis("0%", min=0, max=1, major_unit=0.25))
     ch.set_y_axis(category_axis(reverse=True, crossing="max", num_font=axis_font(10)))
@@ -639,8 +638,8 @@ def build_charts(b, d):
     ch = base_chart(b, "column")
     ch.add_series(column("NIKE Direct", s("NIKE Direct (biểu đồ tăng trưởng)"), C["direct"], categories=cats, gap=70))
     ch.add_series(column("Bán buôn (Wholesale)", s("Bán buôn (biểu đồ tăng trưởng)"), C["wholesale"], categories=cats))
-    ch.set_y_axis(value_axis("0%"))
-    ch.set_x_axis(category_axis(label_position="low", line={"color": C["ink2"], "width": 1}))
+    ch.set_y_axis(value_axis(f"0%;{MINUS}0%;0%"))
+    ch.set_x_axis(category_axis(label_position="low", line={"color": C["ink"], "width": 1.25}))
     charts["growth"] = ch
 
     ch = base_chart(b, "column")
@@ -672,7 +671,8 @@ def build_charts(b, d):
                          border={"color": "#FFFFFF", "width": 0.75}))
     total = b.wb.add_chart({"type": "line"})
     total.add_series({"name": "Tổng SG&A / doanh thu", "values": s("Tổng SG&A / doanh thu"), "categories": cats,
-                      "line": {"none": True}, "marker": {"type": "none"}, "data_labels": labels("0.0%", position="above")})
+                      "line": {"none": True}, "marker": {"type": "none"},
+                      "data_labels": labels("0.0%", position="above")})
     ch.combine(total)
     ch.set_y_axis(value_axis("0%", min=0))
     ch.set_x_axis(category_axis())
@@ -680,7 +680,8 @@ def build_charts(b, d):
     charts["sga"] = ch
 
     ch = base_chart(b, "line", legend=False)
-    ch.add_series(line("Biên EBIT", s("Biên EBIT"), C["total"], categories=cats, data_labels=labels("0.0%", position="above")))
+    ch.add_series(line("Biên EBIT", s("Biên EBIT"), C["total"], categories=cats,
+                       data_labels=labels("0.0%", position="above")))
     ch.set_y_axis(value_axis("0%", min=0))
     ch.set_x_axis(category_axis())
     charts["ebit"] = ch
@@ -778,8 +779,10 @@ def build_sources(b, ws):
     ws.write(3, 3, "Phương pháp", h)
     for i, item in enumerate(t["method"]):
         ws.write(4 + i, 3, "–  " + item, b.f(text_wrap=True))
+    # Row height follows the longest bullet on the row (about 80 characters per line in a 62-wide column).
     for i in range(max(len(b.years), len(t["method"]))):
-        ws.set_row(4 + i, 30)
+        lines = math.ceil(len(t["method"][i]) / 80) if i < len(t["method"]) else 1
+        ws.set_row(4 + i, max(30, 15 * lines + 3))
     r = 4 + max(len(b.years), len(t["method"])) + 1
     ws.write(r, 1, "Tình trạng dữ liệu", h)
     c = b.d["meta"]["status_counts"]
@@ -794,6 +797,7 @@ def build_sources(b, ws):
     ws.write(r, 3, "Liên kết", h)
     ws.write_url(r + 1, 3, DASHBOARD_URL, link, "Dashboard web")
     ws.write_url(r + 2, 3, DASHBOARD_URL + b.d["meta"]["workbook"], link, "Bộ dữ liệu Excel (đầy đủ nguồn từng số)")
+    ws.write_url(r + 3, 3, DASHBOARD_URL + EVIDENCE_PAGE, link, "Đối chiếu 35 số trên trang 10-K (ảnh chụp)")
     ws.set_landscape()
     ws.fit_to_pages(1, 0)
 
@@ -809,6 +813,7 @@ def build(path=OUT, add_slicers=True):
     ch = build_channels(b, d, ws_ch, charts)
     perf = build_performance(b, d, ws_perf, charts)
     build_sources(b, ws_src)
+    ws_data.hide()   # sorting or editing the year table would break the slicer-driven summaries
     ws_ch.activate()
     b.wb.close()
     yw, yh = Dashboard.YEAR_SLICER

@@ -1,5 +1,5 @@
 # Validates the workbook, rebuilds the dashboard data and publishes site/ to GitHub Pages.
-# A failed validation or data test stops the deployment, so wrong numbers are never published.
+# A failed validation, data test or browser test stops the deployment.
 name: Deploy dashboard
 
 on:
@@ -28,8 +28,10 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Validate workbook and build dashboard data
         run: python -m pipeline.build_site_data
-      - name: Data integrity tests
-        run: python -m pytest tests/test_pipeline.py -q
+      - name: Browser for the dashboard tests
+        run: python -m playwright install --with-deps chromium
+      - name: Data and dashboard tests
+        run: python -m pytest tests -q
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

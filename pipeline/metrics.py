@@ -23,13 +23,13 @@ STATUSES = {
     STATUS_CONFLICT: "Conflicting evidence",
 }
 
-USD_M = "USD triệu"
-USD_B = "USD tỷ"
+USD_M = "triệu USD"
+USD_B = "tỷ USD"
 PCT = "%"
 
 KIND_GAAP = "GAAP – BCTC đã kiểm toán"
 KIND_NONGAAP = "Non-GAAP – NIKE định nghĩa"
-KIND_MDNA = "MD&A – thuyết minh"
+KIND_MDNA = "MD&A – ban điều hành nêu, không kiểm toán"
 KIND_MDNA_GAAP = "MD&A – % tính từ số GAAP"
 
 _DUR = "duration"
@@ -78,7 +78,7 @@ REPORTED = [
          xbrl=_xbrl(["us-gaap:SellingGeneralAndAdministrativeExpense"])),
     dict(id="interest_expense_net", sheet="financial", scope="NIKE, Inc.", channel="", unit=USD_M, kind=KIND_GAAP,
          vi="Chi phí (thu nhập) lãi thuần", en="Interest expense (income), net",
-         location="Item 8 – Consolidated Statements of Income, dòng “Interest expense (income), net” (từ FY2024 ghi là “Interest (income) expense, net”)",
+         location="Item 8 – Consolidated Statements of Income, dòng “Interest expense (income), net” (10-K FY2026 ghi là “Interest (income) expense, net”)",
          definition="Số dương = chi phí lãi thuần; số âm = thu nhập lãi thuần. Giữ đúng quy ước dấu của NIKE.",
          xbrl=_xbrl(["us-gaap:InterestIncomeExpenseNonoperatingNet"], sign=-1)),
     dict(id="other_expense_net", sheet="financial", scope="NIKE, Inc.", channel="", unit=USD_M, kind=KIND_GAAP,
@@ -100,7 +100,7 @@ REPORTED = [
     dict(id="net_income", sheet="financial", scope="NIKE, Inc.", channel="", unit=USD_M, kind=KIND_GAAP,
          vi="Lợi nhuận sau thuế", en="Net income",
          location="Item 8 – Consolidated Statements of Income, dòng “Net income”",
-         definition="Lợi nhuận thuần của NIKE, Inc.",
+         definition="Lợi nhuận sau thuế của NIKE, Inc.",
          xbrl=_xbrl(["us-gaap:NetIncomeLoss"])),
     dict(id="inventories", sheet="financial", scope="NIKE, Inc.", channel="", unit=USD_M, kind=KIND_GAAP,
          vi="Hàng tồn kho cuối kỳ", en="Inventories",
@@ -118,9 +118,9 @@ REPORTED = [
          definition="Tỷ lệ tăng trưởng theo báo cáo, NIKE làm tròn đến số nguyên. Dùng để đối chiếu với tăng trưởng tự tính.",
          mdna="revenue_table:TOTAL NIKE, INC. REVENUES:pct"),
     dict(id="revenues_pct_change_cn", sheet="financial", scope="NIKE, Inc.", channel="", unit=PCT, kind=KIND_NONGAAP,
-         vi="% thay đổi doanh thu loại trừ biến động tỷ giá", en="TOTAL NIKE, INC. REVENUES – % change excluding currency changes",
+         vi="% thay đổi doanh thu loại trừ tỷ giá", en="TOTAL NIKE, INC. REVENUES – % change excluding currency changes",
          location="Item 7 – MD&A, bảng doanh thu NIKE, Inc., cột “% CHANGE EXCLUDING CURRENCY CHANGES”",
-         definition="Tăng trưởng trung lập tỷ giá (currency-neutral), chỉ tiêu non-GAAP do NIKE tính theo tỷ giá năm trước. Không thể tự tính lại từ BCTC.",
+         definition="Tăng trưởng loại trừ tỷ giá (NIKE gọi là currency-neutral), chỉ tiêu non-GAAP do NIKE tính theo tỷ giá năm trước. Không thể tự tính lại từ BCTC.",
          mdna="revenue_table:TOTAL NIKE, INC. REVENUES:pct_cn"),
 
     # ---- Distribution channels (sheet 03) ----
@@ -163,7 +163,7 @@ REPORTED = [
     dict(id="nike_brand_digital_sales", sheet="channels", scope="NIKE Brand", channel="NIKE Direct – Digital", unit=USD_B, kind=KIND_MDNA,
          vi="Doanh số NIKE Brand Digital", en="NIKE Brand Digital sales (FY2020–21: “Digital commerce sales”)",
          location="Item 7 – MD&A, đoạn văn về NIKE Direct (câu trích ở cột “Số hoặc câu hiển thị trong tài liệu”)",
-         definition="Doanh số qua nền tảng số của NIKE Brand – một phần của NIKE Direct. NIKE chỉ công bố dạng làm tròn đến 0,1 tỷ USD trong phần thuyết minh.",
+         definition="Doanh số qua nền tảng số của NIKE Brand – một phần của NIKE Direct. NIKE chỉ công bố dạng làm tròn đến 0,1 tỷ USD trong phần MD&A.",
          mdna="digital"),
     dict(id="nike_direct_share_stated", sheet="channels", scope="NIKE Brand", channel="NIKE Direct", unit=PCT, kind=KIND_MDNA,
          vi="Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)", en="NIKE Direct as approx. % of total NIKE Brand revenues (as stated)",
@@ -178,7 +178,7 @@ REPORTED = [
     dict(id="nike_direct_pct_change_cn", sheet="channels", scope="NIKE Brand", channel="NIKE Direct", unit=PCT, kind=KIND_NONGAAP,
          vi="% thay đổi NIKE Direct loại trừ tỷ giá", en="Sales through NIKE Direct – % change excluding currency changes",
          location="Item 7 – MD&A, bảng doanh thu, mục Supplemental NIKE Brand Revenues Details, cột “% CHANGE EXCLUDING CURRENCY CHANGES”",
-         definition="Tăng trưởng trung lập tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
+         definition="Tăng trưởng loại trừ tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
          mdna="revenue_table:Sales through NIKE Direct:pct_cn"),
     dict(id="nike_brand_wholesale_pct_change_reported", sheet="channels", scope="NIKE Brand", channel="Bán buôn (Wholesale)", unit=PCT, kind=KIND_MDNA_GAAP,
          vi="% thay đổi bán buôn (NIKE công bố, đã làm tròn)", en="Sales to Wholesale Customers – % change",
@@ -188,7 +188,7 @@ REPORTED = [
     dict(id="nike_brand_wholesale_pct_change_cn", sheet="channels", scope="NIKE Brand", channel="Bán buôn (Wholesale)", unit=PCT, kind=KIND_NONGAAP,
          vi="% thay đổi bán buôn loại trừ tỷ giá", en="Sales to Wholesale Customers – % change excluding currency changes",
          location="Item 7 – MD&A, bảng doanh thu, mục Supplemental NIKE Brand Revenues Details, cột “% CHANGE EXCLUDING CURRENCY CHANGES”",
-         definition="Tăng trưởng trung lập tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
+         definition="Tăng trưởng loại trừ tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
          mdna="revenue_table:Sales to Wholesale Customers:pct_cn"),
     dict(id="nike_brand_pct_change_reported", sheet="channels", scope="NIKE Brand", channel="Tổng NIKE Brand", unit=PCT, kind=KIND_MDNA_GAAP,
          vi="% thay đổi doanh thu NIKE Brand (NIKE công bố, đã làm tròn)", en="TOTAL NIKE BRAND REVENUES – % change",
@@ -198,7 +198,7 @@ REPORTED = [
     dict(id="nike_brand_pct_change_cn", sheet="channels", scope="NIKE Brand", channel="Tổng NIKE Brand", unit=PCT, kind=KIND_NONGAAP,
          vi="% thay đổi NIKE Brand loại trừ tỷ giá", en="TOTAL NIKE BRAND REVENUES – % change excluding currency changes",
          location="Item 7 – MD&A, bảng doanh thu, mục Supplemental NIKE Brand Revenues Details, cột “% CHANGE EXCLUDING CURRENCY CHANGES”",
-         definition="Tăng trưởng trung lập tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
+         definition="Tăng trưởng loại trừ tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
          mdna="revenue_table:TOTAL NIKE BRAND REVENUES:pct_cn"),
 ]
 REPORTED_BY_ID = {m["id"]: m for m in REPORTED}
@@ -225,6 +225,7 @@ KPIS = [
          expr="nike_brand_revenue / nike_brand_revenue__prior - 1",
          note="So với số năm trước trình bày trong cùng 10-K."),
     dict(id="digital_share_of_direct", group="channels", unit=PCT, vi="Tỷ trọng Digital trong NIKE Direct (xấp xỉ)",
+         num_format="0%",   # Digital is disclosed to 0.1 billion only, so a decimal place would be false precision
          expr="nike_brand_digital_sales * 1000 / nike_direct_revenue",
          note="Xấp xỉ: doanh số Digital chỉ được công bố làm tròn 0,1 tỷ USD (sai số khoảng ±0,3 điểm %). Nhân 1.000 để đổi tỷ USD sang triệu USD."),
     # Financial performance – NIKE, Inc. scope

@@ -59,7 +59,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Số chỉ có trong phần MD&A (tăng trưởng loại trừ tỷ giá, doanh số Digital) được đọc lại trực tiếp trên trang 10-K bằng một cách thứ hai; ảnh chụp đối chiếu lưu kèm bộ dữ liệu.",
+                    "value": "– Số chỉ có trong phần MD&A (tăng trưởng loại trừ tỷ giá, doanh số Digital) được đọc lại trực tiếp trên trang 10-K bằng một cách thứ hai; ảnh chụp đối chiếu ở trang “Đối chiếu 35 số” của dashboard web.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -85,7 +85,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Số liệu thiếu được để trống, không thay bằng 0.",
+                    "value": "– Số liệu NIKE không công bố được ghi “Không công bố”, không thay bằng 0.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",

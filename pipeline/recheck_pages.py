@@ -152,16 +152,18 @@ def show(mid, v):
 
 def write_evidence_page(rows):
     ok = sum(r["result"] == "match" for r in rows)
+    y, m, d = max(r["checked_on"] for r in rows).split("-")
     out = ["<!doctype html><html lang='vi'><meta charset='utf-8'><title>Đối chiếu 35 số trên trang 10-K</title>",
            "<style>body{font:15px/1.55 Segoe UI,Arial,sans-serif;margin:28px auto;max-width:1400px;padding:0 16px;color:#15191e}"
            "table{border-collapse:collapse;margin:8px 0 14px}td,th{border-bottom:1px solid #ddd;padding:5px 12px;text-align:left}"
            "th{background:#f4f5f7}.ok{color:#0a7a3d;font-weight:600}.bad{color:#b42318;font-weight:700}"
            "img{max-width:100%;border:1px solid #ccc;margin:6px 0 20px}h2{margin-top:40px;border-top:2px solid #15191e;padding-top:12px}</style>",
            "<h1>Đối chiếu 35 số chỉ có trong phần MD&amp;A với trang 10-K</h1>",
-           f"<p><b>{ok}/{len(rows)} số khớp.</b> Cách làm: mở từng báo cáo 10-K, tìm đúng trang theo chân trang “FORM 10-K số trang”, "
-           "rồi đọc lại số trên trang đã hiển thị. Bốn tỷ lệ % đọc ở cột “% CHANGE EXCLUDING CURRENCY CHANGES” <i>đầu tiên</i> (bảng có "
-           "hai cột cùng tên; cột thứ hai là của năm trước). Doanh số Digital đọc trong câu ngay sau cụm “Digital sales”. "
-           "Ô và câu được đọc tô nền vàng, dòng được đọc viền đỏ.</p>",
+           f"<p><b>{ok}/{len(rows)} số khớp.</b> Kiểm tra ngày {d}/{m}/{y} bằng trình duyệt Chrome điều khiển tự động (Playwright). "
+           "Cách làm: mở từng báo cáo 10-K, tìm đúng trang theo chân trang “FORM 10-K số trang”, rồi đọc lại số trên trang đã hiển thị. "
+           "Bốn tỷ lệ % đọc theo vị trí cột “% CHANGE EXCLUDING CURRENCY CHANGES” <i>đầu tiên</i> (bảng có hai cột cùng tên; cột thứ "
+           "hai là của năm trước). Doanh số Digital đọc trong câu ngay sau cụm “Digital sales” (FY2020–2021: “Digital commerce sales”). "
+           "Ô và đoạn văn được đọc tô nền vàng, dòng được đọc viền đỏ.</p>",
            "<p>Ảnh chụp từ bản sao 10-K trên NIKE Investor Relations, cùng số accession và cùng nội dung với bản trên SEC EDGAR "
            "(liên kết SEC ở từng năm).</p>"]
     for fy, *_ in FILINGS:

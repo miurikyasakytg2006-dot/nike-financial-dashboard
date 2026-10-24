@@ -1,6 +1,8 @@
-"""Data-integrity tests: extraction, workbook, validation and KPI formulas."""
+"""Data-integrity tests: extraction, workbook, validation, KPI formulas and the three dashboard versions."""
 import json
+import re
 import shutil
+import zipfile
 from decimal import Decimal
 
 import pytest
@@ -9,7 +11,7 @@ from openpyxl import load_workbook
 from pipeline import dataset
 from pipeline.build_site_data import read_observations, validate
 from pipeline.build_workbook import FIELD_COL, HEADER_ROW, SHEET_CH, SHEET_FIN, WORKBOOK
-from pipeline.metrics import REPORTED, STATUS_CONFLICT, STATUS_MATCHED
+from pipeline.metrics import REPORTED, STATUS_CONFLICT, STATUS_HUMAN, STATUS_MATCHED
 
 # Representative values re-read by hand from the filings (early and late years, both scopes).
 GOLDEN = {
@@ -137,10 +139,12 @@ def _mutated_copy(tmp_path, sheet, key, field, new_value):
     (SHEET_FIN, "FY2024|revenues", "value", 51000, "differs from the 10-K extraction"),
     (SHEET_CH, "FY2022|nike_direct_revenue", "value", None, "must be marked missing"),
     (SHEET_CH, "FY2021|nike_direct_pct_change_cn", "value", 30, "whole percent"),
-    (SHEET_FIN, "FY2020|cost_of_sales", "unit", "USD tỷ", "unit"),
+    (SHEET_FIN, "FY2020|cost_of_sales", "unit", "tỷ USD", "unit"),
     (SHEET_CH, "FY2025|nike_brand_revenue", "scope", "NIKE, Inc.", "reporting scope"),
     (SHEET_FIN, "FY2023|gross_profit", "status", STATUS_CONFLICT, "conflicting evidence"),
+    (SHEET_CH, "FY2024|nike_direct_revenue", "status", STATUS_HUMAN, "verifier's name"),
     (SHEET_FIN, "FY2022|net_income", "page", None, "incomplete provenance"),
+    (SHEET_FIN, "FY2022|net_income", "page", 99, "page 99 differs"),
     (SHEET_FIN, "FY2021|inventories", "prior", 6000, "comparative"),
     (SHEET_CH, "FY2026|nike_direct_revenue", "key", "FY2026|revenues", "Duplicate"),
 ])
@@ -155,21 +159,80 @@ def test_workbook_formulas_recalculate_independently():
     assert n > 400 and problems == []
 
 
-def test_excel_dashboard_matches_site_data(tmp_path, site_data):
-    from pipeline.build_excel_dashboard import SHEET_CH, SHEET_DATA, SHEET_PERF, SHEET_SRC, build
-    path = tmp_path / "dashboard.xlsx"
-    build(path, add_slicers=False)
+def _check_excel_dashboard(path, site_data):
+    from pipeline.build_excel_dashboard import SHEET_CH, SHEET_DATA, SHEET_PERF, SHEET_SRC
     wb = load_workbook(path)
     assert wb.sheetnames == [SHEET_CH, SHEET_PERF, SHEET_SRC, SHEET_DATA]
     ws = wb[SHEET_DATA]
+    assert ws.sheet_state == "hidden"
     rows = list(ws[ws.tables["tblNam"].ref])
     header = [c.value for c in rows[0]]
     years = site_data["years"]
     assert [r[header.index("Năm")].value for r in rows[1:]] == years
-    for col, kid in (("Tỷ trọng NIKE Direct", "direct_share"), ("Biên EBIT", "ebit_margin")):
+    for col, kid in (("Tỷ trọng NIKE Direct", "direct_share"), ("Biên EBIT", "ebit_margin"), ("Số ngày tồn kho bình quân", "days_inventory")):
         # XlsxWriter stores 16 significant digits, so compare with a relative tolerance.
         want = [site_data["kpis"][kid]["values"][str(y)] for y in years]
-        assert [r[header.index(col)].value for r in rows[1:]] == pytest.approx(want, rel=1e-12)
+        assert [r[header.index(col)].value for r in rows[1:]] == pytest.approx(want, rel=1e-12), col
+    for col, mid in (("NIKE Brand Digital (tỷ USD)", "nike_brand_digital_sales"),
+                     ("Tăng trưởng NIKE Direct loại trừ tỷ giá", "nike_direct_pct_change_cn")):
+        for r, y in zip(rows[1:], years):
+            assert _same(r[header.index(col)].value, site_data["observations"][mid][str(y)]["value"]), (col, y)
+
+
+def test_excel_dashboard_build_matches_site_data(tmp_path, site_data):
+    from pipeline.build_excel_dashboard import build
+    path = tmp_path / "dashboard.xlsx"
+    build(path, add_slicers=False)
+    _check_excel_dashboard(path, site_data)
+
+
+@pytest.mark.filterwarnings("ignore:Unknown extension")   # openpyxl does not read slicer definitions
+def test_delivered_excel_dashboard_is_current(site_data):
+    """The handover copy must have been rebuilt from the current data and carry its two slicer caches."""
+    from pipeline.build_excel_dashboard import OUT
+    _check_excel_dashboard(OUT, site_data)
+    with zipfile.ZipFile(OUT) as z:
+        assert len([n for n in z.namelist() if n.startswith("xl/slicerCaches/")]) == 2
+
+
+def _tmdl_rows(path):
+    """Rows of the #table literal embedded in a TMDL partition, as dicts keyed by column name."""
+    text = path.read_text(encoding="utf-8")
+    names = re.findall(r'#"((?:[^"]|"")*)" = [\w.]+', text)
+    token = re.compile(r'"((?:[^"]|"")*)"|(null)|(-?[\d.]+(?:[eE][-+]?\d+)?)')
+    rows = []
+    for line in re.findall(r"^\s*\{(.*)\},?\s*$", text, re.M):
+        vals = [m.group(1).replace('""', '"') if m.group(1) is not None else None if m.group(2) else float(m.group(3))
+                for m in token.finditer(line)]
+        rows.append(dict(zip(names, vals)))
+    return rows
+
+
+def _same(got, want):
+    return got is None if want is None else got == pytest.approx(want, rel=1e-12)
+
+
+def test_powerbi_model_matches_site_data(site_data):
+    from pipeline.build_powerbi import NAME
+    tables = dataset.ROOT / "powerbi" / f"{NAME}.SemanticModel" / "definition" / "tables"
+    rows = {int(r["FY"]): r for r in _tmdl_rows(tables / "Nam.tmdl")}
+    assert sorted(rows) == site_data["years"]
+    for y in site_data["years"]:
+        for mid, by_year in site_data["observations"].items():
+            assert _same(rows[y][mid], by_year[str(y)]["value"]), (mid, y)
+        for kid, k in site_data["kpis"].items():
+            assert _same(rows[y][kid], k["values"][str(y)]), (kid, y)
+
+
+def test_delivered_pbix_opens_on_all_years():
+    """The .pbix must have three pages and no saved year filter (it once shipped filtered to FY2024–2026)."""
+    pbix = dataset.ROOT / "handover" / "NIKE_Dashboard_FY2020-2026.pbix"
+    with zipfile.ZipFile(pbix) as z:
+        pages = [n for n in z.namelist() if re.fullmatch(r"Report/definition/pages/[^/]+/page\.json", n)]
+        slicers = [n for n in z.namelist() if re.search(r"/visuals/loc_nam/visual\.json$", n)]
+        assert len(pages) == 3 and len(slicers) == 2
+        for n in slicers:
+            assert '"filter"' not in z.read(n).decode("utf-8"), n
 
 
 def test_site_json_matches_workbook(observations, site_data):

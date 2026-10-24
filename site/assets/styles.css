@@ -162,10 +162,10 @@ main:focus { outline: none; }
 .table-scroll { overflow-x: auto; overscroll-behavior-x: contain; border-bottom: 1px solid var(--rule); }
 .data-table { border-collapse: collapse; width: 100%; font-size: 15px; font-variant-numeric: tabular-nums lining-nums; }
 .data-table caption { text-align: left; }
-.data-table th, .data-table td { padding: 7px 10px; border-bottom: 1px solid var(--grid); vertical-align: baseline; }
+.data-table th, .data-table td { padding: 7px 8px; border-bottom: 1px solid var(--grid); vertical-align: baseline; }
 .data-table thead th { text-align: right; font-weight: 600; color: var(--ink-2); border-bottom: 1px solid var(--ink); white-space: nowrap; }
 .data-table thead th:first-child, .data-table thead th:nth-child(2) { text-align: left; }
-.data-table tbody th { text-align: left; font-weight: 400; min-width: 15rem; position: sticky; left: 0; background: var(--page); }
+.data-table tbody th { text-align: left; font-weight: 400; min-width: 12rem; position: sticky; left: 0; background: var(--page); }
 .data-table td.unit { color: var(--muted); white-space: nowrap; font-size: 14px; }
 .data-table td.num { text-align: right; white-space: nowrap; }
 .data-table td.calc { font-style: italic; color: var(--ink-2); }
@@ -173,7 +173,7 @@ main:focus { outline: none; }
 .data-table tr.group th { font-weight: 600; padding-top: 16px; color: var(--ink); border-bottom-color: var(--rule); }
 .data-table tr.total th, .data-table tr.total td { font-weight: 600; }
 .mark-slot { display: inline-block; width: 0.8em; text-align: center; color: var(--muted); font-style: normal; }
-.ref-slot { display: inline-block; width: 3.3em; text-align: left; font-style: normal; }
+.ref-slot { display: inline-block; width: 3em; text-align: left; font-style: normal; }
 .page-ref { font-size: 12px; color: var(--muted); }
 .page-ref:hover { color: var(--accent); }
 .data-table abbr { text-decoration: none; cursor: help; }
@@ -226,7 +226,22 @@ main:focus { outline: none; }
   * { scroll-behavior: auto !important; }
 }
 @media print {
-  .controls, .export-png, .table-head button, .masthead-links, .segmented { display: none !important; }
+  @page { size: A4 landscape; margin: 10mm; }
+  .controls, .export-png, .table-head button, .masthead-links, .segmented, .skip-link { display: none !important; }
   .view[hidden] { display: block !important; }
+  #view-performance { break-before: page; }
+  .figure, .reading-notes { break-inside: avoid; }
+  /* Chrome evaluates the width media queries against a portrait page; keep the desktop columns on paper. */
+  .view-head { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .reading-notes-wide dl { display: grid; }
+  .footer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Charts are drawn at screen width; let them shrink to the page. */
+  .chart > div, .chart canvas { width: 100% !important; height: auto !important; }
   .table-scroll { overflow: visible; }
+  .data-table { font-size: 11px; }
+  .data-table td.unit, .data-table td.missing, .page-ref { font-size: 10px; }
+  .data-table th, .data-table td { padding: 3px 5px; }
+  .data-table tbody th { min-width: 0; position: static; }
 }

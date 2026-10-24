@@ -88,7 +88,7 @@ class Styles:
         return self.cache[key]
 
     def num(self, unit, color=None, **extra):
-        fmt = {USD_M: "#,##0;(#,##0);0", USD_B: "0.0", PCT: "0.0%;-0.0%;0.0%", "lần": "0.00", "ngày": "0.0"}.get(unit, "General")
+        fmt = {USD_M: "#,##0;(#,##0);0", USD_B: "0.0", PCT: "0.0%;−0.0%;0.0%", "lần": "0.00", "ngày": "0.0"}.get(unit, "General")
         props = {"num_format": fmt, **extra}
         if color:
             props["font_color"] = color
@@ -196,7 +196,7 @@ def write_observation_sheet(wb, st, name, title, subtitle, obs):
             if field in ("value", "prior"):
                 v = o[field]
                 # NIKE reports these percentages rounded to whole numbers, so show them that way.
-                fmt = (st(num_format="0%", font_color=Styles.INPUT_BLUE) if m["unit"] == PCT
+                fmt = (st(num_format="0%;−0%;0%", font_color=Styles.INPUT_BLUE) if m["unit"] == PCT
                        else st.num(m["unit"], Styles.INPUT_BLUE))
                 if v is None:
                     ws.write_blank(r, c, None, fmt)
@@ -307,7 +307,7 @@ def write_kpi_sheet(wb, st, obs, results, sheet_cols):
             look = f'INDEX({rng_v},MATCH({hdr}&"|{base}",{rng_k},0))'
             o = by_key[(y, base)]
             cached = o["prior"] if prior else o["value"]
-            fmt = st(num_format="0%", font_color=Styles.LINK_GREEN) if m["unit"] == PCT else st.num(m["unit"], Styles.LINK_GREEN)
+            fmt = st(num_format="0%;−0%;0%", font_color=Styles.LINK_GREEN) if m["unit"] == PCT else st.num(m["unit"], Styles.LINK_GREEN)
             # A missing source value shows "–" (text), never a blank a previewer could render as 0.
             ws.write_formula(row, col, f'=IF({look}="","–",{look})', fmt, "–" if cached is None else _d(cached))
             refs[y][tok] = xl_rowcol_to_cell(row, col)
@@ -323,29 +323,36 @@ def write_kpi_sheet(wb, st, obs, results, sheet_cols):
             ws.write(row, 0, k["id"], st(font_color="#6B6B6B"))
             written_labels.append(k["vi"])
             ws.write(row, 1, k["vi"], st())
-            ws.write(row, 2, {"check": "USD triệu", "cmp": "điểm %"}.get(kind, unit), st())
+            ws.write(row, 2, {"check": USD_M, "cmp": "điểm %"}.get(kind, unit), st())
             toks = list(dict.fromkeys(dataset.IDENT.findall(k["expr"])))
+            # Comparisons are differences between two percentages; show them in percentage points (×100).
+            scale = 100 if kind == "cmp" else 1
             for j, y in enumerate(years):
                 col = first_col + j
                 cells = [refs[y][t] for t in toks]
                 body = dataset.IDENT.sub(lambda mt: refs[y][mt.group(0)], k["expr"]).replace(" ", "")
+                if scale != 1:
+                    body = f"({body})*{scale}"
                 formula = f'=IF(COUNT({",".join(cells)})<{len(cells)},"–",{body})'
                 v = results[y][k["id"]]
                 if kind == "cmp":
-                    fmt = st(num_format='+0.0%;-0.0%;0.0%', align="right")
+                    fmt = st(num_format="+0.00;−0.00;0.00", align="right")
+                elif k.get("num_format"):
+                    fmt = st(num_format=k["num_format"], align="right")
                 else:
                     fmt = st.num(unit, None, align="right")
-                ws.write_formula(row, col, formula, fmt, "–" if v is None else _d(v))
+                ws.write_formula(row, col, formula, fmt, "–" if v is None else _d(v) * scale)
                 refs[y][k["id"]] = xl_rowcol_to_cell(row, col)
             first = xl_rowcol_to_cell(row, first_col)
             last = xl_rowcol_to_cell(row, first_col + len(years) - 1)
             if kind in ("check", "cmp"):
                 tol = k["tol"]
-                tol_txt = f"±{tol} triệu USD" if kind == "check" else f"±{tol * 100:g} điểm %"
+                lim = f"{tol * scale:g}"
+                tol_txt = f"±{tol} triệu USD" if kind == "check" else f"±{lim} điểm %"
                 ws.write(row, note_col, f"{readable(k['expr'])}   (ngưỡng {tol_txt})", st(text_wrap=True))
                 ok = all(results[y][k["id"]] is None or abs(results[y][k["id"]]) <= Decimal(str(tol)) for y in years)
                 ws.write_formula(row, note_col + 1,
-                                 f'=IF(AND(MAX({first}:{last})<={tol},MIN({first}:{last})>=-{tol}),"Đạt","Kiểm tra lại")',
+                                 f'=IF(AND(MAX({first}:{last})<={lim},MIN({first}:{last})>=-{lim}),"Đạt","Kiểm tra lại")',
                                  st(bold=True), "Đạt" if ok else "Kiểm tra lại")
             else:
                 ws.write(row, note_col, readable(k["expr"]), st(text_wrap=True))
@@ -434,7 +441,8 @@ RESTATEMENT_LOG = [
      "“Within NIKE Direct revenues, there were certain reclassifications made between NIKE-owned retail stores and NIKE Brand Digital in the prior period to conform to current period presentation.”",
      "Doanh số Digital FY2023: 12,6 tỷ USD (10-K FY2023) được trình bày lại thành 12,4 tỷ USD. Tổng NIKE Direct không đổi."),
     ("10-K FY2022, FY2025, FY2026", "Các lần phân loại lại khác",
-     "Phân loại lại doanh thu theo nhóm khách hàng (FY2022), bỏ chỉ tiêu “wholesale equivalent revenues” (FY2025), phân loại lại ở Note 1 (FY2026).",
+     "FY2022: doanh thu chia theo nhóm người tiêu dùng Nam, Nữ, Trẻ em (hàng unisex xếp vào Nam) và báo cáo riêng Jordan Brand. "
+     "FY2025: bỏ chỉ tiêu “wholesale equivalent revenues”. FY2026: phân loại lại một số khoản năm trước (Note 1).",
      "Không làm thay đổi chỉ tiêu nào trong bộ dữ liệu."),
 ]
 
@@ -484,12 +492,14 @@ def write_sources_sheet(wb, st, obs, results, extracted_on):
           [list(g) for g in RESTATEMENT_LOG])
     counts = {s: sum(1 for o in obs if o["status"] == s) for s in STATUSES}
     meaning = {
-        STATUS_MATCHED: ("Số liệu lấy tự động từ 10-K và được xác nhận bằng ít nhất một cách độc lập: API XBRL của SEC, bảng MD&A, "
-                         "phép tính lại từ BCTC, hoặc đọc lại trực tiếp trên trang 10-K (có ảnh chụp đối chiếu).",),
-        STATUS_PENDING: ("Số liệu chính thức nhưng chưa có kiểm tra độc lập (ví dụ tăng trưởng loại trừ tỷ giá, doanh số Digital). Cần người đối chiếu.",),
+        STATUS_MATCHED: ("Số liệu lấy tự động từ 10-K và được kiểm tra chéo bằng ít nhất một cách thứ hai: dữ liệu XBRL do SEC công bố "
+                         "(xác nhận đọc đúng thẻ và đúng kỳ), bảng trong MD&A, phép tính lại từ BCTC, hoặc đọc lại trực tiếp trên "
+                         "trang 10-K (có ảnh chụp đối chiếu).",),
+        STATUS_PENDING: ("Số liệu chính thức nhưng chưa được kiểm tra chéo bằng cách thứ hai. Cần người mở 10-K đối chiếu.",),
         STATUS_HUMAN: ("Thành viên nhóm đã tự mở 10-K, tìm đúng trang và xác nhận số liệu; ghi tên và ngày.",),
         STATUS_MISSING: ("NIKE không công bố số liệu này trong 10-K tương ứng. Ô giá trị để trống, không thay bằng 0.",),
-        STATUS_CONFLICT: ("Hai nguồn chính thức cho kết quả khác nhau, hoặc số đã xác minh khác số trích xuất mới. Không dùng cho đến khi giải quyết.",),
+        STATUS_CONFLICT: ("Hai nguồn chính thức cho kết quả khác nhau, lần đọc lại trên trang 10-K ra số khác, hoặc số đã xác minh khác số "
+                          "trích xuất mới. Không dùng cho đến khi giải quyết.",),
     }
     table("E. Trạng thái dữ liệu", ["Trạng thái", "Tiếng Anh", "Ý nghĩa", "Số quan sát hiện tại"],
           [[s, en, meaning[s][0], counts[s]] for s, en in STATUSES.items()])
@@ -507,9 +517,9 @@ def write_sources_sheet(wb, st, obs, results, extracted_on):
         ["Đối chiếu số học và tỷ lệ NIKE công bố", "Đạt" if checks_ok else "Có lỗi",
          "Xem mục D và E ở sheet 04.", _vn_date(extracted_on)],
         ["Đọc lại trên trang 10-K", f"{page_ok}/{len(pages)} khớp",
-         "Các số chỉ có trong MD&A (tăng trưởng loại trừ tỷ giá, doanh số Digital): mở từng 10-K, tìm trang theo chân trang, đọc lại "
-         "theo vị trí cột “% CHANGE EXCLUDING CURRENCY CHANGES” đầu tiên và theo câu về doanh số Digital. Ảnh chụp và bảng so sánh: "
-         "handover/bang-chung-doi-chieu/doi-chieu-35-so.html.", _vn_date(page_on)],
+         "Các số chỉ có trong MD&A: mở từng 10-K, tìm trang theo chân trang; 28 tỷ lệ tăng trưởng loại trừ tỷ giá đọc lại theo vị trí "
+         "cột “% CHANGE EXCLUDING CURRENCY CHANGES” đầu tiên, 7 số Digital đọc lại từ câu văn trên đúng trang. Ảnh chụp và bảng so sánh: "
+         "handover/bang-chung-doi-chieu/doi-chieu-35-so.html (cũng có trên dashboard web).", _vn_date(page_on)],
     ])
     ws.set_landscape()
     ws.fit_to_pages(1, 0)
@@ -540,14 +550,15 @@ def write_overview_sheet(wb, st, obs, extracted_on):
             ("Nguồn", "7 báo cáo thường niên Form 10-K của NIKE, Inc. nộp Ủy ban Chứng khoán Mỹ (SEC), FY2020–FY2026. "
                       "Không dùng trang tổng hợp tài chính của bên thứ ba."),
             ("Thứ tự ưu tiên nguồn", "(1) Báo cáo tài chính đã kiểm toán và thuyết minh (Item 8), đọc từ dữ liệu XBRL gắn trong chính 10-K. "
-                                     "(2) Phần MD&A (Item 7) của cùng 10-K cho số liệu non-GAAP và thuyết minh: EBIT, tăng trưởng loại trừ tỷ giá, "
+                                     "(2) Phần MD&A (Item 7) của cùng 10-K cho số liệu non-GAAP và số do ban điều hành nêu: EBIT, tăng trưởng loại trừ tỷ giá, "
                                      "doanh số Digital. (3) API XBRL của SEC chỉ dùng để đối chiếu."),
             ("Quy tắc chọn số", "Số của năm FY t lấy từ 10-K FY t. “Giá trị năm trước” là cột so sánh trong cùng 10-K đó và được dùng để tính "
                                 "tăng trưởng (cùng cơ sở NIKE dùng). Nếu 10-K năm sau trình bày lại, chênh lệch được ghi ở cột "
                                 "“Trình bày lại ở 10-K sau”, không thay thế số gốc."),
-            ("Tình trạng dữ liệu", f"Trích xuất tự động ngày {_vn_date(extracted_on)}. {total} quan sát: {n[STATUS_MATCHED]} khớp nguồn chính thức, "
-                                   f"{n[STATUS_PENDING]} chờ người kiểm tra, {n[STATUS_MISSING]} không được công bố, "
-                                   f"{n[STATUS_HUMAN]} đã được người xác minh, {n[STATUS_CONFLICT]} mâu thuẫn."),
+            ("Tình trạng dữ liệu", f"Trích xuất tự động ngày {_vn_date(extracted_on)}. {total} quan sát: " + ", ".join(
+                f"{n[s]} {label}" for s, label in ((STATUS_MATCHED, "khớp nguồn chính thức"), (STATUS_HUMAN, "đã được người xác minh"),
+                                                   (STATUS_PENDING, "chờ người kiểm tra"), (STATUS_MISSING, "không được công bố"),
+                                                   (STATUS_CONFLICT, "mâu thuẫn")) if n[s]) + "."),
         ]),
         ("Cách sử dụng", [
             ("1. Đọc số liệu", "Sheet 02 (hợp nhất NIKE, Inc.) và 03 (kênh phân phối NIKE Brand). Mỗi dòng là một số liệu của một năm. "

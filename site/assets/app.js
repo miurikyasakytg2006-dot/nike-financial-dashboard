@@ -260,7 +260,7 @@
     var a = ys[0], b = ys[ys.length - 1];
     setChart('share', o, 'Biểu đồ thanh 100% theo năm: tỷ trọng NIKE Direct trong doanh thu NIKE Brand là ' + pct(kpi('direct_share', a)) +
       ' ở FY' + a + ' và ' + pct(kpi('direct_share', b)) + ' ở FY' + b + '; phần còn lại chủ yếu là bán buôn.');
-    sourceLine('share', 'Nguồn: thuyết minh “Revenues” trong Form 10-K (bảng phân tách doanh thu, cột Total NIKE Brand). Tỷ trọng là tính toán.', ys);
+    sourceLine('share', 'Nguồn: thuyết minh “Revenues” trong Form 10-K (bảng phân tách doanh thu, cột Total NIKE Brand). Tỷ trọng do nhóm tự tính.', ys);
   }
 
   function renderChannelRevenue() {
@@ -297,8 +297,8 @@
     var ys = years();
     var cn = state.basis === 'cn';
     document.getElementById('growth-sub').textContent = cn
-      ? '% so với năm trước loại trừ tỷ giá, NIKE Brand. Số NIKE công bố (non-GAAP).'
-      : '% so với năm trước theo báo cáo, NIKE Brand. Tính toán từ 10-K.';
+      ? 'Thay đổi so với năm trước (%), loại trừ tỷ giá, phạm vi NIKE Brand; số NIKE công bố (non-GAAP).'
+      : 'Thay đổi so với năm trước (%), theo báo cáo, phạm vi NIKE Brand; nhóm tự tính từ 10-K.';
     var o = base();
     o.xAxis = catAxis(ys, 'growth');
     o.yAxis = valAxis(function (v) { return num(v * 100, 0) + '%'; });
@@ -309,7 +309,7 @@
         { color: C.direct, value: signedPct(val('nike_direct_pct_change_cn', y), 0), label: 'NIKE Direct, loại trừ tỷ giá' },
         { color: C.wholesale, value: signedPct(kpi('wholesale_growth', y)), label: 'Bán buôn, theo báo cáo' },
         { color: C.wholesale, value: signedPct(val('nike_brand_wholesale_pct_change_cn', y), 0), label: 'Bán buôn, loại trừ tỷ giá' }
-      ], 'Đang vẽ: ' + (cn ? 'loại trừ tỷ giá (NIKE công bố trong MD&A).' : 'theo báo cáo (tính toán).') + ' ' + srcNote('nike_direct_pct_change_cn', y));
+      ], 'Biểu đồ đang hiển thị: ' + (cn ? 'loại trừ tỷ giá (NIKE công bố trong MD&A).' : 'theo báo cáo (nhóm tự tính).') + ' ' + srcNote('nike_direct_pct_change_cn', y));
     };
     var bars = function (name, key, color) {
       return columnSeries(name, ys.map(function (y) {
@@ -337,14 +337,17 @@
     o.yAxis = valAxis(function (v) { return num(v, 0); }, { min: 0 });
     o.tooltip.formatter = function (ps) {
       var y = ys[ps[0].dataIndex];
-      var dig = ob('nike_brand_digital_sales', y);
+      var dig = ob('nike_brand_digital_sales', y), prev = ob('nike_brand_digital_sales', y - 1);
       var restated = dig && dig.restatement && dig.restatement.indexOf('ĐIỀU CHỈNH') === 0;  // note written by the pipeline
+      // When last year's figure was later reclassified, say which number this year should be compared with.
+      var sameBasis = dig && prev && dig.prior != null && prev.value != null && Math.abs(dig.prior - prev.value) > 1e-9
+        ? 'So sánh cùng cách phân loại: FY' + (y - 1) + ' trong 10-K FY' + y + ' là ' + num(dig.prior, 1) + ' tỷ USD. ' : '';
       return tip('FY' + y + ' (' + period(y) + ')', [
         { color: C.directLight, value: bn(val('nike_direct_revenue', y)) + ' tỷ USD', label: 'NIKE Direct (tổng)' },
         { color: C.digital, value: num(val('nike_brand_digital_sales', y), 1) + ' tỷ USD', label: 'NIKE Brand Digital' },
         { color: C.digital, value: '≈ ' + pct(kpi('digital_share_of_direct', y), 0), label: 'Digital trong NIKE Direct' }
       ], (restated ? 'Số gốc theo 10-K FY' + y + '. ' + dig.restatement.replace('ĐIỀU CHỈNH HỒI TỐ: ', '') + ' ' : '') +
-        srcNote('nike_brand_digital_sales', y));
+        sameBasis + srcNote('nike_brand_digital_sales', y));
     };
     o.series = [
       columnSeries('NIKE Direct', ys.map(function (y) { return val('nike_direct_revenue', y) / 1000; }), C.directLight,
@@ -356,7 +359,7 @@
     var a = ys[0], b = ys[ys.length - 1];
     setChart('digital', o, 'Biểu đồ cột lồng nhau: doanh số NIKE Brand Digital từ ' + num(val('nike_brand_digital_sales', a), 1) + ' (FY' + a + ') đến ' +
       num(val('nike_brand_digital_sales', b), 1) + ' tỷ USD (FY' + b + '), là một phần của doanh thu NIKE Direct.');
-    sourceLine('digital', 'Nguồn: MD&A (Item 7), đoạn về NIKE Direct; NIKE Direct từ thuyết minh “Revenues”. Số FY2023 là số gốc, được trình bày lại ở 10-K FY2024.', ys);
+    sourceLine('digital', 'Nguồn: MD&A (Item 7), đoạn về NIKE Direct; NIKE Direct từ thuyết minh “Revenues”.', ys);
   }
 
   // ------------------------------------------------------------------ view 2 charts
@@ -399,12 +402,12 @@
         { color: C.total, value: pct(kpi('gross_margin', y)), label: 'Biên lợi nhuận gộp' },
         { color: C.total, value: bn(val('gross_profit', y)) + ' tỷ USD', label: 'Lợi nhuận gộp' },
         { color: C.total, value: bn(val('revenues', y)) + ' tỷ USD', label: 'Doanh thu' }
-      ], 'Biên gộp là tính toán. ' + srcNote('gross_profit', y));
+      ], 'Biên gộp do nhóm tự tính. ' + srcNote('gross_profit', y));
     };
     o.series = [lineSeries('Biên lợi nhuận gộp', data, C.total, ys, function (v) { return pct(v); })];
     var a = ys[0], b = ys[ys.length - 1];
     setChart('grossMargin', o, 'Biểu đồ đường: biên lợi nhuận gộp từ ' + pct(kpi('gross_margin', a)) + ' (FY' + a + ') đến ' + pct(kpi('gross_margin', b)) + ' (FY' + b + ').');
-    sourceLine('grossMargin', 'Nguồn: Consolidated Statements of Income; biên gộp là tính toán.', ys);
+    sourceLine('grossMargin', 'Nguồn: Consolidated Statements of Income; biên gộp do nhóm tự tính.', ys);
   }
 
   function renderSga() {
@@ -418,7 +421,7 @@
         { color: C.ink2, value: pct(kpi('sga_ratio', y)), label: 'Tổng SG&A / doanh thu, ' + bn(val('total_selling_admin_expense', y)) + ' tỷ USD' },
         { color: C.overhead, value: pct(kpi('operating_overhead_ratio', y)), label: 'Vận hành chung' },
         { color: C.demand, value: pct(kpi('demand_creation_ratio', y)), label: 'Tạo nhu cầu' }
-      ], 'Tỷ lệ là tính toán. ' + srcNote('total_selling_admin_expense', y));
+      ], 'Tỷ lệ do nhóm tự tính. ' + srcNote('total_selling_admin_expense', y));
     };
     var both = visible('sga', 'Vận hành chung') && visible('sga', 'Tạo nhu cầu');
     o.series = [];
@@ -435,7 +438,7 @@
     legend('sga', LEGENDS.sga(), true);
     var a = ys[0], b = ys[ys.length - 1];
     setChart('sga', o, 'Biểu đồ cột chồng: tổng chi phí bán hàng và quản lý bằng ' + pct(kpi('sga_ratio', a)) + ' doanh thu ở FY' + a + ' và ' + pct(kpi('sga_ratio', b)) + ' ở FY' + b + '.');
-    sourceLine('sga', 'Nguồn: Consolidated Statements of Income; tỷ lệ là tính toán. Nhãn trên cột là tổng SG&A / doanh thu.', ys);
+    sourceLine('sga', 'Nguồn: Consolidated Statements of Income; tỷ lệ do nhóm tự tính. Nhãn trên cột là tổng SG&A / doanh thu.', ys);
   }
 
   function renderEbit() {
@@ -457,7 +460,7 @@
     o.series = [lineSeries('Biên EBIT', data, C.total, ys, function (v) { return pct(v); })];
     var a = ys[0], b = ys[ys.length - 1];
     setChart('ebit', o, 'Biểu đồ đường: biên EBIT từ ' + pct(kpi('ebit_margin', a)) + ' (FY' + a + ') đến ' + pct(kpi('ebit_margin', b)) + ' (FY' + b + ').');
-    sourceLine('ebit', 'Nguồn: bảng EBIT trong MD&A (Item 7) và Consolidated Statements of Income; biên là tính toán.', ys);
+    sourceLine('ebit', 'Nguồn: bảng EBIT trong MD&A (Item 7) và Consolidated Statements of Income; biên EBIT do nhóm tự tính.', ys);
   }
 
   function renderInventory() {
@@ -494,12 +497,12 @@
         { color: C.total, value: num(kpi('days_inventory', y), 1) + ' ngày', label: 'Số ngày tồn kho bình quân' },
         { color: C.total, value: bn(kpi('average_inventory', y), 2) + ' tỷ USD', label: 'Tồn kho bình quân đầu và cuối kỳ' },
         { color: C.total, value: bn(val('cost_of_sales', y)) + ' tỷ USD', label: 'Giá vốn hàng bán' }
-      ], 'Tính toán: 365 × tồn kho bình quân / giá vốn. ' + srcNote('inventories', y));
+      ], 'Cách tính: 365 × tồn kho bình quân / giá vốn. ' + srcNote('inventories', y));
     };
     o.series = [lineSeries('Số ngày tồn kho', data, C.total, ys, function (v) { return num(v, 0); })];
     var a = ys[0], b = ys[ys.length - 1];
     setChart('days', o, 'Biểu đồ đường: số ngày tồn kho bình quân từ ' + num(kpi('days_inventory', a), 0) + ' (FY' + a + ') đến ' + num(kpi('days_inventory', b), 0) + ' ngày (FY' + b + ').');
-    sourceLine('days', 'Nguồn: Consolidated Balance Sheets và Statements of Income; chỉ số là tính toán.', ys);
+    sourceLine('days', 'Nguồn: Consolidated Balance Sheets và Statements of Income; chỉ số do nhóm tự tính.', ys);
   }
 
   var RENDER = {
@@ -547,7 +550,8 @@
     } else {
       var ehi = extreme(ys, em, 1);
       parts = ['Doanh thu NIKE, Inc. từ ', { b: bn(val('revenues', a)) }, ' (FY' + a + ') đến ', { b: bn(val('revenues', b)) + ' tỷ USD' }, ' (FY' + b + '). Biên lợi nhuận gộp ',
-        { b: pct(kpi('gross_margin', a)) }, ' và ', { b: pct(kpi('gross_margin', b)) }, '; biên EBIT (non-GAAP) ', { b: pct(em(a)) }, ' và ', { b: pct(em(b)) }];
+        { b: pct(kpi('gross_margin', a)) }, ' (FY' + a + ') và ', { b: pct(kpi('gross_margin', b)) }, ' (FY' + b + '); biên EBIT (non-GAAP) ',
+        { b: pct(em(a)) }, ' (FY' + a + ') và ', { b: pct(em(b)) }, ' (FY' + b + ')'];
       if (ys.length > 2) parts = parts.concat([', cao nhất ', { b: pct(em(ehi)) }, ' (FY' + ehi + ')']);
       parts = parts.concat(['. Hàng tồn kho cuối kỳ từ ', { b: bn(val('inventories', a)) }, ' đến ', { b: bn(val('inventories', b)) + ' tỷ USD' }, '.']);
     }
@@ -644,7 +648,7 @@
         if (row.kpi) {
           var v = kpi(row.kpi, y);
           td = cell('td', v == null ? '—' : row.fmt(v), 'num calc');
-          td.title = 'Tính toán: ' + D.kpis[row.kpi].vi + '. ' + D.kpis[row.kpi].note;
+          td.title = 'Nhóm tự tính: ' + D.kpis[row.kpi].vi + '. ' + D.kpis[row.kpi].note;
         } else {
           var o = ob(row.obs, y);
           if (!o || o.value == null) {
@@ -674,27 +678,101 @@
       tbody.append(tr);
     });
     table.append(thead, tbody);
+    // Where the table scrolls sideways (narrow screens), start at the latest years; the label column is sticky.
+    table.parentNode.scrollLeft = table.parentNode.scrollWidth;
   }
 
-  function csvFor(view) {
-    var ys = years();
-    var rows = [['Chỉ tiêu', 'Mã', 'Loại', 'Đơn vị (giá trị thô)'].concat(ys.map(function (y) { return 'FY' + y; })).concat(['Nguồn'])];
+  // Table download as .xlsx: unlike a CSV, it opens correctly whatever the viewer's regional settings
+  // (list separator and decimal mark differ between Vietnamese and English Windows). Minimal writer:
+  // one sheet, inline strings, numbers stored as numbers, ZIP without compression.
+  var UNIT_STYLE = { 'triệu USD': 2, '%': 3, 'tỷ USD': 4, 'ngày': 4, 'lần': 5 };
+  var XLSX_STYLES = '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">' +
+    '<numFmts count="4"><numFmt numFmtId="164" formatCode="#,##0;(#,##0);0"/><numFmt numFmtId="165" formatCode="0.0%"/>' +
+    '<numFmt numFmtId="166" formatCode="0.0"/><numFmt numFmtId="167" formatCode="0.00"/></numFmts>' +
+    '<fonts count="2"><font><sz val="11"/><name val="Arial"/></font><font><b/><sz val="11"/><name val="Arial"/></font></fonts>' +
+    '<fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills>' +
+    '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>' +
+    '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="6">' +
+    '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>' +
+    [164, 165, 166, 167].map(function (f) { return '<xf numFmtId="' + f + '" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>'; }).join('') +
+    '</cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+
+  function tableRows(view) {
+    var ys = years(), bold = function (t) { return { t: t, bold: true }; };
+    var rows = [[bold('Chỉ tiêu'), bold('Đơn vị'), bold('Loại')].concat(ys.map(function (y) { return bold('FY' + y); }), [bold('Nguồn'), bold('Mã')])];
     TABLES[view].forEach(function (row) {
-      if (row.g) return;
+      if (row.g) { rows.push([bold(row.g)]); return; }
       var id = row.kpi || row.obs;
-      var unit = row.unit === '%' ? 'tỷ lệ thập phân' : row.unit;
       var vals = ys.map(function (y) {
         var v = row.kpi ? kpi(id, y) : val(id, y);
-        return v == null ? '' : String(Math.round(v * 1e6) / 1e6);
+        return v == null ? (row.kpi ? '—' : 'Không công bố') : { v: Math.round(v * 1e9) / 1e9, s: UNIT_STYLE[row.unit] };
       });
-      var source = row.kpi ? 'Tính toán: ' + D.kpis[id].vi : D.metrics[id].location;
-      rows.push([row.label, id, row.kpi ? 'Tính toán' : 'NIKE công bố', unit].concat(vals).concat([source]));
+      var source = row.kpi ? 'Nhóm tự tính: ' + D.kpis[id].vi : D.metrics[id].location;
+      rows.push([row.label, row.unit, row.kpi ? 'Nhóm tự tính' : 'NIKE công bố'].concat(vals, [source, id]));
     });
     rows.push([]);
-    rows.push(['Nguồn: NIKE, Inc. Form 10-K FY' + ys[0] + '–FY' + ys[ys.length - 1] + ' (SEC EDGAR). Trích xuất ' + D.meta.extracted_on + '.']);
-    return '﻿' + rows.map(function (r) {
-      return r.map(function (c) { var s = String(c == null ? '' : c); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(',');
-    }).join('\r\n');
+    rows.push(['Nguồn: NIKE, Inc. Form 10-K FY' + ys[0] + '–FY' + ys[ys.length - 1] + ' (SEC EDGAR). Dữ liệu trích xuất ngày ' +
+      isoDate(D.meta.extracted_on) + '. Dashboard: ' + location.href.split(/[?#]/)[0]]);
+    return rows;
+  }
+
+  var CRC_TABLE = (function () {
+    var t = [];
+    for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; }
+    return t;
+  })();
+  function crc32(bytes) {
+    var c = 0xFFFFFFFF;
+    for (var i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xFF] ^ (c >>> 8);
+    return (c ^ 0xFFFFFFFF) >>> 0;
+  }
+  function zipHeader(size, fields) {  // fields: [offset, value, byteLength]
+    var v = new DataView(new ArrayBuffer(size));
+    fields.forEach(function (f) { if (f[2] === 4) v.setUint32(f[0], f[1], true); else v.setUint16(f[0], f[1], true); });
+    return v.buffer;
+  }
+  function zipBlob(files, type) {
+    var enc = new TextEncoder(), parts = [], dir = [], offset = 0;
+    files.forEach(function (f) {
+      var name = enc.encode(f.name), data = enc.encode(f.text), crc = crc32(data), n = data.length;
+      // Stored (no compression), UTF-8 names (flag 0x0800), date 1980-01-01.
+      parts.push(zipHeader(30, [[0, 0x04034b50, 4], [4, 20, 2], [6, 0x0800, 2], [12, 0x21, 2], [14, crc, 4], [18, n, 4], [22, n, 4],
+        [26, name.length, 2]]), name, data);
+      dir.push(zipHeader(46, [[0, 0x02014b50, 4], [4, 20, 2], [6, 20, 2], [8, 0x0800, 2], [14, 0x21, 2], [16, crc, 4], [20, n, 4], [24, n, 4],
+        [28, name.length, 2], [42, offset, 4]]), name);
+      offset += 30 + name.length + n;
+    });
+    var size = dir.reduce(function (s, b) { return s + b.byteLength; }, 0);
+    parts = parts.concat(dir, [zipHeader(22, [[0, 0x06054b50, 4], [8, files.length, 2], [10, files.length, 2], [12, size, 4], [16, offset, 4]])]);
+    return new Blob(parts, { type: type });
+  }
+  function xlsxBlob(sheetName, rows, widths) {
+    var x = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+    var col = function (j) { return String.fromCharCode(65 + j); };   // at most 13 columns
+    var body = rows.map(function (r, i) {
+      return '<row r="' + (i + 1) + '">' + r.map(function (c, j) {
+        var ref = col(j) + (i + 1);
+        if (c == null || c === '') return '';
+        if (typeof c === 'object' && c.v != null) return '<c r="' + ref + '" s="' + c.s + '"><v>' + c.v + '</v></c>';
+        var text = typeof c === 'object' ? c.t : c, style = typeof c === 'object' && c.bold ? ' s="1"' : '';
+        return '<c r="' + ref + '" t="inlineStr"' + style + '><is><t xml:space="preserve">' + x(text) + '</t></is></c>';
+      }).join('') + '</row>';
+    }).join('');
+    var cols = widths.map(function (w, j) { return '<col min="' + (j + 1) + '" max="' + (j + 1) + '" width="' + w + '" customWidth="1"/>'; }).join('');
+    var head = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n', ns = 'http://schemas.openxmlformats.org/';
+    var rel = ns + 'officeDocument/2006/relationships', pkg = ns + 'package/2006/', sml = ns + 'spreadsheetml/2006/main';
+    var ct = 'application/vnd.openxmlformats-officedocument.spreadsheetml.';
+    return zipBlob([
+      { name: '[Content_Types].xml', text: head + '<Types xmlns="' + pkg + 'content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+        '<Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="' + ct + 'sheet.main+xml"/>' +
+        '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="' + ct + 'worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="' + ct + 'styles+xml"/></Types>' },
+      { name: '_rels/.rels', text: head + '<Relationships xmlns="' + pkg + 'relationships"><Relationship Id="rId1" Type="' + rel + '/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+      { name: 'xl/workbook.xml', text: head + '<workbook xmlns="' + sml + '" xmlns:r="' + rel + '"><sheets><sheet name="' + x(sheetName) + '" sheetId="1" r:id="rId1"/></sheets></workbook>' },
+      { name: 'xl/_rels/workbook.xml.rels', text: head + '<Relationships xmlns="' + pkg + 'relationships"><Relationship Id="rId1" Type="' + rel + '/worksheet" Target="worksheets/sheet1.xml"/>' +
+        '<Relationship Id="rId2" Type="' + rel + '/styles" Target="styles.xml"/></Relationships>' },
+      { name: 'xl/styles.xml', text: head + XLSX_STYLES },
+      { name: 'xl/worksheets/sheet1.xml', text: head + '<worksheet xmlns="' + sml + '"><cols>' + cols + '</cols><sheetData>' + body + '</sheetData></worksheet>' }
+    ], ct + 'sheet');
   }
   function download(blob, name) {
     var a = document.createElement('a');
@@ -840,11 +918,22 @@
       b.addEventListener('click', function () { exportPng(b.dataset.chart); });
     });
     ['channels', 'performance'].forEach(function (v) {
-      document.getElementById('csv-' + v).addEventListener('click', function () {
-        download(new Blob([csvFor(v)], { type: 'text/csv;charset=utf-8' }), 'NIKE_' + (v === 'channels' ? 'kenh-phan-phoi' : 'ket-qua-tai-chinh') + '_' + rangeTag() + '.csv');
-        announce('Đã tạo file CSV.');
+      document.getElementById('xlsx-' + v).addEventListener('click', function () {
+        var widths = [46, 11, 14].concat(years().map(function () { return 11; }), [70, 34]);
+        download(xlsxBlob(v === 'channels' ? 'Kênh phân phối' : 'Kết quả tài chính', tableRows(v), widths),
+          'NIKE_' + (v === 'channels' ? 'kenh-phan-phoi' : 'ket-qua-tai-chinh') + '_' + rangeTag() + '.xlsx');
+        announce('Đã tạo file Excel.');
       });
     });
+    // Printing shows both views (styles.css), so draw the hidden view's charts and table first, then restore.
+    window.addEventListener('beforeprint', function () {
+      ['channels', 'performance'].forEach(function (v) {
+        document.getElementById('view-' + v).hidden = false;
+        VIEW_CHARTS[v].forEach(function (id) { RENDER[id](); charts[id].resize(); });
+        renderTable(v);
+      });
+    });
+    window.addEventListener('afterprint', function () { showView(state.view); renderAll(); });
   }
 
   function renderFooter() {
