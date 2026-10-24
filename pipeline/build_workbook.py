@@ -46,11 +46,11 @@ OBS_COLUMNS = [
     ("Đơn vị", "unit", 10),
     ("Phạm vi báo cáo", "scope", 14),
     ("Kênh", "channel", 24),
-    ("Loại số liệu", "kind", 30),
+    ("Loại số liệu", "kind", 46),
     ("Trạng thái dữ liệu", "status", 24),
     ("Tài liệu nguồn (mở trên SEC)", "doc", 14),
     ("Trang", "page", 7),
-    ("Mục trong 10-K", "section", 40),
+    ("Mục trong 10-K", "section", 44),
     ("Vị trí chi tiết", "location", 60),
     ("Số hoặc câu hiển thị trong tài liệu", "evidence", 50),
     ("Đối chiếu tự động", "cross_check", 52),
@@ -58,7 +58,7 @@ OBS_COLUMNS = [
     ("Người xác minh", "verified_by", 16),
     ("Ngày xác minh", "verified_on", 14),
     ("Ghi chú của nhóm", "team_note", 30),
-    ("Dòng trong 10-K (tiếng Anh)", "en", 60),
+    ("Dòng trong 10-K (tiếng Anh)", "en", 64),
     ("Thẻ XBRL", "xbrl", 60),
     ("Kỳ báo cáo", "period", 26),
     ("Ngày nộp SEC", "filed", 13),
@@ -68,6 +68,7 @@ OBS_COLUMNS = [
 ]
 FIELD_COL = {f: i for i, (_, f, _) in enumerate(OBS_COLUMNS)}
 FILL_IN_FIELDS = {"verified_by", "verified_on", "team_note"}
+PROSE_FIELDS = {"location", "evidence", "cross_check", "restatement", "xbrl"}
 
 
 class Styles:
@@ -108,6 +109,11 @@ def period_label(m, fy):
 def _vn_date(iso):
     y, mth, d = iso.split("-")
     return f"{d}/{mth}/{y}"
+
+
+def text_width(s):
+    """Display width in Excel column units, roughly: capitals and m, w, %, & are about a quarter wider than digits."""
+    return sum(1.25 if ch.isupper() or ch in "mw%&" else 1 for ch in s)
 
 
 def date_text(v):
@@ -177,16 +183,19 @@ def write_observation_sheet(wb, st, name, title, subtitle, obs):
                          period=period_label(m, o["fy"]), filed=_vn_date(o["filed"]), accession=o["accession"],
                          metric_id=m["id"], key=o["key"]))
     for c, (h, field, cap) in enumerate(OBS_COLUMNS):
-        # Width follows the longest entry (capped for long prose); headers wrap to at most three lines.
+        # Width follows the longest entry (capped for long prose, which wraps); headers wrap to at most three lines.
         if field in ("value", "prior", "page", "doc"):
             width = cap
         else:
-            longest = max((len(str(rv[field] or "")) for rv in rows), default=0)
+            longest = max((text_width(str(rv[field] or "")) for rv in rows), default=0)
             width = max(min(longest + 2, cap), max(len(w) for w in h.split()) + 2, len(h) / 3 + 2, 8)
         ws.set_column(c, c, width)
         ws.write(HEADER_ROW, c, h, head_fill if field in FILL_IN_FIELDS else head)
     ws.set_row(HEADER_ROW, 44)
     text = st()
+    # Long prose wraps so the end of it stays visible (the figure in a quoted line, "khớp" in the cross-check);
+    # rows keep no fixed height, so Excel sizes them to the text.
+    prose = st(text_wrap=True)
     link = st(font_color="#1F4E9A", underline=1)
     for i, (o, vals) in enumerate(zip(obs, rows)):
         r = HEADER_ROW + 1 + i
@@ -211,7 +220,8 @@ def write_observation_sheet(wb, st, name, title, subtitle, obs):
                 else:
                     ws.write_number(r, c, vals["page"], st(align="center"))
             else:
-                ws.write_string(r, c, str(vals[field] if vals[field] is not None else ""), text)
+                ws.write_string(r, c, str(vals[field] if vals[field] is not None else ""),
+                                prose if field in PROSE_FIELDS else text)
     last = HEADER_ROW + len(obs)
     ws.autofilter(HEADER_ROW, 0, last, len(OBS_COLUMNS) - 1)
     ws.freeze_panes(HEADER_ROW + 1, 2)

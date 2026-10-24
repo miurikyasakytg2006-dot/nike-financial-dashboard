@@ -39,14 +39,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Nam"
+                      "Entity": "BangKenh"
                     }
                   },
-                  "Property": "Năm"
+                  "Property": "Cột"
                 }
               },
-              "queryRef": "Nam.Năm",
-              "nativeQueryRef": "Năm",
+              "queryRef": "BangKenh.Cột",
+              "nativeQueryRef": "Cột",
               "active": true
             }
           ]
@@ -173,6 +173,13 @@
                 }
               }
             },
+            "titleAlignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Left'"
+                }
+              }
+            },
             "wordWrap": {
               "expr": {
                 "Literal": {
@@ -215,6 +222,22 @@
         },
         {
           "properties": {
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "BangKenh"
+                        }
+                      },
+                      "Property": "Màu chữ BangKenh"
+                    }
+                  }
+                }
+              }
+            },
             "webURL": {
               "expr": {
                 "Measure": {

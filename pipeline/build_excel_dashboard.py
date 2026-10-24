@@ -48,6 +48,10 @@ MINUS = "−"
 GRID_W = 13.57
 COL_PX = 100
 ROW_PX = 20
+# Printing: a fixed scale, because Excel ignores manual page breaks under fit-to-page scaling. At 79% the grid
+# (about 936 pt with the margin columns) fits A4 and Letter landscape; the breaks keep chart rows and table groups whole.
+PRINT_SCALE = 79
+PAGE_ROWS_PT = (595.3 - 2 * 0.4 * 72) * 100 / PRINT_SCALE   # row height that fits on an A4-landscape page
 
 def app_texts():
     """Chart source lines and the growth subtitle, read from app.js so the versions cannot drift apart."""
@@ -177,7 +181,9 @@ class Book:
     def __init__(self, path, data):
         self.d = data
         self.years = data["years"]
-        self.wb = xlsxwriter.Workbook(str(path), {"use_future_functions": True})
+        # Arial 10 rows are 17 px by default (XlsxWriter assumes Calibri's 20 px and would then skip writing the
+        # 20 px rows the layout is designed in, leaving Excel to draw them at 17 px).
+        self.wb = xlsxwriter.Workbook(str(path), {"use_future_functions": True, "default_row_height": 17})
         self.wb.set_properties({"title": "NIKE FY2020–FY2026: phân phối và kết quả tài chính",
                                 "comments": "Phiên bản Excel của dashboard. Nguồn: NIKE, Inc. Form 10-K FY2020–FY2026 (SEC EDGAR)."})
         self.wb.formats[0].set_font_name(FONT)
@@ -368,7 +374,11 @@ class DataSheet:
         return f"=IF({a}={b_},{one},{many})"
 
     def write_table_texts(self):
-        """One row per dashboard table row: display text and 10-K link for each year."""
+        """Two rows per dashboard table row: the figure for each year (with the 10-K links), then its page reference.
+
+        Figures and page references live in separate rows so every figure in a year column ends at the same
+        place, under the year header (a page reference inside the cell would push reported figures left).
+        """
         b, ws = self.b, self.ws
         ny = len(b.years)
         r = self.TEXT_TOP
@@ -381,26 +391,31 @@ class DataSheet:
                 if spec[0] == "g":
                     continue
                 kind, mid, _label, _unit, fmt, _total = spec
-                texts, links = [], []
+                texts, pages, links = [], [], []
                 for y in b.years:
                     if kind == "kpi":
                         v = b.kpi(mid, y)
                         texts.append("—" if v is None else fmt(v))
+                        pages.append("")
                         links.append("")
                         continue
                     o = b.ob(mid, y)
                     if o.get("value") is None:
                         texts.append("Không công bố")
+                        pages.append("")
                         links.append("")
                         continue
-                    mark = " †" if o.get("status") == STATUS_PENDING else ""
+                    mark = "† " if o.get("status") == STATUS_PENDING else ""
                     page = o.get("page")
-                    texts.append(fmt(o["value"]) + mark + (f" · tr. {page}" if page else ""))
+                    texts.append(fmt(o["value"]))
+                    pages.append(mark + (f"tr. {page}" if page else ""))
                     links.append(b.d["filings"][str(y)]["url"] if page else "")
                 ws.write_row(r, 0, [sheet, mid] + texts + links)
+                ws.write_row(r + 1, 0, [sheet, f"{mid} (trang)"] + pages)
                 self.text_rows[(sheet, mid)] = (xlsxwriter.utility.xl_range_abs(r, 2, r, 1 + ny),
-                                                xlsxwriter.utility.xl_range_abs(r, 2 + ny, r, 1 + 2 * ny))
-                r += 1
+                                                xlsxwriter.utility.xl_range_abs(r, 2 + ny, r, 1 + 2 * ny),
+                                                xlsxwriter.utility.xl_range_abs(r + 1, 2, r + 1, 1 + ny))
+                r += 2
 
 
 # ------------------------------------------------------------------ dashboard sheets
@@ -417,8 +432,20 @@ class Dashboard:
         ws.set_default_row(15)
         ws.set_landscape()
         ws.set_paper(9)
-        ws.fit_to_pages(1, 0)
+        ws.set_print_scale(PRINT_SCALE)
         ws.set_margins(0.3, 0.3, 0.4, 0.4)
+
+    def paginate(self, starts, end):
+        """Manual page breaks between blocks (chart rows, table groups) so that none is split across pages."""
+        size = lambda r: self.ws.row_sizes.get(r, [self.ws.default_row_height])[0] * 0.75   # XlsxWriter keeps pixels
+        breaks, used = [], 0
+        for a, z in zip(starts, starts[1:] + [end]):
+            h = sum(size(r) for r in range(a, z))
+            if used and used + h > PAGE_ROWS_PT:
+                breaks.append(a)
+                used = 0
+            used += h
+        self.ws.set_h_pagebreaks(breaks)
 
     # helpers
     def text(self, r, c1, c2, value, fmt, height=None):
@@ -515,10 +542,10 @@ class Dashboard:
         view_rows = TABLES[self.name]
         title = b.texts["table_ch"] if self.view == "channels" else b.texts["table_perf"]
         self.text(r, 1, 12, title, b.f(bold=True, font_size=13, font_color=C["ink"]), 22)
-        key = ("Số NIKE công bố (chữ xanh) có kèm số trang 10-K, bấm vào để mở báo cáo trên SEC. Số in nghiêng là số nhóm tự tính."
-               if self.view == "channels" else
-               "Triệu USD trừ khi ghi khác. Số âm trong ngoặc đơn. Số NIKE công bố (chữ xanh) có kèm số trang 10-K, bấm vào để mở báo cáo trên SEC. "
+        key = ("Số NIKE công bố có số trang 10-K ở dòng nhỏ ngay dưới (bấm vào số trang để mở báo cáo trên SEC). "
                "Số in nghiêng là số nhóm tự tính.")
+        if self.view == "performance":
+            key = "Triệu USD trừ khi ghi khác. Số âm trong ngoặc đơn. " + key
         if b.pending_count():
             key += " † chưa được kiểm tra."
         self.text(r + 1, 1, 12, key, b.f(font_size=9, font_color=C["muted"]), 18)
@@ -535,34 +562,47 @@ class Dashboard:
         ws.set_row(h, 20)
         r = h + 1
         first_year = b.years[0] - 1
+        self.table_starts = [h - 2]    # print blocks: title to the end of the first group, then each further group
         for spec in view_rows:
             if spec[0] == "g":
+                if r > h + 1:
+                    self.table_starts.append(r)
                 g = b.f(bold=True, font_color=C["ink"], bg_color=C["band"], valign="vcenter")
                 ws.merge_range(r, 1, r, 12, spec[1], g)
                 ws.set_row(r, 20)
                 r += 1
                 continue
             kind, mid, label, unit, _fmt, total = spec
-            border = {"top": 1, "top_color": C["ink2"]} if total else {"bottom": 1, "bottom_color": C["grid"]}
+            txt, links, pages = d.text_rows[(self.name, mid)]
+            reported = kind == "obs"     # reported figures get a second, small row with their 10-K page
+            rule = {"bottom": 1, "bottom_color": C["grid"]}
+            top = {"top": 1, "top_color": C["ink2"]} if total else {}
+            border = top if reported else {**top, **rule}
             weight = {"bold": True} if total else {}
             ws.merge_range(r, 1, r, 3, label, b.f(font_color=C["ink"], valign="vcenter", **border, **weight))
             ws.write(r, 4, unit, b.f(font_color=C["muted"], valign="vcenter", **border))
-            txt, links = d.text_rows[(self.name, mid)]
-            if kind == "kpi":
-                cell = b.f(italic=True, align="right", font_color=C["ink2"], valign="vcenter", **border, **weight)
-            else:
-                cell = b.f(align="right", font_color=C["link"], valign="vcenter", **border, **weight)
+            cell = b.f(italic=not reported, align="right", font_color=C["ink"] if reported else C["ink2"], valign="vcenter",
+                       **border, **weight)
             for j in range(len(b.years)):
                 hdr = xlsxwriter.utility.xl_rowcol_to_cell(h, 5 + j, row_abs=True)
-                pick_t = f"INDEX({d.q(txt)},{hdr}-{first_year})"
-                if kind == "kpi":
-                    f_ = f'=IF({hdr}="","",{pick_t})'
-                else:
-                    pick_l = f"INDEX({d.q(links)},{hdr}-{first_year})"
-                    f_ = f'=IF({hdr}="","",IF({pick_l}="",{pick_t},HYPERLINK({pick_l},{pick_t})))'
-                ws.write_formula(r, 5 + j, f_, cell)
+                ws.write_formula(r, 5 + j, f'=IF({hdr}="","",INDEX({d.q(txt)},{hdr}-{first_year}))', cell)
             ws.write_blank(r, 12, None, b.f(**border))
             ws.set_row(r, 20)
+            r += 1
+            if not reported:
+                continue
+            small = b.f(font_size=8, font_color=C["muted"], valign="top", **rule)
+            ws.merge_range(r, 1, r, 3, "", small)
+            ws.write_blank(r, 4, None, small)
+            ref = b.f(font_size=8, font_color=C["muted"], underline=1, align="right", valign="top", **rule)
+            for j in range(len(b.years)):
+                hdr = xlsxwriter.utility.xl_rowcol_to_cell(h, 5 + j, row_abs=True)
+                pick_p = f"INDEX({d.q(pages)},{hdr}-{first_year})"
+                pick_l = f"INDEX({d.q(links)},{hdr}-{first_year})"
+                # &"" keeps an empty page cell empty (INDEX of a blank cell returns 0).
+                ws.write_formula(r, 5 + j, f'=IF({hdr}="","",IF({pick_l}="",{pick_p}&"",HYPERLINK({pick_l},{pick_p})))', ref)
+            ws.write_blank(r, 12, None, small)
+            ws.set_row(r, 13)
             r += 1
         return r
 
@@ -711,10 +751,12 @@ def place(ws, r, c, chart, width, height):
 def build_channels(b, d, ws, charts):
     p = Dashboard(b, d, ws, SHEET_CH, "channels")
     r = p.header()
+    starts = [0]
     p.figure_head(r, 1, 12, "share")
     place(ws, r + 2, 1, charts["share"], 1200, 340)
     p.source(r + 19, 1, 12, "share")
     r += 21
+    starts.append(r)
     # Row: channel revenue | growth (the basis slicer sits above the growth chart: 3 rows of 24 px)
     p.figure_head(r, 1, 6, "channelRevenue")
     p.figure_head(r, 7, 12, "growth", sub_formula=f"={d.summary_cells['growth_sub']}")
@@ -726,6 +768,7 @@ def build_channels(b, d, ws, charts):
     p.source(r + 19, 1, 6, "channelRevenue")
     p.source(r + 19, 7, 12, formula=d.summary_cells["growth_source"])
     r += 21
+    starts.append(r)
     # Row: digital | reading notes
     p.figure_head(r, 1, 6, "digital")
     place(ws, r + 2, 1, charts["digital"], 590, 300)
@@ -733,30 +776,38 @@ def build_channels(b, d, ws, charts):
     title, items = b.texts["notes_ch"]
     p.notes(r, r + 17, 7, 12, title, items)
     r += 19
-    p.table(r)
+    end = p.table(r)
+    p.paginate(starts + p.table_starts, end)
     return p
 
 
 def build_performance(b, d, ws, charts):
     p = Dashboard(b, d, ws, SHEET_PERF, "performance")
     r = p.header()
-    for row_keys in (("revenue", "grossMargin", "sga"), ("ebit", "inventory", "days")):
+    starts = [0]
+    for n, row_keys in enumerate((("revenue", "grossMargin", "sga"), ("ebit", "inventory", "days"))):
+        if n:
+            starts.append(r)
         for i, key in enumerate(row_keys):
             c1 = 1 + 4 * i
             p.figure_head(r, c1, c1 + 3, key)
             place(ws, r + 2, c1, charts[key], 390, 260)
             p.source(r + 15, c1, c1 + 3, key)
         r += 17
+    starts.append(r)
     title, items = b.texts["notes_perf"]
     p.text(r, 1, 12, title, b.f(bold=True, font_size=12, font_color=C["ink"]), 20)
     for i, (dt, dd) in enumerate(items):
         c1 = 1 + 4 * i
         ws.merge_range(r + 1, c1, r + 4, c1 + 3, "", b.f(text_wrap=True))
         ws.write_rich_string(r + 1, c1, b.f(bold=True, font_color=C["ink"]), dt + "\n", b.f(font_color=C["ink2"]), dd, b.f(text_wrap=True))
+    # Height follows the longest note: its title line plus about 56 characters a line (12.75 pt) across four columns.
+    lines = max(1 + math.ceil(len(dd) / 56) for _dt, dd in items)
     for k in range(1, 5):
-        ws.set_row(r + k, 20)
+        ws.set_row(r + k, max(20, math.ceil(lines * 12.75 / 4) + 1))
     r += 6
-    p.table(r)
+    end = p.table(r)
+    p.paginate(starts + p.table_starts, end)
     return p
 
 

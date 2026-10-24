@@ -131,6 +131,21 @@ def vn_date(iso):
     return f"{d}/{m}/{y}"
 
 
+def table_cells(row, y, obs, kpis, filings):
+    """Figure, page reference and 10-K link of one table cell, as renderTable() in app.js shows them."""
+    kind, mid, _, _, fmt = row
+    if kind == "kpi":
+        v = kpis[mid]["values"][str(y)]
+        return ("—" if v is None else FORMATS[fmt](v)), "", None
+    o = obs[mid].get(str(y))
+    if not o or o["value"] is None:
+        return "Không công bố", "", None
+    mark = "†" if o["status"] == STATUS_PENDING else ""
+    if not o.get("page"):
+        return FORMATS[fmt](o["value"]), mark, None
+    return FORMATS[fmt](o["value"]), " ".join(filter(None, [mark, f"tr. {o['page']}"])), filings[str(y)]["url"]
+
+
 # ------------------------------------------------------------------ wording from the web dashboard
 class Wording:
     def __init__(self):
@@ -383,31 +398,27 @@ def semantic_model(d, w, out):
         name = TABLE_NAMES[view]
         rows = []
         for order, row in enumerate(spec, 1):
-            for y in years:
-                if row[0] == "g":
-                    rows.append({"Thứ tự": order, "Chỉ tiêu": row[1].upper(), "FY": y, "Hiển thị": "", "Liên kết": None})
-                    continue
-                kind, mid, label, unit, fmt = row
+            if row[0] == "g":
+                label = row[1].upper()
+            else:
                 # Percentages carry their own sign; other units go into the row label (one row level only).
-                label = label if unit == "%" else f"{label}, {unit}"
-                link = None
-                if kind == "kpi":
-                    v = kpis[mid]["values"][str(y)]
-                    shown = "—" if v is None else FORMATS[fmt](v)
-                else:
-                    o = obs[mid].get(str(y))
-                    if not o or o["value"] is None:
-                        shown = "Không công bố"
-                    else:
-                        shown = FORMATS[fmt](o["value"]) + (" †" if o["status"] == STATUS_PENDING else "")
-                        if o.get("page"):
-                            shown += f" · tr. {o['page']}"
-                            link = filings[str(y)]["url"]
-                rows.append({"Thứ tự": order, "Chỉ tiêu": label, "FY": y, "Hiển thị": shown, "Liên kết": link})
+                label = row[2] if row[3] == "%" else f"{row[2]}, {row[3]}"
+            for i, y in enumerate(years):
+                figure, page, link = ("", "", None) if row[0] == "g" else table_cells(row, y, obs, kpis, filings)
+                # Each year is two matrix columns: the figure under "FY2020", then its page reference under a
+                # blank header (non-breaking spaces, a different count per year so the headers stay distinct).
+                cell = {"Thứ tự": order, "Chỉ tiêu": label, "FY": y}
+                rows.append({**cell, "Cột": f"FY{y}", "Thứ tự cột": 2 * i, "Loại": "Số", "Hiển thị": figure, "Liên kết": None})
+                rows.append({**cell, "Cột": " " * (i + 1), "Thứ tự cột": 2 * i + 1, "Loại": "Trang", "Hiển thị": page,
+                             "Liên kết": link})
         cols = [col("Thứ tự", "int64", hidden=True), col("Chỉ tiêu", "string", sort_by="Thứ tự"),
-                col("FY", "int64", hidden=True, format="0"), col("Hiển thị", "string"), col("Liên kết", "string", category="WebUrl")]
-        measures = [dict(name=f"Giá trị {name}", expr=f'COALESCE ( SELECTEDVALUE ( {name}[Hiển thị] ), "" )'),
-                    dict(name=f"Liên kết {name}", expr=f"SELECTEDVALUE ( {name}[Liên kết] )")]
+                col("FY", "int64", hidden=True, format="0"), col("Cột", "string", sort_by="Thứ tự cột"),
+                col("Thứ tự cột", "int64", hidden=True), col("Loại", "string", hidden=True), col("Hiển thị", "string"),
+                col("Liên kết", "string", category="WebUrl")]
+        # Blank (not "") for years outside the slicer range, so the matrix drops those columns.
+        measures = [dict(name=f"Giá trị {name}", expr=f'IF ( NOT ISEMPTY ( {name} ), COALESCE ( SELECTEDVALUE ( {name}[Hiển thị] ), "" ) )'),
+                    dict(name=f"Liên kết {name}", expr=f"SELECTEDVALUE ( {name}[Liên kết] )"),
+                    dict(name=f"Màu chữ {name}", expr=f'IF ( SELECTEDVALUE ( {name}[Loại] ) = "Trang", "{C["muted"]}", "{C["ink"]}" )')]
         tables[name] = tmdl_table(name, cols, rows, measures)
     tables["CoSo"] = tmdl_table("CoSo", [col("Cơ sở", "string", sort_by="Thứ tự"), col("Thứ tự", "int64", hidden=True)],
                                 [{"Cơ sở": "Theo báo cáo", "Thứ tự": 1}, {"Cơ sở": "Loại trừ tỷ giá", "Thứ tự": 2}])
@@ -588,17 +599,23 @@ def card(m):
 def matrix(table):
     value = measure(f"Giá trị {table}", table)
     every_cell = {"data": [{"dataViewWildcard": {"matchingOption": 1}}], "metadata": ref(value)}
+    # Columns alternate figure / page reference per year, all right-aligned: every figure ends under its year
+    # header and the page references sit in their own column after it (no value-name subheader row).
     return {"visualType": "pivotTable",
             "query": {"queryState": {"Rows": {"projections": [proj(column(table, "Chỉ tiêu"))]},
-                                     "Columns": {"projections": [proj(YEAR_AXIS)]},
+                                     "Columns": {"projections": [proj(column(table, "Cột"))]},
                                      "Values": {"projections": [proj(value, "Giá trị")]}}},
             "objects": {"subTotals": props(rowSubtotals=False, columnSubtotals=False),
                         "rowHeaders": props(fontFamily=SANS, fontSize=10.0, fontColor=fill(C["ink"]), wordWrap=True),
+                        # Year headers right-aligned over their figures; the corner title ("Chỉ tiêu") left-aligned
+                        # over the row labels.
                         "columnHeaders": props(fontFamily=SANS, fontSize=10.0, fontColor=fill(C["ink"]), bold=True,
-                                               alignment="Right", wordWrap=True),
+                                               alignment="Right", titleAlignment="Left", wordWrap=True),
                         "values": [{"properties": {"fontFamily": lit(SANS), "fontSize": lit(10.0), "fontColor": fill(C["ink"])}},
-                                   # reported figures link to their 10-K (Ctrl + click in Power BI Desktop)
-                                   {"properties": {"webURL": {"expr": measure(f"Liên kết {table}", table)}}, "selector": every_cell}],
+                                   # page references: muted, and Ctrl + click opens that year's 10-K
+                                   {"properties": {"fontColor": {"solid": {"color": {"expr": measure(f"Màu chữ {table}", table)}}},
+                                                   "webURL": {"expr": measure(f"Liên kết {table}", table)}},
+                                    "selector": every_cell}],
                         "columnFormatting": [{"properties": {"alignment": lit("Right")}, "selector": {"metadata": ref(value)}}],
                         "grid": props(gridVertical=False, gridHorizontal=True, gridHorizontalColor=fill(C["grid"]),
                                       rowPadding=3.0)},
@@ -625,10 +642,21 @@ def notes(page, name, x, y, w, h, title, items):
     page.text(name, x, y, w, h, paragraphs)
 
 
+PAGE_REF_KEY = "có số trang 10-K ở cột nhỏ bên phải (Ctrl + bấm vào số trang để mở báo cáo trên SEC)"
+
+
+def table_key(text):
+    """The web table key reworded for Power BI: page references sit in their own column and there are no italics."""
+    key = re.sub(r"có kèm số trang 10-K(?: \(bấm để mở báo cáo trên SEC\))?", PAGE_REF_KEY, text)
+    key = key.replace(" Số in nghiêng là số nhóm tự tính.", " Số nhóm tự tính không có số trang.")
+    if PAGE_REF_KEY not in key or "in nghiêng" in key:
+        raise SystemExit(f"index.html: table key wording changed; update table_key() in build_powerbi.py: {text}")
+    return key
+
+
 def table_section(page, w, view, table, y, rows):
     page.text("bang_tieu_de", MARGIN, y, 1200, 32, [para(run(w.table_title[view], 13, C["ink"], True))])
-    key = w.table_key[view].replace("(bấm để", "(Ctrl + bấm để").replace(" Số in nghiêng là số nhóm tự tính.",
-                                                                         " Số nhóm tự tính không kèm số trang.")
+    key = table_key(w.table_key[view])
     if w.pending:
         key += " " + w.pending_key
     page.text("bang_chu_thich", MARGIN, y + 32, 1200, 28, [para(run(key, 9.5, C["muted"]))])

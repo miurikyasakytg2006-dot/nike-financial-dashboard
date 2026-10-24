@@ -1,8 +1,10 @@
 """Data-integrity tests: extraction, workbook, validation, KPI formulas and the three dashboard versions."""
 import json
+import posixpath
 import re
 import shutil
 import zipfile
+import xml.etree.ElementTree as ET
 from decimal import Decimal
 
 import pytest
@@ -177,6 +179,49 @@ def _check_excel_dashboard(path, site_data):
                      ("Tăng trưởng NIKE Direct loại trừ tỷ giá", "nike_direct_pct_change_cn")):
         for r, y in zip(rows[1:], years):
             assert _same(r[header.index(col)].value, site_data["observations"][mid][str(y)]["value"]), (col, y)
+    # Table texts: figures and their 10-K pages are in separate rows, so every figure ends under its year header.
+    start = next(r for r in range(1, ws.max_row + 1) if str(ws.cell(r, 1).value).startswith("Văn bản cho bảng"))
+    n = 0
+    for row in ws.iter_rows(min_row=start + 2, max_col=2 + len(years), values_only=True):
+        if row[1] is None:
+            break
+        cells = [v or "" for v in row[2:]]
+        if row[1].endswith(" (trang)"):
+            assert all(re.fullmatch(r"(† )?(tr\. \d+)?", v) for v in cells), row
+        else:
+            assert not any("tr." in v for v in cells), row
+        n += 1
+    assert n > 40, n
+    _check_print_layout(path)
+
+
+XL = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
+      "x": "http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing",
+      "p": "http://schemas.openxmlformats.org/package/2006/relationships"}
+REL_ID = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id"
+
+
+def _check_print_layout(path):
+    """Both dashboards print at a fixed scale, with manual page breaks that never cut a chart or slicer in two."""
+    def part(base, target):     # relationship targets are absolute or relative to the part's folder
+        return target.lstrip("/") if target.startswith("/") else posixpath.normpath(posixpath.join(base, target))
+    with zipfile.ZipFile(path) as z:
+        rels = {r.get("Id"): r.get("Target") for r in ET.fromstring(z.read("xl/_rels/workbook.xml.rels"))}
+        for sheet in ET.fromstring(z.read("xl/workbook.xml")).find("m:sheets", XL)[:2]:
+            name = part("xl", rels[sheet.get(REL_ID)])
+            ws = ET.fromstring(z.read(name))
+            assert ws.find("m:pageSetup", XL).get("scale") == "79", name
+            breaks = [int(b.get("id")) for b in ws.iterfind("m:rowBreaks/m:brk", XL)]
+            assert breaks, name
+            srels = ET.fromstring(z.read(name.replace("worksheets/", "worksheets/_rels/") + ".rels"))
+            drawing = next(part("xl/worksheets", r.get("Target")) for r in srels.iterfind("p:Relationship", XL)
+                           if r.get("Type").endswith("/drawing"))
+            anchors = list(ET.fromstring(z.read(drawing)).iter(f"{{{XL['x']}}}twoCellAnchor"))
+            assert len(anchors) >= 4, drawing
+            for a in anchors:
+                top = int(a.find("x:from/x:row", XL).text)
+                bottom = int(a.find("x:to/x:row", XL).text) - (a.find("x:to/x:rowOff", XL).text == "0")
+                assert not [b for b in breaks if top < b <= bottom], (name, top, bottom, breaks)
 
 
 def test_excel_dashboard_build_matches_site_data(tmp_path, site_data):
@@ -193,6 +238,22 @@ def test_delivered_excel_dashboard_is_current(site_data):
     _check_excel_dashboard(OUT, site_data)
     with zipfile.ZipFile(OUT) as z:
         assert len([n for n in z.namelist() if n.startswith("xl/slicerCaches/")]) == 2
+    # Excel recalculated this copy when the slicers were added, so the tables' displayed values are stored:
+    # figures carry no page reference, and page cells hold only "tr. N" (a blank page must not show as 0).
+    wb = load_workbook(OUT, data_only=True)
+    for name in wb.sheetnames[:2]:
+        ws = wb[name]
+        head = next(r for r in range(1, ws.max_row + 1) if ws.cell(r, 2).value == "Chỉ tiêu")
+        page_rows = 0
+        for r in range(head + 1, ws.max_row + 1):
+            cells = [ws.cell(r, c).value for c in range(6, 13)]
+            assert all(v is None or isinstance(v, str) for v in cells), (name, r, cells)
+            if ws.cell(r, 2).value is None and any(cells):
+                assert all(re.fullmatch(r"(† )?(tr\. \d+)?", v or "") for v in cells), (name, r, cells)
+                page_rows += 1
+            else:
+                assert not any("tr." in (v or "") for v in cells), (name, r, cells)
+        assert page_rows > 5, (name, page_rows)
 
 
 def _tmdl_rows(path):
@@ -222,6 +283,19 @@ def test_powerbi_model_matches_site_data(site_data):
             assert _same(rows[y][mid], by_year[str(y)]["value"]), (mid, y)
         for kid, k in site_data["kpis"].items():
             assert _same(rows[y][kid], k["values"][str(y)]), (kid, y)
+    # Table texts: each year is two matrix columns, the figure under "FY…" and then its 10-K page, so every
+    # figure ends under its year header. Page references link to that year's 10-K.
+    for name in ("BangKenh", "BangKetQua"):
+        cells = _tmdl_rows(tables / f"{name}.tmdl")
+        figures, pages = [c for c in cells if c["Loại"] == "Số"], [c for c in cells if c["Loại"] == "Trang"]
+        assert len(figures) == len(pages) > 0 and len(figures) + len(pages) == len(cells), name
+        for c in figures:
+            assert c["Cột"] == f"FY{int(c['FY'])}" and c["Thứ tự cột"] % 2 == 0, c
+            assert "tr." not in c["Hiển thị"] and c["Liên kết"] is None, c
+        for c in pages:
+            assert re.fullmatch(r"(†|† tr\. \d+|tr\. \d+)?", c["Hiển thị"]), c
+            url = site_data["filings"][str(int(c["FY"]))]["url"]
+            assert c["Liên kết"] == (url if "tr." in c["Hiển thị"] else None), c
 
 
 def test_delivered_pbix_opens_on_all_years():
