@@ -599,7 +599,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Tỷ trọng trong tổng doanh thu NIKE Brand (%), nhóm tự tính từ số liệu 10-K.'"
+                  "Value": "'Tỷ trọng trong tổng doanh thu NIKE Brand (%), do nhóm tự tính từ số liệu 10-K.'"
                 }
               }
             },

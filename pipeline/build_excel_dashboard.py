@@ -41,7 +41,7 @@ STATUS_PENDING = "Chờ người kiểm tra"
 
 # Same palette as site/assets/app.js
 C = dict(direct="#2a78d6", wholesale="#eb6834", gbd="#a3a9b2", direct_light="#86b6ef", digital="#1c5cab",
-         total="#475467", overhead="#6250d6", demand="#1baf7a", ink="#15191e", ink2="#3b4350", muted="#5b6472",
+         total="#475467", overhead="#6250d6", demand="#1baf7a", ink="#15191e", ink2="#3b4350", muted="#5b6472", faint="#6f7784",
          grid="#e6e9ee", axis="#c3c9d1", rule="#d9dde3", band="#f4f5f7", link="#1f4e9a")
 FONT, SERIF = "Arial", "Cambria"
 MINUS = "−"
@@ -353,26 +353,30 @@ class DataSheet:
         return f"INDEX({self.ref(header)},{year_cell}-{self.b.years[0] - 1})"
 
     def channels_summary(self):
-        a, b_, hi, lo, n = self.h["Năm đầu"], self.h["Năm cuối"], self.h["Năm tỷ trọng Direct cao nhất"], self.h["Năm tỷ trọng Direct thấp nhất"], self.h["Số năm"]
+        a, b_, hi, lo = self.h["Năm đầu"], self.h["Năm cuối"], self.h["Năm tỷ trọng Direct cao nhất"], self.h["Năm tỷ trọng Direct thấp nhất"]
         T = lambda col, y: self.text_at(col, y)
+        # The highest and lowest years are named only when they are not the two ends already given.
+        hi_mid, lo_mid = f"AND({hi}<>{a},{hi}<>{b_})", f"AND({lo}<>{a},{lo}<>{b_})"
         one = (f'"Trong FY"&{a}&", NIKE Direct chiếm "&{T("Tỷ trọng NIKE Direct (chữ)", a)}&" doanh thu NIKE Brand ("&'
-               f'{T("NIKE Direct (chữ)", a)}&" tỷ USD); bán buôn chiếm "&{T("Tỷ trọng bán buôn (chữ)", a)}&" ("&{T("Bán buôn (chữ)", a)}&" tỷ USD)."')
+               f'{T("NIKE Direct (chữ)", a)}&" tỷ USD), còn bán buôn chiếm "&{T("Tỷ trọng bán buôn (chữ)", a)}&" ("&{T("Bán buôn (chữ)", a)}&" tỷ USD)."')
         many = (f'"Tỷ trọng NIKE Direct trong doanh thu NIKE Brand là "&{T("Tỷ trọng NIKE Direct (chữ)", a)}&" ở FY"&{a}&" và "&'
-                f'{T("Tỷ trọng NIKE Direct (chữ)", b_)}&" ở FY"&{b_}&IF({n}>2,"; cao nhất "&{T("Tỷ trọng NIKE Direct (chữ)", hi)}&" (FY"&{hi}&"), thấp nhất "&'
-                f'{T("Tỷ trọng NIKE Direct (chữ)", lo)}&" (FY"&{lo}&")","")&". Doanh thu NIKE Direct từ "&{T("NIKE Direct (chữ)", a)}&" đến "&'
-                f'{T("NIKE Direct (chữ)", b_)}&" tỷ USD; bán buôn từ "&{T("Bán buôn (chữ)", a)}&" đến "&{T("Bán buôn (chữ)", b_)}&" tỷ USD."')
+                f'{T("Tỷ trọng NIKE Direct (chữ)", b_)}&" ở FY"&{b_}&'
+                f'IF({hi_mid},", cao nhất "&{T("Tỷ trọng NIKE Direct (chữ)", hi)}&" (FY"&{hi}&")","")&'
+                f'IF({lo_mid},IF({hi_mid}," và thấp nhất ",", thấp nhất ")&{T("Tỷ trọng NIKE Direct (chữ)", lo)}&" (FY"&{lo}&")","")&'
+                f'". Doanh thu NIKE Direct đi từ "&{T("NIKE Direct (chữ)", a)}&" đến "&'
+                f'{T("NIKE Direct (chữ)", b_)}&" tỷ USD, còn bán buôn từ "&{T("Bán buôn (chữ)", a)}&" đến "&{T("Bán buôn (chữ)", b_)}&" tỷ USD."')
         return f"=IF({a}={b_},{one},{many})"
 
     def performance_summary(self):
-        a, b_, ehi, n = self.h["Năm đầu"], self.h["Năm cuối"], self.h["Năm biên EBIT cao nhất"], self.h["Số năm"]
+        a, b_, ehi = self.h["Năm đầu"], self.h["Năm cuối"], self.h["Năm biên EBIT cao nhất"]
         T = lambda col, y: self.text_at(col, y)
         one = (f'"Trong FY"&{a}&", doanh thu NIKE, Inc. là "&{T("Doanh thu (chữ)", a)}&" tỷ USD, biên lợi nhuận gộp "&{T("Biên lợi nhuận gộp (chữ)", a)}&'
                f'", biên EBIT (non-GAAP) "&{T("Biên EBIT (chữ)", a)}&", hàng tồn kho cuối kỳ "&{T("Hàng tồn kho (chữ)", a)}&" tỷ USD."')
-        many = (f'"Doanh thu NIKE, Inc. từ "&{T("Doanh thu (chữ)", a)}&" (FY"&{a}&") đến "&{T("Doanh thu (chữ)", b_)}&" tỷ USD (FY"&{b_}&'
-                f'"). Biên lợi nhuận gộp "&{T("Biên lợi nhuận gộp (chữ)", a)}&" (FY"&{a}&") và "&{T("Biên lợi nhuận gộp (chữ)", b_)}&" (FY"&{b_}&'
-                f'"); biên EBIT (non-GAAP) "&{T("Biên EBIT (chữ)", a)}&" (FY"&{a}&") và "&{T("Biên EBIT (chữ)", b_)}&" (FY"&{b_}&")"&'
-                f'IF({n}>2,", cao nhất "&{T("Biên EBIT (chữ)", ehi)}&" (FY"&{ehi}&")","")&'
-                f'". Hàng tồn kho cuối kỳ từ "&{T("Hàng tồn kho (chữ)", a)}&" đến "&{T("Hàng tồn kho (chữ)", b_)}&" tỷ USD."')
+        many = (f'"Doanh thu NIKE, Inc. đi từ "&{T("Doanh thu (chữ)", a)}&" (FY"&{a}&") đến "&{T("Doanh thu (chữ)", b_)}&" tỷ USD (FY"&{b_}&'
+                f'"). Biên lợi nhuận gộp là "&{T("Biên lợi nhuận gộp (chữ)", a)}&" (FY"&{a}&") và "&{T("Biên lợi nhuận gộp (chữ)", b_)}&" (FY"&{b_}&'
+                f'"), còn biên EBIT (non-GAAP) là "&{T("Biên EBIT (chữ)", a)}&" (FY"&{a}&") và "&{T("Biên EBIT (chữ)", b_)}&" (FY"&{b_}&")"&'
+                f'IF(AND({ehi}<>{a},{ehi}<>{b_}),", cao nhất "&{T("Biên EBIT (chữ)", ehi)}&" (FY"&{ehi}&")","")&'
+                f'". Hàng tồn kho cuối kỳ đi từ "&{T("Hàng tồn kho (chữ)", a)}&" đến "&{T("Hàng tồn kho (chữ)", b_)}&" tỷ USD."')
         return f"=IF({a}={b_},{one},{many})"
 
     def write_table_texts(self):
@@ -496,7 +500,7 @@ class Dashboard:
         self.year_slicer_cell = "B8"
         for r in range(7, 10):
             ws.set_row(r, 18)
-        ws.merge_range(7, 9, 9, 12, "Bấm một năm để lọc, giữ Ctrl để chọn nhiều năm. Nút xóa lọc ở góc slicer đưa về đủ 7 năm.",
+        ws.merge_range(7, 9, 9, 12, "Bấm một năm để lọc, giữ Ctrl để chọn nhiều năm. Bấm nút xoá lọc ở góc slicer để xem lại đủ 7 năm.",
                        b.f(font_size=9, font_color=C["muted"], text_wrap=True, valign="vcenter"))
         ws.set_row(10, 12)
         # Question and summary
@@ -547,7 +551,7 @@ class Dashboard:
         key = ("Số NIKE công bố có số trang 10-K ở dòng nhỏ ngay dưới (bấm vào số trang để mở báo cáo trên SEC). "
                "Số in nghiêng là số nhóm tự tính.")
         if self.view == "performance":
-            key = "Triệu USD trừ khi ghi khác. Số âm trong ngoặc đơn. " + key
+            key = "Đơn vị triệu USD, trừ khi ghi khác. Số âm để trong ngoặc đơn. " + key
         if b.pending_count():
             key += " † chưa được kiểm tra."
         self.text(r + 1, 1, 12, key, b.f(font_size=9, font_color=C["muted"]), 18)
@@ -596,7 +600,7 @@ class Dashboard:
             small = b.f(font_size=8, font_color=C["muted"], valign="top", **rule)
             ws.merge_range(r, 1, r, 3, "", small)
             ws.write_blank(r, 4, None, small)
-            ref = b.f(font_size=8, font_color=C["muted"], underline=1, align="right", valign="top", **rule)
+            ref = b.f(font_size=8, font_color=C["faint"], align="right", valign="top", **rule)
             for j in range(len(b.years)):
                 hdr = xlsxwriter.utility.xl_rowcol_to_cell(h, 5 + j, row_abs=True)
                 pick_p = f"INDEX({d.q(pages)},{hdr}-{first_year})"
@@ -834,7 +838,7 @@ def build_sources(b, ws):
         ws.write(4 + i, 3, "–  " + item, b.f(text_wrap=True))
     # Row height follows the longest bullet on the row (about 80 characters per line in a 62-wide column).
     for i in range(max(len(b.years), len(t["method"]))):
-        lines = math.ceil(len(t["method"][i]) / 80) if i < len(t["method"]) else 1
+        lines = math.ceil(len(t["method"][i]) / 70) if i < len(t["method"]) else 1
         ws.set_row(4 + i, max(30, 15 * lines + 3))
     r = 4 + max(len(b.years), len(t["method"])) + 1
     ws.write(r, 1, "Tình trạng dữ liệu", h)

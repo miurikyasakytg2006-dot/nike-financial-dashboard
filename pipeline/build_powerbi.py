@@ -45,7 +45,7 @@ MINUS = "\u2212"
 # Palette and type, as in site/assets/app.js and styles.css
 C = dict(direct="#2a78d6", wholesale="#eb6834", gbd="#a3a9b2", directLight="#86b6ef", digital="#1c5cab",
          total="#475467", overhead="#6250d6", demand="#1baf7a",
-         ink="#15191e", ink2="#3b4350", muted="#5b6472", grid="#e6e9ee", axis="#c3c9d1", rule="#dde1e6")
+         ink="#15191e", ink2="#3b4350", muted="#5b6472", faint="#6f7784", grid="#e6e9ee", axis="#c3c9d1", rule="#dde1e6")
 SANS, SERIF = "Segoe UI", "Cambria"
 PAGE_W, MARGIN = 1280, 40
 
@@ -272,7 +272,6 @@ def dax_summary_channels():
     return """
 VAR a = MIN ( Nam[FY] )
 VAR b = MAX ( Nam[FY] )
-VAR n = DISTINCTCOUNT ( Nam[FY] )
 VAR shA = CALCULATE ( SUM ( Nam[direct_share] ), Nam[FY] = a )
 VAR shB = CALCULATE ( SUM ( Nam[direct_share] ), Nam[FY] = b )
 VAR hi = MINX ( TOPN ( 1, VALUES ( Nam[FY] ), CALCULATE ( SUM ( Nam[direct_share] ) ), DESC ), Nam[FY] )
@@ -288,14 +287,15 @@ RETURN
     IF (
         a = b,
         "Trong FY" & a & ", NIKE Direct chiếm " & FORMAT ( shA, "0.0%", "vi-VN" ) & " doanh thu NIKE Brand ("
-            & FORMAT ( dA, "#,0.0", "vi-VN" ) & " tỷ USD); bán buôn chiếm " & FORMAT ( wsA, "0.0%", "vi-VN" ) & " ("
+            & FORMAT ( dA, "#,0.0", "vi-VN" ) & " tỷ USD), còn bán buôn chiếm " & FORMAT ( wsA, "0.0%", "vi-VN" ) & " ("
             & FORMAT ( wA, "#,0.0", "vi-VN" ) & " tỷ USD).",
         "Tỷ trọng NIKE Direct trong doanh thu NIKE Brand là " & FORMAT ( shA, "0.0%", "vi-VN" ) & " ở FY" & a & " và "
             & FORMAT ( shB, "0.0%", "vi-VN" ) & " ở FY" & b
-            & IF ( n > 2, "; cao nhất " & FORMAT ( shHi, "0.0%", "vi-VN" ) & " (FY" & hi & "), thấp nhất "
+            & IF ( hi <> a && hi <> b, ", cao nhất " & FORMAT ( shHi, "0.0%", "vi-VN" ) & " (FY" & hi & ")" )
+            & IF ( lo <> a && lo <> b, IF ( hi <> a && hi <> b, " và thấp nhất ", ", thấp nhất " )
                 & FORMAT ( shLo, "0.0%", "vi-VN" ) & " (FY" & lo & ")" )
-            & ". Doanh thu NIKE Direct từ " & FORMAT ( dA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( dB, "#,0.0", "vi-VN" )
-            & " tỷ USD; bán buôn từ " & FORMAT ( wA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( wB, "#,0.0", "vi-VN" ) & " tỷ USD."
+            & ". Doanh thu NIKE Direct đi từ " & FORMAT ( dA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( dB, "#,0.0", "vi-VN" )
+            & " tỷ USD, còn bán buôn từ " & FORMAT ( wA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( wB, "#,0.0", "vi-VN" ) & " tỷ USD."
     )
 """
 
@@ -304,7 +304,6 @@ def dax_summary_performance():
     return """
 VAR a = MIN ( Nam[FY] )
 VAR b = MAX ( Nam[FY] )
-VAR n = DISTINCTCOUNT ( Nam[FY] )
 VAR rA = CALCULATE ( SUM ( Nam[revenues] ), Nam[FY] = a ) / 1000
 VAR rB = CALCULATE ( SUM ( Nam[revenues] ), Nam[FY] = b ) / 1000
 VAR gA = CALCULATE ( SUM ( Nam[gross_margin] ), Nam[FY] = a )
@@ -321,12 +320,12 @@ RETURN
         "Trong FY" & a & ", doanh thu NIKE, Inc. là " & FORMAT ( rA, "#,0.0", "vi-VN" ) & " tỷ USD, biên lợi nhuận gộp "
             & FORMAT ( gA, "0.0%", "vi-VN" ) & ", biên EBIT (non-GAAP) " & FORMAT ( eA, "0.0%", "vi-VN" )
             & ", hàng tồn kho cuối kỳ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " tỷ USD.",
-        "Doanh thu NIKE, Inc. từ " & FORMAT ( rA, "#,0.0", "vi-VN" ) & " (FY" & a & ") đến " & FORMAT ( rB, "#,0.0", "vi-VN" )
-            & " tỷ USD (FY" & b & "). Biên lợi nhuận gộp " & FORMAT ( gA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
-            & FORMAT ( gB, "0.0%", "vi-VN" ) & " (FY" & b & "); biên EBIT (non-GAAP) " & FORMAT ( eA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
+        "Doanh thu NIKE, Inc. đi từ " & FORMAT ( rA, "#,0.0", "vi-VN" ) & " (FY" & a & ") đến " & FORMAT ( rB, "#,0.0", "vi-VN" )
+            & " tỷ USD (FY" & b & "). Biên lợi nhuận gộp là " & FORMAT ( gA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
+            & FORMAT ( gB, "0.0%", "vi-VN" ) & " (FY" & b & "), còn biên EBIT (non-GAAP) là " & FORMAT ( eA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
             & FORMAT ( eB, "0.0%", "vi-VN" ) & " (FY" & b & ")"
-            & IF ( n > 2, ", cao nhất " & FORMAT ( eHi, "0.0%", "vi-VN" ) & " (FY" & yHi & ")" )
-            & ". Hàng tồn kho cuối kỳ từ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( iB, "#,0.0", "vi-VN" ) & " tỷ USD."
+            & IF ( yHi <> a && yHi <> b, ", cao nhất " & FORMAT ( eHi, "0.0%", "vi-VN" ) & " (FY" & yHi & ")" )
+            & ". Hàng tồn kho cuối kỳ đi từ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( iB, "#,0.0", "vi-VN" ) & " tỷ USD."
     )
 """
 
@@ -418,7 +417,7 @@ def semantic_model(d, w, out):
         # Blank (not "") for years outside the slicer range, so the matrix drops those columns.
         measures = [dict(name=f"Giá trị {name}", expr=f'IF ( NOT ISEMPTY ( {name} ), COALESCE ( SELECTEDVALUE ( {name}[Hiển thị] ), "" ) )'),
                     dict(name=f"Liên kết {name}", expr=f"SELECTEDVALUE ( {name}[Liên kết] )"),
-                    dict(name=f"Màu chữ {name}", expr=f'IF ( SELECTEDVALUE ( {name}[Loại] ) = "Trang", "{C["muted"]}", "{C["ink"]}" )')]
+                    dict(name=f"Màu chữ {name}", expr=f'IF ( SELECTEDVALUE ( {name}[Loại] ) = "Trang", "{C["faint"]}", "{C["ink"]}" )')]
         tables[name] = tmdl_table(name, cols, rows, measures)
     tables["CoSo"] = tmdl_table("CoSo", [col("Cơ sở", "string", sort_by="Thứ tự"), col("Thứ tự", "int64", hidden=True)],
                                 [{"Cơ sở": "Theo báo cáo", "Thứ tự": 1}, {"Cơ sở": "Loại trừ tỷ giá", "Thứ tự": 2}])
@@ -626,9 +625,11 @@ def header(page, w, view):
     page.text("tieu_de", MARGIN, 16, 820, 50, [para(run(w.title, 20, C["ink"], True, SERIF))])
     page.text("mo_ta", MARGIN, 66, 820, 50, [para(run(w.subtitle, 11, C["ink2"]))])
     page.add("loc_nam", 900, 16, 340, 110, year_slicer())
-    page.text("cau_hoi", MARGIN, 140, 700, 110, [para(run(w.question[view], 17, C["ink"], True, SERIF))])
-    page.text("tom_tat_nhan", 780, 140, 460, 26, [para(run(w.summary_label, 10, C["muted"]))])
-    page.add("tom_tat", 780, 166, 460, 110, card("Tóm tắt kênh" if view == "channels" else "Tóm tắt kết quả"))
+    # Question and summary each take half the row (580 units, the channel page's chart columns): at 460 units the
+    # performance summary needs five lines and the card cuts the fifth off with "…".
+    page.text("cau_hoi", MARGIN, 140, 580, 110, [para(run(w.question[view], 17, C["ink"], True, SERIF))])
+    page.text("tom_tat_nhan", 660, 140, 580, 26, [para(run(w.summary_label, 10, C["muted"]))])
+    page.add("tom_tat", 660, 166, 580, 110, card("Tóm tắt kênh" if view == "channels" else "Tóm tắt kết quả"))
 
 
 def source(page, name, x, y, w, text, h=44):
@@ -694,7 +695,9 @@ def page_channels(w):
         t, subtitle_measure="Phụ đề tăng trưởng", labels=False,
         tooltips=[("NIKE Direct theo báo cáo", "NIKE Direct, theo báo cáo"), ("NIKE Direct loại trừ tỷ giá", "NIKE Direct, loại trừ tỷ giá"),
                   ("Bán buôn theo báo cáo", "Bán buôn, theo báo cáo"), ("Bán buôn loại trừ tỷ giá", "Bán buôn, loại trừ tỷ giá")]))
-    p.add("co_so_tang_truong", R + 330, 768, CW - 330, 30, basis_slicer())
+    # In the chart's title row, right of the title: the slicer's header icons (shown while it is hovered or selected)
+    # then float in the gap above the chart instead of covering the subtitle, at any zoom.
+    p.add("co_so_tang_truong", R + 330, 710, CW - 330, 24, basis_slicer())
     source(p, "nguon_tang_truong", R, 1054, CW,
            "Theo báo cáo: " + w.sources["growth"].removeprefix("Nguồn: ") + " Loại trừ tỷ giá: "
            + w.sources["growth_cn"].removeprefix("Nguồn: "), h=58)
@@ -703,7 +706,7 @@ def page_channels(w):
     p.add("digital", L, 1130, CW, 340, cartesian(
         "columnChart", [("Digital (tỷ USD)", w.legend("digital", "Digital"), C["digital"]),
                         ("Phần còn lại của NIKE Direct (tỷ USD)", "Phần còn lại của NIKE Direct (nhóm tự tính, xấp xỉ)", C["directLight"])],
-        t, s + " Chiều cao cả cột = doanh thu NIKE Direct.", labels=False, totals=True,
+        t, s + " Chiều cao cả cột bằng doanh thu NIKE Direct.", labels=False, totals=True,
         tooltips=[("NIKE Direct (tỷ USD)", "NIKE Direct (tổng), tỷ USD"), ("Digital trong NIKE Direct", "Digital trong NIKE Direct (≈)")]))
     source(p, "nguon_digital", L, 1474, CW, w.sources["digital"], h=58)
     notes(p, "ghi_chu", R, 1130, CW, 420, *w.notes["channels"])

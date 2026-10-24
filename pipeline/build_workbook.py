@@ -268,8 +268,8 @@ def write_kpi_sheet(wb, st, obs, results, sheet_cols):
     ws.set_column(first_col + len(years) + 1, first_col + len(years) + 1, 62)
     note_col = first_col + len(years)
     ws.write(0, 0, "Chỉ số tính toán (KPI) và kiểm tra đối chiếu", st(bold=True, font_size=14))
-    ws.write(1, 0, "Mọi ô số trong sheet này là công thức Excel. Chữ xanh lá: lấy từ sheet 02/03 theo năm và mã chỉ tiêu; "
-                   "chữ đen: tính trong sheet này. Sửa số liệu ở sheet 02/03 thì sheet này tự cập nhật. "
+    ws.write(1, 0, "Mọi ô số trong sheet này là công thức Excel. Số màu xanh lá lấy từ sheet 02/03 theo năm và mã chỉ tiêu, "
+                   "số màu đen được tính ngay trong sheet này. Sửa số liệu ở sheet 02/03 thì sheet này tự cập nhật. "
                    "“–” nghĩa là thiếu số liệu đầu vào, không phải bằng 0.", st(font_color="#444444"))
     head = st(bold=True, bg_color="#E7EAEE", text_wrap=True, valign="vcenter", bottom=1)
     for c, h in enumerate(["Mã", "Chỉ tiêu", "Đơn vị"] + [f"FY{y}" for y in years] + ["Công thức", "Ghi chú và cách đọc"]):
@@ -371,8 +371,8 @@ def write_kpi_sheet(wb, st, obs, results, sheet_cols):
 
     write_expr_rows([k for k in KPIS if k["group"] == "channels"], "B. Chỉ số kênh phân phối – phạm vi NIKE Brand", "kpi")
     write_expr_rows([k for k in KPIS if k["group"] == "financial"], "C. Chỉ số kết quả tài chính – phạm vi NIKE, Inc.", "kpi")
-    write_expr_rows(CHECKS, "D. Kiểm tra đối chiếu số học (kỳ vọng bằng 0; cột cuối là kết quả)", "check")
-    write_expr_rows(COMPARISONS, "E. Đối chiếu với tỷ lệ NIKE tự công bố (chênh lệch; cột cuối là kết quả)", "cmp")
+    write_expr_rows(CHECKS, "D. Kiểm tra các phép cộng trừ (đúng thì chênh lệch bằng 0, cột cuối là kết luận)", "check")
+    write_expr_rows(COMPARISONS, "E. So với tỷ lệ NIKE tự công bố (các ô là phần chênh lệch, cột cuối là kết luận)", "cmp")
     ws.set_column(1, 1, min(max(len(t) for t in written_labels) + 2, 66))
     ws.conditional_format(HEADER_ROW + 1, note_col + 1, row, note_col + 1,
                           {"type": "cell", "criteria": "==", "value": '"Kiểm tra lại"', "format": st(font_color="#C00000", bold=True)})
@@ -398,7 +398,7 @@ GLOSSARY = [
     ("Bán buôn (Wholesale)", "Sales to Wholesale Customers",
      "Doanh thu NIKE Brand bán cho nhà bán lẻ, nhà phân phối độc lập, bên nhận cấp phép.", "Không gồm bán buôn của Converse."),
     ("Global Brand Divisions", "Global Brand Divisions", "Doanh thu cấp phép thương hiệu NIKE và doanh thu khác không thuộc khu vực địa lý.",
-     "Rất nhỏ (dưới 0,3% doanh thu NIKE Brand); không thuộc Direct hay Wholesale."),
+     "Rất nhỏ (dưới 0,3% doanh thu NIKE Brand), không thuộc Direct hay Wholesale."),
     ("Converse", "Converse", "Phân khúc kinh doanh riêng của NIKE, Inc., có kênh trực tiếp và bán buôn riêng.",
      "Không nằm trong số liệu NIKE Direct/Wholesale của bộ dữ liệu."),
     ("Corporate", "Corporate revenues", "Chủ yếu là lãi/lỗ phòng ngừa rủi ro tỷ giá liên quan đến doanh thu, quản lý tập trung.",
@@ -406,18 +406,18 @@ GLOSSARY = [
     ("Biên lợi nhuận gộp", "Gross margin", "Lợi nhuận gộp / Doanh thu.", "Phạm vi NIKE, Inc. NIKE không công bố biên gộp theo kênh."),
     ("Chi phí bán hàng và quản lý (SG&A)", "Total selling and administrative expense",
      "Tổng của chi phí tạo nhu cầu (Demand creation) và chi phí vận hành chung (Operating overhead).",
-     "Chi phí hợp nhất. Không thể phân bổ tin cậy cho NIKE Direct hay Wholesale từ số liệu công bố."),
+     "Chi phí chung của cả công ty. Từ số liệu công bố, không thể phân bổ chính xác cho NIKE Direct hay Wholesale."),
     ("EBIT", "Earnings Before Interest and Taxes",
      "Lợi nhuận sau thuế + Chi phí (thu nhập) lãi thuần + Chi phí thuế thu nhập (định nghĩa của NIKE).",
-     "Non-GAAP ở cấp NIKE, Inc. Đây là thước đo hiệu quả hoạt động NIKE dùng."),
+     "Chỉ tiêu non-GAAP, tính cho toàn NIKE, Inc. NIKE dùng chỉ tiêu này để đo hiệu quả hoạt động."),
     ("Lợi nhuận hoạt động", "Operating income",
      "NIKE không trình bày dòng “Operating income” trên báo cáo kết quả kinh doanh.",
-     "Bộ dữ liệu không tự tạo chỉ tiêu này; dùng EBIT và ghi rõ là non-GAAP. Các trang tổng hợp bên thứ ba thường tự tính, không phải số NIKE công bố."),
+     "Bộ dữ liệu không tự tạo chỉ tiêu này mà dùng EBIT, có ghi rõ là non-GAAP. Các trang tổng hợp của bên thứ ba thường tự tính chỉ tiêu này, nên đó không phải số NIKE công bố."),
     ("Tăng trưởng theo báo cáo", "Reported growth (% change)", "Thay đổi so với năm trước tính bằng USD theo báo cáo.",
      "Sheet 04 tự tính từ số năm nay và số năm trước trong cùng 10-K."),
     ("Tăng trưởng loại trừ tỷ giá", "Currency-neutral growth (% change excluding currency changes)",
-     "Tăng trưởng tính lại theo tỷ giá của năm trước để loại ảnh hưởng chuyển đổi ngoại tệ.",
-     "Non-GAAP do NIKE tính; không tự tính lại được từ BCTC. Lấy nguyên văn từ MD&A."),
+     "Tăng trưởng tính lại theo tỷ giá của năm trước để loại bỏ ảnh hưởng của việc quy đổi ngoại tệ.",
+     "Chỉ tiêu non-GAAP do NIKE tính, không tự tính lại được từ BCTC. Số được lấy nguyên văn từ MD&A."),
     ("GAAP / Non-GAAP", "U.S. GAAP / non-GAAP financial measure",
      "GAAP: số liệu theo chuẩn mực kế toán Mỹ trong BCTC đã kiểm toán. Non-GAAP: chỉ tiêu do công ty tự định nghĩa, trình bày ngoài BCTC.",
      "Cột “Loại số liệu” ở sheet 02–03 ghi rõ từng trường hợp."),
@@ -427,22 +427,22 @@ GLOSSARY = [
      "Khi 10-K năm sau trình bày lại số của năm trước theo cách phân loại mới.",
      "Bộ dữ liệu giữ số gốc và ghi chênh lệch ở cột “Trình bày lại ở 10-K sau”."),
     ("XBRL", "eXtensible Business Reporting Language",
-     "Thẻ dữ liệu máy đọc được gắn trực tiếp vào số liệu trong 10-K nộp SEC.",
-     "Cột “Thẻ XBRL” cho biết số liệu được lấy từ thẻ nào; dùng để kiểm tra tự động."),
+     "Nhãn dữ liệu (máy đọc được) gắn vào từng con số trong 10-K nộp SEC.",
+     "Cột “Thẻ XBRL” cho biết số liệu lấy từ thẻ nào, dùng cho việc kiểm tra tự động."),
 ]
 
 GAPS = [
     ("Lợi nhuận và chi phí theo kênh", "Không công bố",
-     "NIKE không công bố lợi nhuận, biên gộp hay chi phí riêng của NIKE Direct và Wholesale; SG&A là chi phí hợp nhất.",
-     "Không tính và không ước lượng. Mọi phân tích lợi nhuận chỉ ở phạm vi NIKE, Inc."),
+     "NIKE không công bố lợi nhuận, biên gộp hay chi phí riêng của NIKE Direct và Wholesale. SG&A là chi phí chung của cả công ty.",
+     "Bộ dữ liệu không tính và không ước lượng các số này. Mọi phân tích lợi nhuận chỉ làm ở phạm vi NIKE, Inc."),
     ("Tỷ trọng NIKE Direct FY2026 do NIKE nêu", "Thiếu",
      "10-K FY2026 không có câu “approximately …% of total NIKE Brand revenues”.",
-     "Để trống, trạng thái “Thiếu / không công bố”. Tỷ trọng tự tính ở sheet 04 vẫn có đủ 7 năm."),
+     "Ô để trống, trạng thái “Thiếu / không công bố”. Tỷ trọng do nhóm tự tính ở sheet 04 vẫn có đủ 7 năm."),
     ("Doanh số Digital", "Độ chính xác thấp",
-     "Chỉ công bố trong MD&A, làm tròn 0,1 tỷ USD; FY2023 được trình bày lại từ 12,6 xuống 12,4 tỷ USD do phân loại lại giữa cửa hàng và Digital.",
-     "Giữ số gốc, ghi chú trình bày lại; tỷ trọng Digital/Direct ghi rõ là xấp xỉ."),
+     "Chỉ công bố trong MD&A, làm tròn đến 0,1 tỷ USD. Số FY2023 được trình bày lại từ 12,6 xuống 12,4 tỷ USD do phân loại lại giữa cửa hàng và Digital.",
+     "Giữ số gốc và ghi chú việc trình bày lại. Tỷ trọng Digital trong NIKE Direct được ghi rõ là xấp xỉ."),
     ("Tăng trưởng loại trừ tỷ giá", "Không tự tính lại được",
-     "Do NIKE tính bằng tỷ giá nội bộ; không có dữ liệu để tính lại.",
+     "Do NIKE tính bằng tỷ giá nội bộ, bên ngoài không có dữ liệu để tính lại.",
      "Lấy nguyên văn từ bảng doanh thu trong MD&A, rồi đọc lại trên trang 10-K để đối chiếu (ảnh chụp trong handover/bang-chung-doi-chieu/)."),
 ]
 
@@ -496,22 +496,22 @@ def write_sources_sheet(wb, st, obs, results, extracted_on):
            "Ngày nộp SEC", "Số accession"], src_rows, link_cols=(2, 3))
     table("B. Thuật ngữ và định nghĩa", ["Thuật ngữ", "Tiếng Anh / tên trong 10-K", "Định nghĩa", "Lưu ý phạm vi và cách dùng"],
           [list(g) for g in GLOSSARY])
-    table("C. Khoảng trống dữ liệu và giới hạn", ["Vấn đề", "Tình trạng", "Mô tả", "Cách xử lý trong bộ dữ liệu"],
+    table("C. Số liệu còn thiếu và giới hạn", ["Vấn đề", "Tình trạng", "Mô tả", "Cách xử lý trong bộ dữ liệu"],
           [list(g) for g in GAPS])
-    table("D. Các lần trình bày lại / phân loại lại NIKE công bố", ["Tài liệu", "Nội dung", "Trích dẫn từ 10-K", "Ảnh hưởng tới bộ dữ liệu"],
+    table("D. Các lần NIKE trình bày lại hoặc phân loại lại số liệu", ["Tài liệu", "Nội dung", "Trích dẫn từ 10-K", "Ảnh hưởng tới bộ dữ liệu"],
           [list(g) for g in RESTATEMENT_LOG])
     counts = {s: sum(1 for o in obs if o["status"] == s) for s in STATUSES}
     meaning = {
-        STATUS_MATCHED: ("Số liệu lấy tự động từ 10-K và được kiểm tra chéo bằng ít nhất một cách thứ hai: dữ liệu XBRL do SEC công bố "
-                         "(xác nhận đọc đúng thẻ và đúng kỳ), bảng trong MD&A, phép tính lại từ BCTC, hoặc đọc lại trực tiếp trên "
-                         "trang 10-K (có ảnh chụp đối chiếu).",),
-        STATUS_PENDING: ("Số liệu chính thức nhưng chưa được kiểm tra chéo bằng cách thứ hai. Cần người mở 10-K đối chiếu.",),
-        STATUS_HUMAN: ("Thành viên nhóm đã tự mở 10-K, tìm đúng trang và xác nhận số liệu; ghi tên và ngày.",),
-        STATUS_MISSING: ("NIKE không công bố số liệu này trong 10-K tương ứng. Ô giá trị để trống, không thay bằng 0.",),
+        STATUS_MATCHED: ("Số liệu lấy tự động từ 10-K và đã được đối chiếu lại bằng ít nhất một cách khác: so với dữ liệu XBRL do SEC "
+                         "công bố (để chắc chắn đọc đúng chỉ tiêu và đúng kỳ), so với bảng trong MD&A, tính lại từ báo cáo tài chính, "
+                         "hoặc đọc lại ngay trên trang 10-K (có ảnh chụp đối chiếu).",),
+        STATUS_PENDING: ("Số liệu chính thức nhưng chưa được đối chiếu lại bằng cách khác. Cần một người mở 10-K để kiểm tra.",),
+        STATUS_HUMAN: ("Thành viên nhóm đã tự mở 10-K, tìm đúng trang và xác nhận số liệu, có ghi tên và ngày.",),
+        STATUS_MISSING: ("NIKE không công bố số liệu này trong báo cáo 10-K tương ứng. Ô giá trị để trống, không điền số 0.",),
         STATUS_CONFLICT: ("Hai nguồn chính thức cho kết quả khác nhau, lần đọc lại trên trang 10-K ra số khác, hoặc số đã xác minh khác số "
-                          "trích xuất mới. Không dùng cho đến khi giải quyết.",),
+                          "trích xuất mới. Chưa dùng số này cho đến khi xử lý xong.",),
     }
-    table("E. Trạng thái dữ liệu", ["Trạng thái", "Tiếng Anh", "Ý nghĩa", "Số quan sát hiện tại"],
+    table("E. Trạng thái dữ liệu", ["Trạng thái", "Tiếng Anh", "Ý nghĩa", "Số lượng hiện tại"],
           [[s, en, meaning[s][0], counts[s]] for s, en in STATUSES.items()])
     checks_ok = all(all(results[y][c["id"]] is None or abs(results[y][c["id"]]) <= Decimal(str(c["tol"])) for y in dataset.YEARS)
                     for c in CHECKS + COMPARISONS)
@@ -520,15 +520,16 @@ def write_sources_sheet(wb, st, obs, results, extracted_on):
     page_ok = sum(r["result"] == "match" for r in pages)
     page_on = max((r.get("checked_on") or extracted_on for r in pages), default=extracted_on)
     table("F. Kiểm tra tự động (lần chạy gần nhất)", ["Kiểm tra", "Kết quả", "Chi tiết", "Ngày kiểm tra"], [
-        ["Đối chiếu với API XBRL của SEC", f"{sec_rows.count('match')}/{len(sec_rows)} khớp",
-         "Mọi giá trị hợp nhất (không chia theo kênh) của 7 báo cáo, kể cả cột so sánh, so với dữ liệu SEC theo cùng số accession.", _vn_date(extracted_on)],
+        ["Đối chiếu với dữ liệu XBRL của SEC", f"{sec_rows.count('match')}/{len(sec_rows)} khớp",
+         "Toàn bộ số hợp nhất (không chia theo kênh) của 7 báo cáo, kể cả cột năm trước, được so với dữ liệu SEC của đúng báo cáo đó "
+         "(cùng số accession).", _vn_date(extracted_on)],
         ["Thuyết minh XBRL so với bảng MD&A", "Khớp toàn bộ",
          "Doanh thu NIKE Direct, bán buôn, Global Brand Divisions, NIKE Brand, Converse, Corporate và NIKE, Inc. ở hai vị trí khác nhau trong cùng 10-K.", _vn_date(extracted_on)],
-        ["Đối chiếu số học và tỷ lệ NIKE công bố", "Đạt" if checks_ok else "Có lỗi",
+        ["Kiểm tra cộng trừ và so với tỷ lệ NIKE công bố", "Đạt" if checks_ok else "Có lỗi",
          "Xem mục D và E ở sheet 04.", _vn_date(extracted_on)],
         ["Đọc lại trên trang 10-K", f"{page_ok}/{len(pages)} khớp",
-         "Các số chỉ có trong MD&A: mở từng 10-K, tìm trang theo chân trang; 28 tỷ lệ tăng trưởng loại trừ tỷ giá đọc lại theo vị trí "
-         "cột “% CHANGE EXCLUDING CURRENCY CHANGES” đầu tiên, 7 số Digital đọc lại từ câu văn trên đúng trang. Ảnh chụp và bảng so sánh: "
+         "Các số chỉ có trong MD&A: mở từng 10-K và tìm trang theo chân trang. 28 tỷ lệ tăng trưởng loại trừ tỷ giá được đọc lại theo vị trí "
+         "cột “% CHANGE EXCLUDING CURRENCY CHANGES” đầu tiên, 7 số Digital được đọc lại từ câu văn trên đúng trang. Ảnh chụp và bảng so sánh: "
          "handover/bang-chung-doi-chieu/doi-chieu-35-so.html (cũng có trên dashboard web).", _vn_date(page_on)],
     ])
     ws.set_landscape()
@@ -559,13 +560,13 @@ def write_overview_sheet(wb, st, obs, extracted_on):
             ("Đơn vị", "Triệu USD, trừ khi cột “Đơn vị” ghi khác (tỷ USD cho doanh số Digital; % cho tỷ lệ). Không quy đổi sang VND."),
             ("Nguồn", "7 báo cáo thường niên Form 10-K của NIKE, Inc. nộp Ủy ban Chứng khoán Mỹ (SEC), FY2020–FY2026. "
                       "Không dùng trang tổng hợp tài chính của bên thứ ba."),
-            ("Thứ tự ưu tiên nguồn", "(1) Báo cáo tài chính đã kiểm toán và thuyết minh (Item 8), đọc từ dữ liệu XBRL gắn trong chính 10-K. "
-                                     "(2) Phần MD&A (Item 7) của cùng 10-K cho số liệu non-GAAP và số do ban điều hành nêu: EBIT, tăng trưởng loại trừ tỷ giá, "
-                                     "doanh số Digital. (3) API XBRL của SEC chỉ dùng để đối chiếu."),
-            ("Quy tắc chọn số", "Số của năm FY t lấy từ 10-K FY t. “Giá trị năm trước” là cột so sánh trong cùng 10-K đó và được dùng để tính "
-                                "tăng trưởng (cùng cơ sở NIKE dùng). Nếu 10-K năm sau trình bày lại, chênh lệch được ghi ở cột "
-                                "“Trình bày lại ở 10-K sau”, không thay thế số gốc."),
-            ("Tình trạng dữ liệu", f"Trích xuất tự động ngày {_vn_date(extracted_on)}. {total} quan sát: " + ", ".join(
+            ("Thứ tự ưu tiên nguồn", "(1) Báo cáo tài chính đã kiểm toán và thuyết minh (Item 8), lấy từ dữ liệu XBRL đi kèm chính báo cáo 10-K. "
+                                     "(2) Phần MD&A (Item 7) của cùng báo cáo, cho các số non-GAAP và số do ban điều hành nêu: EBIT, tăng trưởng loại trừ tỷ giá, "
+                                     "doanh số Digital. (3) Dữ liệu XBRL do SEC công bố chỉ dùng để đối chiếu."),
+            ("Quy tắc chọn số", "Số liệu của mỗi năm tài chính được lấy từ báo cáo 10-K của chính năm đó. “Giá trị năm trước” là số ở cột so sánh "
+                                "trong cùng báo cáo, dùng để tính tăng trưởng giống cách NIKE tự tính. Nếu báo cáo năm sau trình bày lại số liệu, "
+                                "phần chênh lệch được ghi ở cột “Trình bày lại ở 10-K sau”, số gốc giữ nguyên."),
+            ("Tình trạng dữ liệu", f"Trích xuất tự động ngày {_vn_date(extracted_on)}. {total} số liệu: " + ", ".join(
                 f"{n[s]} {label}" for s, label in ((STATUS_MATCHED, "khớp nguồn chính thức"), (STATUS_HUMAN, "đã được người xác minh"),
                                                    (STATUS_PENDING, "chờ người kiểm tra"), (STATUS_MISSING, "không được công bố"),
                                                    (STATUS_CONFLICT, "mâu thuẫn")) if n[s]) + "."),
@@ -576,22 +577,22 @@ def write_overview_sheet(wb, st, obs, extracted_on):
             ("2. Kiểm tra nguồn", "Bấm liên kết ở cột “Tài liệu nguồn” để mở 10-K trên SEC EDGAR. Tìm số trang ở cột “Trang” (số in ở chân trang, "
                                   "dạng “2026 FORM 10-K 83”) rồi đối chiếu với cột “Số hoặc câu hiển thị trong tài liệu”."),
             ("3. Ghi nhận xác minh", "Sau khi tự đối chiếu, chọn “Đã xác minh (người)” ở cột “Trạng thái dữ liệu” và điền tên, ngày ở các cột nền vàng."),
-            ("4. Xem chỉ số", "Sheet 04 tính các tỷ lệ bằng công thức Excel từ sheet 02–03. Cột “Công thức” diễn giải từng chỉ số; mục D–E là kiểm tra đối chiếu."),
-            ("5. Tra cứu", "Sheet 05: danh mục 10-K, thuật ngữ, khoảng trống dữ liệu và các lần NIKE trình bày lại số liệu."),
+            ("4. Xem chỉ số", "Sheet 04 tính các tỷ lệ bằng công thức Excel từ sheet 02–03. Cột “Công thức” giải thích cách tính từng chỉ số, mục D–E là phần kiểm tra."),
+            ("5. Tra cứu", "Sheet 05: danh mục 10-K, thuật ngữ, các số liệu còn thiếu và các lần NIKE trình bày lại số liệu."),
         ]),
         ("Quy ước trình bày", [
             ("Chữ xanh dương", "Số liệu nhập từ tài liệu nguồn (không phải công thức)."),
             ("Chữ xanh lá", "Công thức lấy số liệu từ sheet khác."),
             ("Chữ đen", "Công thức tính toán."),
             ("Số âm", "Trong ngoặc đơn, ví dụ (50), theo cách trình bày của NIKE. Tỷ lệ % dùng dấu trừ."),
-            ("Ô trống", "Kèm trạng thái “Thiếu / không công bố”: NIKE không công bố số liệu đó. Không thay bằng 0. Ở sheet 04, “–” là không tính được do thiếu đầu vào."),
+            ("Ô trống", "Đi kèm trạng thái “Thiếu / không công bố”, nghĩa là NIKE không công bố số liệu đó. Ô để trống chứ không điền số 0. Ở sheet 04, “–” nghĩa là không tính được vì thiếu số đầu vào."),
             ("Tỷ lệ %", "Lưu dạng thập phân (0,14 hiển thị 14%) để dùng được trong công thức."),
             ("Cột tiêu đề nền vàng", "Dành cho nhóm điền: người xác minh, ngày xác minh, ghi chú."),
         ]),
         ("Lưu ý khi dùng cho nghiên cứu", [
-            ("Không suy ra nhân quả", "Các chỉ số cho thấy số liệu thay đổi cùng giai đoạn; không chứng minh thay đổi chiến lược kênh là nguyên nhân."),
-            ("Không có lợi nhuận theo kênh", "NIKE không công bố lợi nhuận hay chi phí riêng của NIKE Direct và bán buôn; SG&A là chi phí hợp nhất."),
-            ("Không trộn phạm vi", "Tỷ trọng kênh dùng mẫu số NIKE Brand; biên lợi nhuận dùng doanh thu NIKE, Inc."),
+            ("Không suy ra nhân quả", "Các chỉ số chỉ cho thấy số liệu thay đổi trong cùng giai đoạn, không chứng minh việc thay đổi chiến lược kênh là nguyên nhân."),
+            ("Không có lợi nhuận theo kênh", "NIKE không công bố lợi nhuận hay chi phí riêng của NIKE Direct và bán buôn. SG&A là chi phí chung của cả công ty."),
+            ("Không trộn phạm vi", "Tỷ trọng các kênh tính trên doanh thu NIKE Brand, còn biên lợi nhuận tính trên doanh thu NIKE, Inc."),
             ("Trích dẫn", "Khi dùng số liệu, trích dẫn 10-K gốc (năm, trang) thay vì trích dẫn file này."),
         ]),
     ]
@@ -633,7 +634,7 @@ def build(path=WORKBOOK, active_sheet=None):
     fin = [o for o in obs if o["metric"]["sheet"] == "financial"]
     ch = [o for o in obs if o["metric"]["sheet"] == "channels"]
     write_observation_sheet(wb, st, SHEET_FIN, "Dữ liệu tài chính hợp nhất – NIKE, Inc.",
-                            "Báo cáo kết quả kinh doanh, hàng tồn kho, EBIT và tăng trưởng doanh thu NIKE công bố. Mỗi dòng: một chỉ tiêu × một năm tài chính.", fin)
+                            "Báo cáo kết quả kinh doanh, hàng tồn kho, EBIT và tăng trưởng doanh thu NIKE công bố. Mỗi dòng là một chỉ tiêu của một năm tài chính.", fin)
     write_observation_sheet(wb, st, SHEET_CH, "Kênh phân phối – NIKE Brand",
                             "Doanh thu NIKE Direct, bán buôn, Global Brand Divisions, doanh số Digital và tăng trưởng theo kênh NIKE công bố. "
                             "Converse và Corporate chỉ để đối chiếu.", ch)

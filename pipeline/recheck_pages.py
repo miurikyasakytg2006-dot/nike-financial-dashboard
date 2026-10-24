@@ -161,9 +161,9 @@ def write_evidence_page(rows):
            "<h1>Đối chiếu 35 số chỉ có trong phần MD&amp;A với trang 10-K</h1>",
            f"<p><b>{ok}/{len(rows)} số khớp.</b> Kiểm tra ngày {d}/{m}/{y} bằng trình duyệt Chrome điều khiển tự động (Playwright). "
            "Cách làm: mở từng báo cáo 10-K, tìm đúng trang theo chân trang “FORM 10-K số trang”, rồi đọc lại số trên trang đã hiển thị. "
-           "Bốn tỷ lệ % đọc theo vị trí cột “% CHANGE EXCLUDING CURRENCY CHANGES” <i>đầu tiên</i> (bảng có hai cột cùng tên; cột thứ "
+           "Bốn tỷ lệ % đọc theo vị trí cột “% CHANGE EXCLUDING CURRENCY CHANGES” <i>đầu tiên</i> (bảng có hai cột cùng tên, cột thứ "
            "hai là của năm trước). Doanh số Digital đọc trong câu ngay sau cụm “Digital sales” (FY2020–2021: “Digital commerce sales”). "
-           "Ô và đoạn văn được đọc tô nền vàng, dòng được đọc viền đỏ.</p>",
+           "Ô số và đoạn văn đã đọc được tô nền vàng, dòng tương ứng có viền đỏ.</p>",
            "<p>Ảnh chụp từ bản sao 10-K trên NIKE Investor Relations, cùng số accession và cùng nội dung với bản trên SEC EDGAR "
            "(liên kết SEC ở từng năm).</p>"]
     for fy, *_ in FILINGS:

@@ -60,7 +60,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Báo cáo kết quả kinh doanh của NIKE không có dòng tổng phụ này: sau tổng chi phí bán hàng và quản lý là chi phí (thu nhập) lãi thuần và chi phí (thu nhập) khác thuần, rồi đến lợi nhuận trước thuế. EBIT (lợi nhuận sau thuế + chi phí lãi thuần + thuế) là thước đo NIKE tự dùng và ghi rõ là non-GAAP; EBIT vẫn gồm khoản chi phí (thu nhập) khác thuần.",
+                    "value": "Báo cáo kết quả kinh doanh của NIKE không có dòng tổng phụ này: ngay sau tổng chi phí bán hàng và quản lý là chi phí (thu nhập) lãi thuần, chi phí (thu nhập) khác thuần, rồi đến lợi nhuận trước thuế. EBIT (lợi nhuận sau thuế + chi phí lãi thuần + thuế) là chỉ tiêu non-GAAP do NIKE tự định nghĩa, và vẫn bao gồm khoản chi phí (thu nhập) khác thuần.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",

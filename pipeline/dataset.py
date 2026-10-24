@@ -130,18 +130,19 @@ def build_observations(facts, sec_check):
                 o["restatement"] = restatement_note(facts, m, fy, cur["value"])
                 if not o["dims"]:
                     sec = sec_check.get((fy, m["id"], fy))
-                    o["cross_check"] = "Khớp API XBRL của SEC (cùng số accession)." if sec == "match" else f"API SEC: {sec}"
+                    o["cross_check"] = ("Khớp với dữ liệu XBRL do SEC công bố (cùng số accession)." if sec == "match"
+                                        else f"Dữ liệu SEC: {sec}")
                     o["status"] = STATUS_MATCHED if sec == "match" else STATUS_PENDING
                 else:
                     md = facts.get((fy, m["id"], fy, "mdna_table"))
                     same = md is not None and md["value"] == cur["value"]
                     o["cross_check"] = (f"Khớp bảng doanh thu trong MD&A (trang {md['page']})." if same
-                                        else "Không có/không khớp bảng MD&A để đối chiếu.")
+                                        else "Không tìm thấy bảng MD&A khớp để đối chiếu.")
                     o["status"] = STATUS_MATCHED if same else STATUS_PENDING
             else:
                 o["restatement"] = restatement_note(facts, m, fy, cur["value"])
                 o["status"] = STATUS_PENDING
-                o["cross_check"] = "Số liệu trong phần MD&A, không gắn thẻ XBRL nên không đối chiếu tự động được; kiểm tra trực tiếp trên 10-K."
+                o["cross_check"] = "Số liệu nằm trong phần MD&A, không gắn thẻ XBRL nên không đối chiếu tự động được. Cần kiểm tra trực tiếp trên 10-K."
             obs.append(o)
     return obs
 
@@ -209,8 +210,8 @@ def apply_page_checks(obs, checks):
             continue
         if c["result"] == "match":
             o["status"] = STATUS_MATCHED
-            o["cross_check"] = (f"Đọc lại trực tiếp trên trang 10-K (tr. {c['page']}) bằng cách thứ hai: khớp. "
-                                f"Ảnh đối chiếu: handover/bang-chung-doi-chieu/{c['screenshot']}.")
+            o["cross_check"] = (f"Đã đọc lại ngay trên trang 10-K (tr. {c['page']}): khớp. "
+                                f"Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/{c['screenshot']}.")
         else:
             o["status"] = STATUS_CONFLICT
             o["cross_check"] = f"CHÊNH LỆCH khi đọc lại trên trang 10-K (tr. {c['page']}): đọc được {c['read_value'] or 'không có số'}."

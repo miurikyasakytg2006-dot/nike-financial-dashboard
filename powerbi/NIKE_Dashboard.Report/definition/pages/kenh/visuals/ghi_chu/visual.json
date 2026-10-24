@@ -60,7 +60,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Tỷ trọng kênh dùng mẫu số là doanh thu NIKE Brand. Converse (có kênh trực tiếp riêng) và Corporate nằm ngoài các con số này.",
+                    "value": "Tỷ trọng các kênh được tính trên tổng doanh thu NIKE Brand. Converse (có kênh bán trực tiếp riêng) và Corporate không nằm trong các con số này.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -100,7 +100,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "NIKE chỉ công bố doanh số Digital trong phần MD&A, làm tròn 0,1 tỷ USD. Số FY2023 được trình bày lại từ 12,6 xuống 12,4 tỷ USD ở 10-K FY2024; khi so FY2024 (12,1 tỷ USD) với năm trước, dùng số 12,4 cùng cách phân loại.",
+                    "value": "NIKE chỉ công bố doanh số Digital trong phần MD&A và làm tròn đến 0,1 tỷ USD. Trong 10-K FY2024, số FY2023 được trình bày lại từ 12,6 xuống 12,4 tỷ USD, nên khi so FY2024 (12,1 tỷ USD) với năm trước cần dùng số 12,4 để cùng cách phân loại.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -140,7 +140,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Tăng trưởng theo báo cáo được tính từ doanh thu năm nay và số năm trước trong cùng 10-K. Tăng trưởng loại trừ tỷ giá là chỉ tiêu non-GAAP do NIKE tính, không tự tính lại được.",
+                    "value": "Tăng trưởng theo báo cáo được tính từ doanh thu năm nay và số năm trước trong cùng 10-K. Tăng trưởng loại trừ tỷ giá là chỉ tiêu non-GAAP do NIKE tính, nhóm không tự tính lại được.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",

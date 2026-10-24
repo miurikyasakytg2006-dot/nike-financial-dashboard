@@ -157,7 +157,7 @@
     var el = document.querySelector('[data-legend="' + id + '"]');
     if (!el) return;
     el.replaceChildren();
-    if (toggle) el.setAttribute('aria-label', 'Bật hoặc tắt chuỗi số liệu');
+    if (toggle) el.setAttribute('aria-label', 'Bật hoặc tắt số liệu này trên biểu đồ');
     items.forEach(function (it) {
       var node = document.createElement(toggle ? 'button' : 'span');
       node.className = 'legend-item';
@@ -180,7 +180,7 @@
     var h = hidden(id);
     var items = LEGENDS[id]();
     var shown = items.filter(function (it) { return !h[it.name]; });
-    if (!h[name] && shown.length === 1) { announce('Cần giữ ít nhất một chuỗi số liệu trên biểu đồ.'); return; }
+    if (!h[name] && shown.length === 1) { announce('Phải giữ lại ít nhất một loại số liệu trên biểu đồ.'); return; }
     h[name] = !h[name];
     RENDER[id]();
     var btn = Array.prototype.find.call(document.querySelectorAll('[data-legend="' + id + '"] button'),
@@ -259,7 +259,7 @@
     legend('share', LEGENDS.share(), false);
     var a = ys[0], b = ys[ys.length - 1];
     setChart('share', o, 'Biểu đồ thanh 100% theo năm: tỷ trọng NIKE Direct trong doanh thu NIKE Brand là ' + pct(kpi('direct_share', a)) +
-      ' ở FY' + a + ' và ' + pct(kpi('direct_share', b)) + ' ở FY' + b + '; phần còn lại chủ yếu là bán buôn.');
+      ' ở FY' + a + ' và ' + pct(kpi('direct_share', b)) + ' ở FY' + b + ', phần còn lại chủ yếu là bán buôn.');
     sourceLine('share', 'Nguồn: thuyết minh “Revenues” trong Form 10-K (bảng phân tách doanh thu, cột Total NIKE Brand). Tỷ trọng do nhóm tự tính.', ys);
   }
 
@@ -284,7 +284,7 @@
     legend('channelRevenue', LEGENDS.channelRevenue(), true);
     var a = ys[0], b = ys[ys.length - 1];
     setChart('channelRevenue', o, 'Biểu đồ cột: doanh thu NIKE Direct từ ' + bn(val('nike_direct_revenue', a)) + ' (FY' + a + ') đến ' +
-      bn(val('nike_direct_revenue', b)) + ' tỷ USD (FY' + b + '); bán buôn từ ' + bn(val('nike_brand_wholesale_revenue', a)) + ' đến ' +
+      bn(val('nike_direct_revenue', b)) + ' tỷ USD (FY' + b + '), còn bán buôn từ ' + bn(val('nike_brand_wholesale_revenue', a)) + ' đến ' +
       bn(val('nike_brand_wholesale_revenue', b)) + ' tỷ USD.');
     sourceLine('channelRevenue', 'Nguồn: thuyết minh “Revenues” trong Form 10-K.', ys);
   }
@@ -297,8 +297,8 @@
     var ys = years();
     var cn = state.basis === 'cn';
     document.getElementById('growth-sub').textContent = cn
-      ? 'Thay đổi so với năm trước (%), loại trừ tỷ giá, phạm vi NIKE Brand; số NIKE công bố (non-GAAP).'
-      : 'Thay đổi so với năm trước (%), theo báo cáo, phạm vi NIKE Brand; nhóm tự tính từ 10-K.';
+      ? 'Thay đổi so với năm trước (%), loại trừ tỷ giá, phạm vi NIKE Brand. Số do NIKE công bố (non-GAAP).'
+      : 'Thay đổi so với năm trước (%), theo báo cáo, phạm vi NIKE Brand. Nhóm tự tính từ 10-K.';
     var o = base();
     o.xAxis = catAxis(ys, 'growth');
     o.yAxis = valAxis(function (v) { return num(v * 100, 0) + '%'; });
@@ -324,9 +324,9 @@
     legend('growth', LEGENDS.growth(), true);
     document.querySelectorAll('#growth-basis input').forEach(function (r) { r.checked = r.value === state.basis; });
     var b = ys[ys.length - 1];
-    setChart('growth', o, 'Biểu đồ cột phân kỳ: tăng trưởng ' + (cn ? 'loại trừ tỷ giá' : 'theo báo cáo') + ' của NIKE Direct và bán buôn; FY' + b +
+    setChart('growth', o, 'Biểu đồ cột phân kỳ: tăng trưởng ' + (cn ? 'loại trừ tỷ giá' : 'theo báo cáo') + ' của NIKE Direct và bán buôn, FY' + b +
       ': NIKE Direct ' + signedPct(growthValues('direct', b), cn ? 0 : 1) + ', bán buôn ' + signedPct(growthValues('wholesale', b), cn ? 0 : 1) + '.');
-    sourceLine('growth', cn ? 'Nguồn: bảng doanh thu trong MD&A (Item 7), cột “% change excluding currency changes”; NIKE làm tròn đến số nguyên.'
+    sourceLine('growth', cn ? 'Nguồn: bảng doanh thu trong MD&A (Item 7), cột “% change excluding currency changes”. NIKE làm tròn đến số nguyên.'
       : 'Nguồn: thuyết minh “Revenues” trong Form 10-K. Tăng trưởng tính từ số năm nay và số năm trước trong cùng 10-K.', ys);
   }
 
@@ -359,7 +359,7 @@
     var a = ys[0], b = ys[ys.length - 1];
     setChart('digital', o, 'Biểu đồ cột lồng nhau: doanh số NIKE Brand Digital từ ' + num(val('nike_brand_digital_sales', a), 1) + ' (FY' + a + ') đến ' +
       num(val('nike_brand_digital_sales', b), 1) + ' tỷ USD (FY' + b + '), là một phần của doanh thu NIKE Direct.');
-    sourceLine('digital', 'Nguồn: MD&A (Item 7), đoạn về NIKE Direct; NIKE Direct từ thuyết minh “Revenues”.', ys);
+    sourceLine('digital', 'Nguồn: MD&A (Item 7), đoạn nói về NIKE Direct. Số NIKE Direct lấy từ thuyết minh “Revenues”.', ys);
   }
 
   // ------------------------------------------------------------------ view 2 charts
@@ -407,7 +407,7 @@
     o.series = [lineSeries('Biên lợi nhuận gộp', data, C.total, ys, function (v) { return pct(v); })];
     var a = ys[0], b = ys[ys.length - 1];
     setChart('grossMargin', o, 'Biểu đồ đường: biên lợi nhuận gộp từ ' + pct(kpi('gross_margin', a)) + ' (FY' + a + ') đến ' + pct(kpi('gross_margin', b)) + ' (FY' + b + ').');
-    sourceLine('grossMargin', 'Nguồn: Consolidated Statements of Income; biên gộp do nhóm tự tính.', ys);
+    sourceLine('grossMargin', 'Nguồn: Consolidated Statements of Income. Biên lợi nhuận gộp do nhóm tự tính.', ys);
   }
 
   function renderSga() {
@@ -438,7 +438,7 @@
     legend('sga', LEGENDS.sga(), true);
     var a = ys[0], b = ys[ys.length - 1];
     setChart('sga', o, 'Biểu đồ cột chồng: tổng chi phí bán hàng và quản lý bằng ' + pct(kpi('sga_ratio', a)) + ' doanh thu ở FY' + a + ' và ' + pct(kpi('sga_ratio', b)) + ' ở FY' + b + '.');
-    sourceLine('sga', 'Nguồn: Consolidated Statements of Income; tỷ lệ do nhóm tự tính. Nhãn trên cột là tổng SG&A / doanh thu.', ys);
+    sourceLine('sga', 'Nguồn: Consolidated Statements of Income. Tỷ lệ do nhóm tự tính. Nhãn trên cột là tổng SG&A / doanh thu.', ys);
   }
 
   function renderEbit() {
@@ -460,7 +460,7 @@
     o.series = [lineSeries('Biên EBIT', data, C.total, ys, function (v) { return pct(v); })];
     var a = ys[0], b = ys[ys.length - 1];
     setChart('ebit', o, 'Biểu đồ đường: biên EBIT từ ' + pct(kpi('ebit_margin', a)) + ' (FY' + a + ') đến ' + pct(kpi('ebit_margin', b)) + ' (FY' + b + ').');
-    sourceLine('ebit', 'Nguồn: bảng EBIT trong MD&A (Item 7) và Consolidated Statements of Income; biên EBIT do nhóm tự tính.', ys);
+    sourceLine('ebit', 'Nguồn: bảng EBIT trong MD&A (Item 7) và Consolidated Statements of Income. Biên EBIT do nhóm tự tính.', ys);
   }
 
   function renderInventory() {
@@ -502,7 +502,7 @@
     o.series = [lineSeries('Số ngày tồn kho', data, C.total, ys, function (v) { return num(v, 0); })];
     var a = ys[0], b = ys[ys.length - 1];
     setChart('days', o, 'Biểu đồ đường: số ngày tồn kho bình quân từ ' + num(kpi('days_inventory', a), 0) + ' (FY' + a + ') đến ' + num(kpi('days_inventory', b), 0) + ' ngày (FY' + b + ').');
-    sourceLine('days', 'Nguồn: Consolidated Balance Sheets và Statements of Income; chỉ số do nhóm tự tính.', ys);
+    sourceLine('days', 'Nguồn: Consolidated Balance Sheets và Statements of Income. Chỉ số do nhóm tự tính.', ys);
   }
 
   var RENDER = {
@@ -529,17 +529,20 @@
   }
   function renderSummaries() {
     var ys = years(), a = ys[0], b = ys[ys.length - 1];
+    // The highest and lowest years are named only when they are not the two ends already given.
+    var mid = function (y) { return y !== a && y !== b; };
     var share = function (y) { return kpi('direct_share', y); };
     var parts;
     if (a === b) {
       parts = ['Trong FY' + a + ', NIKE Direct chiếm ', { b: pct(share(a)) }, ' doanh thu NIKE Brand (', { b: bn(val('nike_direct_revenue', a)) + ' tỷ USD' },
-        '); bán buôn chiếm ', { b: pct(kpi('wholesale_share', a)) }, ' (', { b: bn(val('nike_brand_wholesale_revenue', a)) + ' tỷ USD' }, ').'];
+        '), còn bán buôn chiếm ', { b: pct(kpi('wholesale_share', a)) }, ' (', { b: bn(val('nike_brand_wholesale_revenue', a)) + ' tỷ USD' }, ').'];
     } else {
       var hi = extreme(ys, share, 1), lo = extreme(ys, share, -1);
       parts = ['Tỷ trọng NIKE Direct trong doanh thu NIKE Brand là ', { b: pct(share(a)) }, ' ở FY' + a + ' và ', { b: pct(share(b)) }, ' ở FY' + b];
-      if (ys.length > 2) parts = parts.concat(['; cao nhất ', { b: pct(share(hi)) }, ' (FY' + hi + '), thấp nhất ', { b: pct(share(lo)) }, ' (FY' + lo + ')']);
-      parts = parts.concat(['. Doanh thu NIKE Direct từ ', { b: bn(val('nike_direct_revenue', a)) }, ' đến ', { b: bn(val('nike_direct_revenue', b)) + ' tỷ USD' },
-        '; bán buôn từ ', { b: bn(val('nike_brand_wholesale_revenue', a)) }, ' đến ', { b: bn(val('nike_brand_wholesale_revenue', b)) + ' tỷ USD' }, '.']);
+      if (mid(hi)) parts = parts.concat([', cao nhất ', { b: pct(share(hi)) }, ' (FY' + hi + ')']);
+      if (mid(lo)) parts = parts.concat([mid(hi) ? ' và thấp nhất ' : ', thấp nhất ', { b: pct(share(lo)) }, ' (FY' + lo + ')']);
+      parts = parts.concat(['. Doanh thu NIKE Direct đi từ ', { b: bn(val('nike_direct_revenue', a)) }, ' đến ', { b: bn(val('nike_direct_revenue', b)) + ' tỷ USD' },
+        ', còn bán buôn từ ', { b: bn(val('nike_brand_wholesale_revenue', a)) }, ' đến ', { b: bn(val('nike_brand_wholesale_revenue', b)) + ' tỷ USD' }, '.']);
     }
     summary(document.getElementById('summary-channels'), parts);
 
@@ -549,11 +552,11 @@
         ', biên EBIT (non-GAAP) ', { b: pct(em(a)) }, ', hàng tồn kho cuối kỳ ', { b: bn(val('inventories', a)) + ' tỷ USD' }, '.'];
     } else {
       var ehi = extreme(ys, em, 1);
-      parts = ['Doanh thu NIKE, Inc. từ ', { b: bn(val('revenues', a)) }, ' (FY' + a + ') đến ', { b: bn(val('revenues', b)) + ' tỷ USD' }, ' (FY' + b + '). Biên lợi nhuận gộp ',
-        { b: pct(kpi('gross_margin', a)) }, ' (FY' + a + ') và ', { b: pct(kpi('gross_margin', b)) }, ' (FY' + b + '); biên EBIT (non-GAAP) ',
+      parts = ['Doanh thu NIKE, Inc. đi từ ', { b: bn(val('revenues', a)) }, ' (FY' + a + ') đến ', { b: bn(val('revenues', b)) + ' tỷ USD' }, ' (FY' + b + '). Biên lợi nhuận gộp là ',
+        { b: pct(kpi('gross_margin', a)) }, ' (FY' + a + ') và ', { b: pct(kpi('gross_margin', b)) }, ' (FY' + b + '), còn biên EBIT (non-GAAP) là ',
         { b: pct(em(a)) }, ' (FY' + a + ') và ', { b: pct(em(b)) }, ' (FY' + b + ')'];
-      if (ys.length > 2) parts = parts.concat([', cao nhất ', { b: pct(em(ehi)) }, ' (FY' + ehi + ')']);
-      parts = parts.concat(['. Hàng tồn kho cuối kỳ từ ', { b: bn(val('inventories', a)) }, ' đến ', { b: bn(val('inventories', b)) + ' tỷ USD' }, '.']);
+      if (mid(ehi)) parts = parts.concat([', cao nhất ', { b: pct(em(ehi)) }, ' (FY' + ehi + ')']);
+      parts = parts.concat(['. Hàng tồn kho cuối kỳ đi từ ', { b: bn(val('inventories', a)) }, ' đến ', { b: bn(val('inventories', b)) + ' tỷ USD' }, '.']);
     }
     summary(document.getElementById('summary-performance'), parts);
   }
@@ -918,7 +921,7 @@
     });
     document.getElementById('reset').addEventListener('click', function () {
       state.from = D.years[0]; state.to = D.years[D.years.length - 1]; state.basis = 'reported'; state.hidden = {};
-      renderAll(); announce('Đã đặt lại: FY' + state.from + '–FY' + state.to + ', tăng trưởng theo báo cáo, hiện tất cả chuỗi số liệu.');
+      renderAll(); announce('Đã đặt lại: FY' + state.from + '–FY' + state.to + ', tăng trưởng theo báo cáo, hiện lại tất cả số liệu trên biểu đồ.');
     });
     document.querySelectorAll('#growth-basis input').forEach(function (r) {
       r.addEventListener('change', function () {
@@ -991,7 +994,7 @@
   }
 
   function start() {
-    if (!window.echarts) { fail('Không tải được thư viện biểu đồ (assets/vendor/echarts-5.6.0.min.js). Kiểm tra lại thư mục site đã được triển khai đầy đủ.'); return; }
+    if (!window.echarts) { fail('Không tải được thư viện biểu đồ (assets/vendor/echarts-5.6.0.min.js). Hãy kiểm tra xem thư mục site đã được đưa lên đầy đủ chưa.'); return; }
     fetch('data/nike-financials.json', { cache: 'no-cache' })
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function (data) {

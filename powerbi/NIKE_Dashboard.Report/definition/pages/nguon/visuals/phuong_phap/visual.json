@@ -33,7 +33,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Số của năm FY t lấy từ 10-K FY t; số năm trước lấy từ cột so sánh trong cùng báo cáo để tính tăng trưởng, giống cách NIKE tính.",
+                    "value": "– Số liệu của mỗi năm tài chính được lấy từ báo cáo 10-K của chính năm đó. Khi tính tăng trưởng, số năm trước được lấy ở cột so sánh trong cùng báo cáo, giống cách NIKE tự tính.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -46,7 +46,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Số liệu báo cáo đọc từ dữ liệu XBRL gắn trong 10-K, đối chiếu với API XBRL của SEC và với bảng trong phần MD&A.",
+                    "value": "– Các số trên báo cáo tài chính được lấy từ dữ liệu XBRL đi kèm mỗi báo cáo 10-K, sau đó đối chiếu với dữ liệu XBRL do SEC công bố và với các bảng trong phần MD&A.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -59,7 +59,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Số chỉ có trong phần MD&A (tăng trưởng loại trừ tỷ giá, doanh số Digital) được đọc lại trực tiếp trên trang 10-K bằng một cách thứ hai; ảnh chụp đối chiếu ở trang “Đối chiếu 35 số” của dashboard web.",
+                    "value": "– Các chỉ tiêu chỉ có trong phần MD&A (tăng trưởng loại trừ tỷ giá, doanh số Digital) không có dữ liệu XBRL để đối chiếu, nên được đọc lại thêm một lần ngay trên trang 10-K. Ảnh chụp từng chỗ có ở trang “Đối chiếu 35 số” trên dashboard web.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -72,7 +72,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Mọi chỉ số tính toán dùng cùng một công thức với sheet 04 của bộ dữ liệu Excel; mỗi lần cập nhật đều chạy kiểm tra đối chiếu số học.",
+                    "value": "– Các chỉ số do nhóm tự tính dùng đúng công thức ở sheet 04 của bộ dữ liệu Excel. Mỗi lần cập nhật đều kiểm tra lại các phép cộng trừ, chẳng hạn doanh thu trừ giá vốn phải bằng lợi nhuận gộp.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -85,7 +85,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Số liệu NIKE không công bố được ghi “Không công bố”, không thay bằng 0.",
+                    "value": "– Số liệu nào NIKE không công bố thì ghi “Không công bố”, không điền số 0.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",

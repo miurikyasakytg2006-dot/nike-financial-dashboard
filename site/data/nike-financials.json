@@ -1,7 +1,7 @@
 {
  "meta": {
   "title": "NIKE, Inc. – phân phối và kết quả tài chính FY2020–FY2026",
-  "generated_on": "2026-10-24",
+  "generated_on": "2026-10-25",
   "extracted_on": "2026-10-23",
   "workbook": "downloads/NIKE_Financial_Dataset_FY2020-2026.xlsx",
   "currency": "USD",
@@ -119,7 +119,7 @@
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
-   "definition": "Cấu phần marketing của tổng chi phí bán hàng và quản lý. 10-K FY2020: chi phí quảng cáo, khuyến mại, hợp đồng tài trợ vận động viên, truyền thông, sự kiện thương hiệu; 10-K FY2026: “brand marketing expense and sports marketing expense”.",
+   "definition": "Phần chi cho marketing trong tổng chi phí bán hàng và quản lý. Theo 10-K FY2020, khoản này gồm chi phí quảng cáo, khuyến mại, hợp đồng tài trợ vận động viên, truyền thông và sự kiện thương hiệu. 10-K FY2026 gọi là “brand marketing expense and sports marketing expense”.",
    "location": "Item 8 – Consolidated Statements of Income, dòng “Demand creation expense”"
   },
   "operating_overhead_expense": {
@@ -129,7 +129,7 @@
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
-   "definition": "Cấu phần còn lại của tổng chi phí bán hàng và quản lý: chủ yếu lương và phúc lợi, nghiên cứu và phát triển, nợ khó đòi, tiền thuê, khấu hao, dịch vụ chuyên môn, đầu tư công nghệ, đi lại (theo 10-K FY2026).",
+   "definition": "Phần còn lại của tổng chi phí bán hàng và quản lý, chủ yếu gồm lương và phúc lợi, nghiên cứu và phát triển, nợ khó đòi, tiền thuê, khấu hao, dịch vụ chuyên môn, đầu tư công nghệ, đi lại (theo 10-K FY2026).",
    "location": "Item 8 – Consolidated Statements of Income, dòng “Operating overhead expense”"
   },
   "total_selling_admin_expense": {
@@ -149,7 +149,7 @@
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
-   "definition": "Số dương = chi phí lãi thuần; số âm = thu nhập lãi thuần. Giữ đúng quy ước dấu của NIKE.",
+   "definition": "Số dương là chi phí lãi thuần, số âm là thu nhập lãi thuần, giữ đúng cách ghi dấu của NIKE.",
    "location": "Item 8 – Consolidated Statements of Income, dòng “Interest expense (income), net” (10-K FY2026 ghi là “Interest (income) expense, net”)"
   },
   "other_expense_net": {
@@ -159,7 +159,7 @@
    "scope": "NIKE, Inc.",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
-   "definition": "Số dương = chi phí khác thuần; số âm = thu nhập khác thuần. Giữ đúng quy ước dấu của NIKE.",
+   "definition": "Số dương là chi phí khác thuần, số âm là thu nhập khác thuần, giữ đúng cách ghi dấu của NIKE.",
    "location": "Item 8 – Consolidated Statements of Income, dòng “Other (income) expense, net”"
   },
   "income_before_taxes": {
@@ -239,7 +239,7 @@
    "scope": "NIKE Brand",
    "channel": "NIKE Direct",
    "kind": "GAAP – BCTC đã kiểm toán",
-   "definition": "Doanh thu NIKE Brand bán trực tiếp cho người tiêu dùng qua cửa hàng do NIKE sở hữu và nền tảng số (“NIKE Brand Digital”) – theo định nghĩa trong Item 1 của 10-K. Không gồm kênh trực tiếp của Converse. Thuyết minh BCTC gọi dòng này là “Sales through Direct to Consumer”, MD&A gọi là “Sales through NIKE Direct”.",
+   "definition": "Doanh thu NIKE Brand bán trực tiếp cho người tiêu dùng qua cửa hàng do NIKE sở hữu và nền tảng số (“NIKE Brand Digital”), theo định nghĩa trong Item 1 của 10-K. Không gồm kênh trực tiếp của Converse. Thuyết minh BCTC gọi dòng này là “Sales through Direct to Consumer”, MD&A gọi là “Sales through NIKE Direct”.",
    "location": "Item 8 – Note “Revenues”, bảng phân tách doanh thu, cột “Total NIKE Brand”, dòng “Sales through Direct to Consumer”"
   },
   "nike_brand_wholesale_revenue": {
@@ -259,7 +259,7 @@
    "scope": "NIKE Brand",
    "channel": "Global Brand Divisions",
    "kind": "GAAP – BCTC đã kiểm toán",
-   "definition": "“NIKE Brand licensing and other miscellaneous revenues” không thuộc khu vực địa lý nào; không thuộc kênh Direct hay Wholesale. Quy mô rất nhỏ.",
+   "definition": "“NIKE Brand licensing and other miscellaneous revenues” không thuộc khu vực địa lý nào và cũng không thuộc kênh Direct hay Wholesale. Quy mô rất nhỏ.",
    "location": "Item 8 – Note “Revenues”, bảng phân tách doanh thu, cột “Total NIKE Brand”, dòng “Other”"
   },
   "nike_brand_revenue": {
@@ -289,7 +289,7 @@
    "scope": "Corporate",
    "channel": "",
    "kind": "GAAP – BCTC đã kiểm toán",
-   "definition": "Chủ yếu là lãi/lỗ phòng ngừa rủi ro tỷ giá liên quan đến doanh thu; có thể âm. Dùng để đối chiếu.",
+   "definition": "Chủ yếu là lãi/lỗ phòng ngừa rủi ro tỷ giá liên quan đến doanh thu, có thể âm. Chỉ dùng để đối chiếu.",
    "location": "Item 8 – Note “Revenues”, bảng phân tách doanh thu, cột “Corporate”, dòng “Total revenues”"
   },
   "nike_brand_digital_sales": {
@@ -299,7 +299,7 @@
    "scope": "NIKE Brand",
    "channel": "NIKE Direct – Digital",
    "kind": "MD&A – ban điều hành nêu, không kiểm toán",
-   "definition": "Doanh số qua nền tảng số của NIKE Brand – một phần của NIKE Direct. NIKE chỉ công bố dạng làm tròn đến 0,1 tỷ USD trong phần MD&A.",
+   "definition": "Doanh số qua nền tảng số của NIKE Brand, là một phần của NIKE Direct. NIKE chỉ công bố số đã làm tròn đến 0,1 tỷ USD, trong phần MD&A.",
    "location": "Item 7 – MD&A, đoạn văn về NIKE Direct (câu trích ở cột “Số hoặc câu hiển thị trong tài liệu”)"
   },
   "nike_direct_share_stated": {
@@ -382,7 +382,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "37,403",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -394,7 +394,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "44,538",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -406,7 +406,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "46,710",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
     "verified_by": "",
     "verified_on": ""
@@ -418,7 +418,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "51,217",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -430,7 +430,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "51,362",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -442,7 +442,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "46,309",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -454,7 +454,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "46,398",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -468,7 +468,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "21,162",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -480,7 +480,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "24,576",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -492,7 +492,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "25,231",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
     "verified_by": "",
     "verified_on": ""
@@ -504,7 +504,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "28,925",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -516,7 +516,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "28,475",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -528,7 +528,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "26,519",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -540,7 +540,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "26,487",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -554,7 +554,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "16,241",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -566,7 +566,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "19,962",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -578,7 +578,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "21,479",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
     "verified_by": "",
     "verified_on": ""
@@ -590,7 +590,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "22,292",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -602,7 +602,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "22,887",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -614,7 +614,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "19,790",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -626,7 +626,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "19,911",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -640,7 +640,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "3,592",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -652,7 +652,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "3,114",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -664,7 +664,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "3,850",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
     "verified_by": "",
     "verified_on": ""
@@ -676,7 +676,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "4,060",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -688,7 +688,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "4,285",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -700,7 +700,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "4,689",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -712,7 +712,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "4,754",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -726,7 +726,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "9,534",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -738,7 +738,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "9,911",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -750,7 +750,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "10,954",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
     "verified_by": "",
     "verified_on": ""
@@ -762,7 +762,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "12,317",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -774,7 +774,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "12,291",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -786,7 +786,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "11,399",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -798,7 +798,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "11,360",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -812,7 +812,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "13,126",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -824,7 +824,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "13,025",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -836,7 +836,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "14,804",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
     "verified_by": "",
     "verified_on": ""
@@ -848,7 +848,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "16,377",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -860,7 +860,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "16,576",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -872,7 +872,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "16,088",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -884,7 +884,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "16,114",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -898,7 +898,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "89",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -910,7 +910,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "262",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -922,7 +922,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "205",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
     "verified_by": "",
     "verified_on": ""
@@ -934,7 +934,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "(6)",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -946,7 +946,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "(161)",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -958,7 +958,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "(107)",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -970,7 +970,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "(50)",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -984,7 +984,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "139",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -996,7 +996,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "14",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -1008,7 +1008,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "(181)",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
     "verified_by": "",
     "verified_on": ""
@@ -1020,7 +1020,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "(280)",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -1032,7 +1032,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "(228)",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -1044,7 +1044,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "(76)",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -1056,7 +1056,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "(53)",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -1070,7 +1070,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "2,887",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -1082,7 +1082,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "6,661",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -1094,7 +1094,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "6,651",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
     "verified_by": "",
     "verified_on": ""
@@ -1106,7 +1106,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "6,201",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -1118,7 +1118,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "6,700",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -1130,7 +1130,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "3,885",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -1142,7 +1142,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "3,900",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -1156,7 +1156,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "348",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -1168,7 +1168,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "934",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -1180,7 +1180,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "605",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
     "verified_by": "",
     "verified_on": ""
@@ -1192,7 +1192,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "1,131",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -1204,7 +1204,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "1,000",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -1216,7 +1216,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "666",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -1228,7 +1228,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "792",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -1242,7 +1242,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "2,539",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021, FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -1254,7 +1254,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "5,727",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022, FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -1266,7 +1266,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "6,046",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023, FY2024.",
     "verified_by": "",
     "verified_on": ""
@@ -1278,7 +1278,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "5,070",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -1290,7 +1290,7 @@
     "page": 57,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "5,700",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -1302,7 +1302,7 @@
     "page": 56,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "3,219",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -1314,7 +1314,7 @@
     "page": 55,
     "section": "CONSOLIDATED STATEMENTS OF INCOME",
     "evidence": "3,108",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -1328,7 +1328,7 @@
     "page": 58,
     "section": "CONSOLIDATED BALANCE SHEETS",
     "evidence": "7,367",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021.",
     "verified_by": "",
     "verified_on": ""
@@ -1340,7 +1340,7 @@
     "page": 59,
     "section": "CONSOLIDATED BALANCE SHEETS",
     "evidence": "6,854",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -1352,7 +1352,7 @@
     "page": 58,
     "section": "CONSOLIDATED BALANCE SHEETS",
     "evidence": "8,420",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -1364,7 +1364,7 @@
     "page": 57,
     "section": "CONSOLIDATED BALANCE SHEETS",
     "evidence": "8,454",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2024, FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -1376,7 +1376,7 @@
     "page": 59,
     "section": "CONSOLIDATED BALANCE SHEETS",
     "evidence": "7,519",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025, FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -1388,7 +1388,7 @@
     "page": 58,
     "section": "CONSOLIDATED BALANCE SHEETS",
     "evidence": "7,489",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -1400,7 +1400,7 @@
     "page": 57,
     "section": "CONSOLIDATED BALANCE SHEETS",
     "evidence": "7,501",
-    "cross_check": "Khớp API XBRL của SEC (cùng số accession).",
+    "cross_check": "Khớp với dữ liệu XBRL do SEC công bố (cùng số accession).",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -1586,7 +1586,7 @@
     "page": 31,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 37,403 | 39,117 | -4 | -2 | 36,397 | 7 | 11",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 31) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2020-bang-doanh-thu-tr31.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 31): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2020-bang-doanh-thu-tr31.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1598,7 +1598,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 44,538 | 37,403 | 19 | 17 | 39,117 | -4 | -2",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2021-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2021-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1610,7 +1610,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 46,710 | 44,538 | 5 | 6 | 37,403 | 19 | 17",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2022-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2022-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1622,7 +1622,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 51,217 | 46,710 | 10 | 16 | 44,538 | 5 | 6",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2023-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2023-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1634,7 +1634,7 @@
     "page": 34,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 51,362 | 51,217 | 0 | 1 | 46,710 | 10 | 16",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 34) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2024-bang-doanh-thu-tr34.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 34): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2024-bang-doanh-thu-tr34.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1646,7 +1646,7 @@
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 46,309 | 51,362 | -10 | -9 | 51,217 | 0 | 1",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2025-bang-doanh-thu-tr33.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 33): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2025-bang-doanh-thu-tr33.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -1658,7 +1658,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE, INC. REVENUES | 46,398 | 46,309 | 0 | -2 | 51,362 | -10 | -9",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2026-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2026-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2188,7 +2188,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Digital commerce sales were $5.5 billion for fiscal 2020 compared to $3.8 billion for fiscal 2019.",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2020-digital-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2020-digital-tr32.png.",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2021.",
     "verified_by": "",
     "verified_on": ""
@@ -2200,7 +2200,7 @@
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "Digital commerce sales were $9.1 billion for fiscal 2021 compared to $5.5 billion for fiscal 2020.",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2021-digital-tr33.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 33): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2021-digital-tr33.png.",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2022.",
     "verified_by": "",
     "verified_on": ""
@@ -2212,7 +2212,7 @@
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "NIKE Brand Digital sales were $10.7 billion for fiscal 2022 compared to $9.1 billion for fiscal 2021.",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2022-digital-tr33.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 33): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2022-digital-tr33.png.",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2023.",
     "verified_by": "",
     "verified_on": ""
@@ -2224,7 +2224,7 @@
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "NIKE Brand Digital sales were $12.6 billion for fiscal 2023 compared to $10.7 billion for fiscal 2022.",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2023-digital-tr33.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 33): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2023-digital-tr33.png.",
     "restatement": "ĐIỀU CHỈNH HỒI TỐ: 10-K FY2024 trình bày lại là 12,4 tỷ USD (chênh −0,2 tỷ USD).",
     "verified_by": "",
     "verified_on": ""
@@ -2236,7 +2236,7 @@
     "page": 35,
     "section": "ITEM 7 – MD&A",
     "evidence": "NIKE Brand Digital sales were $12.1 billion for fiscal 2024 compared to $12.4 billion for fiscal 2023.",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 35) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2024-digital-tr35.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 35): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2024-digital-tr35.png.",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2025.",
     "verified_by": "",
     "verified_on": ""
@@ -2248,7 +2248,7 @@
     "page": 34,
     "section": "ITEM 7 – MD&A",
     "evidence": "On a currency-neutral basis, NIKE Direct revenues decreased 12% due to declines in NIKE Brand Digital sales of 20% from $12.1 billion in fiscal 2024 to $9.6 billion in fiscal 2025, while NIKE store sales were flat.",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 34) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2025-digital-tr34.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 34): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2025-digital-tr34.png.",
     "restatement": "Không thay đổi khi trình bày lại trong 10-K FY2026.",
     "verified_by": "",
     "verified_on": ""
@@ -2260,7 +2260,7 @@
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "NIKE Brand Digital sales were $8.6 billion in fiscal 2026 compared to $9.6 billion in fiscal 2025, with declines primarily due to reduced traffic.",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2026-digital-tr33.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 33): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2026-digital-tr33.png.",
     "restatement": "Chưa có 10-K năm sau để so sánh.",
     "verified_by": "",
     "verified_on": ""
@@ -2446,7 +2446,7 @@
     "page": 31,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 12,382 | 11,753 | 5 | 8 | 10,428 | 13 | 16",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 31) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2020-bang-doanh-thu-tr31.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 31): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2020-bang-doanh-thu-tr31.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2458,7 +2458,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 16,370 | 12,382 | 32 | 30 | 11,753 | 5 | 8",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2021-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2021-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2470,7 +2470,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 18,726 | 16,370 | 14 | 15 | 12,382 | 32 | 30",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2022-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2022-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2482,7 +2482,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 21,308 | 18,726 | 14 | 20 | 16,370 | 14 | 15",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2023-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2023-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2494,7 +2494,7 @@
     "page": 34,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 21,519 | 21,308 | 1 | 1 | 18,726 | 14 | 20",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 34) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2024-bang-doanh-thu-tr34.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 34): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2024-bang-doanh-thu-tr34.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2506,7 +2506,7 @@
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 18,783 | 21,519 | -13 | -12 | 21,308 | 1 | 1",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2025-bang-doanh-thu-tr33.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 33): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2025-bang-doanh-thu-tr33.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2518,7 +2518,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales through NIKE Direct | 17,720 | 18,783 | -6 | -8 | 21,519 | -13 | -12",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2026-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2026-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2618,7 +2618,7 @@
     "page": 31,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 23,156 | 25,423 | -9 | -7 | 23,969 | 6 | 10",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 31) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2020-bang-doanh-thu-tr31.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 31): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2020-bang-doanh-thu-tr31.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2630,7 +2630,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 25,898 | 23,156 | 12 | 10 | 25,423 | -9 | -7",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2021-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2021-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2642,7 +2642,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 25,608 | 25,898 | -1 | -1 | 23,156 | 12 | 10",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2022-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2022-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2654,7 +2654,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 27,397 | 25,608 | 7 | 14 | 25,898 | -1 | -1",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2023-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2023-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2666,7 +2666,7 @@
     "page": 34,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 27,758 | 27,397 | 1 | 2 | 25,608 | 7 | 14",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 34) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2024-bang-doanh-thu-tr34.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 34): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2024-bang-doanh-thu-tr34.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2678,7 +2678,7 @@
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 25,883 | 27,758 | -7 | -6 | 27,397 | 1 | 2",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2025-bang-doanh-thu-tr33.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 33): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2025-bang-doanh-thu-tr33.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2690,7 +2690,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Sales to Wholesale Customers | 27,453 | 25,883 | 6 | 4 | 27,758 | -7 | -6",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2026-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2026-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2790,7 +2790,7 @@
     "page": 31,
     "section": "ITEM 7 – MD&A",
     "evidence": "Total NIKE Brand Revenues | 35,568 | 37,218 | -4 | -2 | 34,485 | 8 | 11",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 31) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2020-bang-doanh-thu-tr31.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 31): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2020-bang-doanh-thu-tr31.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2802,7 +2802,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Total NIKE Brand Revenues | 42,293 | 35,568 | 19 | 17 | 37,218 | -4 | -2",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2021-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2021-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2814,7 +2814,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Total NIKE Brand Revenues | 44,436 | 42,293 | 5 | 6 | 35,568 | 19 | 17",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2022-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2022-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2826,7 +2826,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "Total NIKE Brand Revenues | 48,763 | 44,436 | 10 | 16 | 42,293 | 5 | 6",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2023-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2023-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2838,7 +2838,7 @@
     "page": 34,
     "section": "ITEM 7 – MD&A",
     "evidence": "Total NIKE Brand Revenues | 49,322 | 48,763 | 1 | 1 | 44,436 | 10 | 16",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 34) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2024-bang-doanh-thu-tr34.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 34): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2024-bang-doanh-thu-tr34.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2850,7 +2850,7 @@
     "page": 33,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE BRAND REVENUES | 44,714 | 49,322 | -9 | -9 | 48,763 | 1 | 1",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 33) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2025-bang-doanh-thu-tr33.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 33): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2025-bang-doanh-thu-tr33.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2862,7 +2862,7 @@
     "page": 32,
     "section": "ITEM 7 – MD&A",
     "evidence": "TOTAL NIKE BRAND REVENUES(3) | 45,222 | 44,714 | 1 | -1 | 49,322 | -9 | -9",
-    "cross_check": "Đọc lại trực tiếp trên trang 10-K (tr. 32) bằng cách thứ hai: khớp. Ảnh đối chiếu: handover/bang-chung-doi-chieu/FY2026-bang-doanh-thu-tr32.png.",
+    "cross_check": "Đã đọc lại ngay trên trang 10-K (tr. 32): khớp. Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/FY2026-bang-doanh-thu-tr32.png.",
     "restatement": "Không áp dụng: tỷ lệ % chỉ lấy từ 10-K của chính năm đó.",
     "verified_by": "",
     "verified_on": ""
@@ -2907,7 +2907,7 @@
    "unit": "%",
    "group": "channels",
    "formula": "global_brand_divisions_revenue / nike_brand_revenue",
-   "note": "Phần còn lại, chủ yếu là doanh thu cấp phép; dưới 0,3%.",
+   "note": "Phần còn lại, chủ yếu là doanh thu cấp phép, dưới 0,3%.",
    "values": {
     "2020": 0.0008434547908232119,
     "2021": 0.000591114368808077,
@@ -3019,7 +3019,7 @@
    "unit": "%",
    "group": "financial",
    "formula": "total_selling_admin_expense / revenues",
-   "note": "Chi phí hợp nhất; không phân bổ được theo kênh.",
+   "note": "Chi phí chung của cả công ty, không phân bổ được theo kênh.",
    "values": {
     "2020": 0.3509344170253723,
     "2021": 0.2924468992770219,
@@ -3035,7 +3035,7 @@
    "unit": "%",
    "group": "financial",
    "formula": "demand_creation_expense / revenues",
-   "note": "Cấu phần marketing của SG&A.",
+   "note": "Phần chi cho marketing trong SG&A.",
    "values": {
     "2020": 0.09603507740020854,
     "2021": 0.06991782298262159,
@@ -3051,7 +3051,7 @@
    "unit": "%",
    "group": "financial",
    "formula": "operating_overhead_expense / revenues",
-   "note": "Cấu phần vận hành của SG&A.",
+   "note": "Phần chi phí vận hành trong SG&A.",
    "values": {
     "2020": 0.25489933962516376,
     "2021": 0.22252907629440027,
@@ -3067,7 +3067,7 @@
    "unit": "triệu USD",
    "group": "financial",
    "formula": "net_income + income_tax_expense + interest_expense_net",
-   "note": "Non-GAAP. NIKE không trình bày dòng “Operating income”; EBIT là thước đo NIKE dùng. Đối chiếu với EBIT do NIKE công bố.",
+   "note": "Chỉ tiêu non-GAAP. NIKE không trình bày dòng “Operating income” mà dùng EBIT. Số tự tính được đối chiếu với EBIT do NIKE công bố.",
    "values": {
     "2020": 2976.0,
     "2021": 6923.0,

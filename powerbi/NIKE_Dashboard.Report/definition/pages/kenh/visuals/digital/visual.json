@@ -557,7 +557,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Tỷ USD. Digital là một phần của NIKE Direct (cùng với cửa hàng do NIKE sở hữu). Chiều cao cả cột = doanh thu NIKE Direct.'"
+                  "Value": "'Tỷ USD. Digital là một phần của NIKE Direct (cùng với cửa hàng do NIKE sở hữu). Chiều cao cả cột bằng doanh thu NIKE Direct.'"
                 }
               }
             },

@@ -102,7 +102,7 @@ def test_mdna_only_values_are_matched_only_through_the_page_check(observations):
     for o in obs:
         if _mdna_only(o) and o["status"] == STATUS_MATCHED:
             assert checks[(o["fy"], o["metric"]["id"])]["result"] == "match", o["key"]
-            assert o["cross_check"].startswith("Đọc lại trực tiếp trên trang 10-K"), o["key"]
+            assert o["cross_check"].startswith("Đã đọc lại ngay trên trang 10-K"), o["key"]
 
 
 def test_page_check_covers_every_mdna_only_value_with_evidence(observations):

@@ -4,7 +4,7 @@ table BangKenh
 
 	measure 'Liên kết BangKenh' = SELECTEDVALUE ( BangKenh[Liên kết] )
 
-	measure 'Màu chữ BangKenh' = IF ( SELECTEDVALUE ( BangKenh[Loại] ) = "Trang", "#5b6472", "#15191e" )
+	measure 'Màu chữ BangKenh' = IF ( SELECTEDVALUE ( BangKenh[Loại] ) = "Trang", "#6f7784", "#15191e" )
 
 	column 'Thứ tự'
 		dataType: int64

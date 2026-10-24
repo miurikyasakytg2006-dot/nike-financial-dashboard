@@ -20,6 +20,7 @@
   --ink: #15191e;
   --ink-2: #3b4350;
   --muted: #5b6472;
+  --faint: #6f7784;
   --rule: #d5dae1;
   --grid: #e6e9ee;
   --accent: #1d4e89;
@@ -192,7 +193,10 @@ main:focus { outline: none; }
 .data-table tr.total th, .data-table tr.total td { font-weight: 600; }
 .mark-slot { display: inline-block; width: 0.8em; text-align: center; color: var(--muted); font-style: normal; }
 .ref-slot { display: inline-block; width: 3em; text-align: left; font-style: normal; }
-.page-ref { font-size: 12px; color: var(--muted); }
+/* Page references back up the figures without competing with them: small, grey (4.5:1 on white), no underline.
+   The row being read underlines them, so they still read as links. */
+.page-ref { font-size: 11px; color: var(--faint); text-decoration: none; }
+.data-table tbody tr:hover .page-ref, .page-ref:focus-visible { color: var(--muted); text-decoration: underline; }
 .page-ref:hover { color: var(--accent); }
 .data-table abbr { text-decoration: none; cursor: help; }
 

@@ -557,7 +557,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'% doanh thu, NIKE, Inc. Hai cấu phần cộng lại bằng tổng SG&A.'"
+                  "Value": "'% doanh thu, NIKE, Inc. Hai phần cộng lại bằng tổng SG&A.'"
                 }
               }
             },

@@ -4,7 +4,7 @@ table BangKetQua
 
 	measure 'Liên kết BangKetQua' = SELECTEDVALUE ( BangKetQua[Liên kết] )
 
-	measure 'Màu chữ BangKetQua' = IF ( SELECTEDVALUE ( BangKetQua[Loại] ) = "Trang", "#5b6472", "#15191e" )
+	measure 'Màu chữ BangKetQua' = IF ( SELECTEDVALUE ( BangKetQua[Loại] ) = "Trang", "#6f7784", "#15191e" )
 
 	column 'Thứ tự'
 		dataType: int64

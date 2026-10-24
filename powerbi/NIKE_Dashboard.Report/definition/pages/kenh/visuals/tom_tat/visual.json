@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
   "name": "tom_tat",
   "position": {
-    "x": 780,
+    "x": 660,
     "y": 166,
     "z": 6000,
     "height": 110,
-    "width": 460,
+    "width": 580,
     "tabOrder": 6000
   },
   "visual": {

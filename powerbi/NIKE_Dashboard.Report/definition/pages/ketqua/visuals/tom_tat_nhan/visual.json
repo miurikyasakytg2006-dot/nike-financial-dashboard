@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
   "name": "tom_tat_nhan",
   "position": {
-    "x": 780,
+    "x": 660,
     "y": 140,
     "z": 5000,
     "height": 26,
-    "width": 460,
+    "width": 580,
     "tabOrder": 5000
   },
   "visual": {
