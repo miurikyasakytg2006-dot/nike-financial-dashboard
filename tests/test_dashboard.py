@@ -190,13 +190,30 @@ def test_accessible_names_and_headings(page):
     assert page.locator("#table-channels thead th[scope=col]").count() == 9
 
 
-def test_tables_fit_without_scrolling_on_desktop(page):
+HEADER_VS_FIGURES = """(view) => {
+  const right = n => { const r = document.createRange(); r.selectNodeContents(n); return r.getBoundingClientRect().right; };
+  const heads = Array.from(document.querySelectorAll(`#table-${view} thead th`)).slice(2);
+  return Array.from(document.querySelectorAll(`#table-${view} tbody tr`)).filter(r => !r.classList.contains('group'))
+    .flatMap(r => Array.from(r.querySelectorAll('td.num')).map((td, i) =>
+      [r.querySelector('th').textContent + ' / ' + heads[i].textContent, Math.abs(right(heads[i]) - right(td.firstChild))]));
+}"""
+
+
+def assert_headers_align(pg, view):
+    """Every cell (reported, calculated or 'Không công bố') ends exactly under its year header."""
+    offsets = pg.evaluate(HEADER_VS_FIGURES, view)
+    off = [(cell, round(d, 1)) for cell, d in offsets if d > 1]
+    assert offsets and not off, (view, off)
+
+
+def test_tables_fit_and_headers_align_on_desktop(page):
     for q in ("", "?view=performance"):
         page.open(q)
         view = "performance" if q else "channels"
         width, client = page.evaluate(f"() => {{ const s = document.querySelector('#view-{view} .table-scroll'); "
                                       f"return [s.scrollWidth, s.clientWidth]; }}")
         assert width <= client, (view, width, client)
+        assert_headers_align(page, view)
 
 
 def test_print_draws_both_views(page):
@@ -208,19 +225,42 @@ def test_print_draws_both_views(page):
                              f"return c ? c.width * c.height : 0; }}")
         assert size > 0, chart
     assert page.locator("#table-performance tbody tr").count() > 20
+    for view in ("channels", "performance"):
+        assert_headers_align(page, view)
     page.emulate_media(media="screen")
     page.evaluate("() => window.dispatchEvent(new Event('afterprint'))")
     assert page.is_hidden("#view-performance")
 
 
-def test_mobile_layout_has_no_page_overflow(browser, server):
-    ctx = browser.new_context(viewport={"width": 390, "height": 844})
-    pg = ctx.new_page()
-    for q in ("", "?view=performance"):
-        pg.goto(server + q)
-        pg.wait_for_selector('html[data-ready="true"]')
-        assert pg.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
-    ctx.close()
+PINNED = """(view) => {
+  const box = document.querySelector(`#view-${view} .table-scroll`), b = box.getBoundingClientRect();
+  const heads = Array.from(document.querySelectorAll(`#table-${view} thead th`)), edge = heads[0].getBoundingClientRect().right;
+  const label = document.querySelector(`#table-${view} tbody tr:not(.group) th`).getBoundingClientRect();
+  const clipped = Array.from(box.querySelectorAll('.group-label')).map(g => [g.textContent, g.getBoundingClientRect()])
+    .filter(([, r]) => r.left < b.left - 0.5 || r.right > b.right + 0.5).map(([t]) => t);
+  // A column cut by the pinned column's edge would show the tail of an earlier year beside the labels.
+  const partial = heads.slice(1).map(h => [h.textContent, h.getBoundingClientRect()])
+    .filter(([, r]) => r.left < edge - 0.5 && r.right > edge + 0.5).map(([t]) => t);
+  return {scrolled: box.scrollLeft > 0 && box.classList.contains('scrolled'),
+          header: Math.round(heads[0].getBoundingClientRect().left - label.left), clipped, partial};
+}"""
+
+
+def test_narrow_layouts(browser, server):
+    for width in (390, 1024):
+        ctx = browser.new_context(viewport={"width": width, "height": 844})
+        pg = ctx.new_page()
+        for q in ("", "?view=performance"):
+            pg.goto(server + q)
+            pg.wait_for_selector('html[data-ready="true"]')
+            assert pg.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth"), width
+            view = "performance" if q else "channels"
+            assert_headers_align(pg, view)
+            # The table opens on the latest years; the label column, its header and the group names stay in view,
+            # and the first year in view starts at the label column's edge.
+            pinned = pg.evaluate(PINNED, view)
+            assert pinned == {"scrolled": True, "header": 0, "clipped": [], "partial": []}, (width, view, pinned)
+        ctx.close()
 
 
 def test_reduced_motion_disables_chart_animation(browser, server):

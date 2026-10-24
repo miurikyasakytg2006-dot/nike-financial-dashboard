@@ -33,6 +33,10 @@ jobs:
         run: python -m playwright install --with-deps chromium
       - name: Data and dashboard tests
         run: python -m pytest tests -q
+      - name: Version the CSS and JS links so browsers fetch them fresh after each deployment
+        run: |
+          sed -i -E "s#(assets/(styles\.css|app\.js))\"#\1?v=${GITHUB_SHA::7}\"#g" site/index.html
+          test "$(grep -cE 'assets/(styles\.css|app\.js)\?v=' site/index.html)" -eq 2
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

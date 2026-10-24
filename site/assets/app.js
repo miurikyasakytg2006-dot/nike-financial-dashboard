@@ -635,7 +635,8 @@
       var tr = document.createElement('tr');
       if (row.g) {
         tr.className = 'group';
-        var th = cell('th', row.g); th.colSpan = ys.length + 2; th.scope = 'colgroup';
+        var th = cell('th', null); th.colSpan = ys.length + 2; th.scope = 'colgroup';
+        th.append(cell('span', row.g, 'group-label'));
         tr.append(th); tbody.append(tr); return;
       }
       if (row.total) tr.className = 'total';
@@ -652,7 +653,8 @@
         } else {
           var o = ob(row.obs, y);
           if (!o || o.value == null) {
-            td = cell('td', 'Không công bố', 'num missing');
+            td = cell('td', null, 'num missing');
+            td.append(cell('span', 'Không công bố', 'missing-text'));
             td.title = (o && o.cross_check) || 'NIKE không công bố số liệu này trong 10-K.';
           } else {
             td = cell('td', row.fmt(o.value), 'num');
@@ -678,9 +680,25 @@
       tbody.append(tr);
     });
     table.append(thead, tbody);
-    // Where the table scrolls sideways (narrow screens), start at the latest years; the label column is sticky.
-    table.parentNode.scrollLeft = table.parentNode.scrollWidth;
+    fitTable(table);
   }
+  // Where the table scrolls sideways (narrow screens) it opens on the latest years, beside the pinned label column.
+  // The label column takes up the spare width, so the first year in view starts right at its edge instead of
+  // showing the tail of the year before it.
+  function fitTable(table) {
+    var box = table.parentNode, cols = Array.from(table.tHead.rows[0].cells);
+    var width = function (c) { return c.getBoundingClientRect().width; };
+    box.style.removeProperty('--label-width');
+    if (box.scrollWidth > box.clientWidth) {
+      var room = box.clientWidth - width(cols[0]), used = 0, i = cols.length;
+      while (i > 1 && used + width(cols[i - 1]) <= room + 0.5) used += width(cols[--i]);
+      if (used > 0) box.style.setProperty('--label-width', (width(cols[0]) + room - used) + 'px');
+    }
+    box.scrollLeft = box.scrollWidth;
+    markScrolled(box);
+  }
+  // While columns slide under the pinned label column, its edge fades them out (styles.css).
+  function markScrolled(box) { box.classList.toggle('scrolled', box.scrollLeft > 0); }
 
   // Table download as .xlsx: unlike a CSV, it opens correctly whatever the viewer's regional settings
   // (list separator and decimal mark differ between Vietnamese and English Windows). Minimal writer:
@@ -908,11 +926,17 @@
         announce(r.value === 'cn' ? 'Tăng trưởng loại trừ tỷ giá (non-GAAP).' : 'Tăng trưởng theo báo cáo.');
       });
     });
+    document.querySelectorAll('.table-scroll').forEach(function (box) {
+      box.addEventListener('scroll', function () { markScrolled(box); }, { passive: true });
+    });
     var resizeTimer = null;
     window.addEventListener('resize', function () {
-      // Axis label density depends on chart width, so redraw (not just rescale) after resizing.
+      // Axis label density depends on chart width, so redraw (not just rescale) after resizing; refit the table too.
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () { VIEW_CHARTS[state.view].forEach(function (id) { RENDER[id](); }); }, 200);
+      resizeTimer = setTimeout(function () {
+        VIEW_CHARTS[state.view].forEach(function (id) { RENDER[id](); });
+        fitTable(document.getElementById('table-' + state.view));
+      }, 200);
     });
     document.querySelectorAll('.export-png').forEach(function (b) {
       b.addEventListener('click', function () { exportPng(b.dataset.chart); });

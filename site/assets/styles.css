@@ -165,11 +165,29 @@ main:focus { outline: none; }
 .data-table th, .data-table td { padding: 7px 8px; border-bottom: 1px solid var(--grid); vertical-align: baseline; }
 .data-table thead th { text-align: right; font-weight: 600; color: var(--ink-2); border-bottom: 1px solid var(--ink); white-space: nowrap; }
 .data-table thead th:first-child, .data-table thead th:nth-child(2) { text-align: left; }
+/* Year headers line up with the figures, not with the marker and page-reference slots (0.8em + 3em) after them. */
+.data-table thead th:nth-child(n+3) { padding-right: calc(8px + 3.8em); }
 .data-table tbody th { text-align: left; font-weight: 400; min-width: 12rem; position: sticky; left: 0; background: var(--page); }
+/* When the table scrolls sideways (narrow screens) the label column stays put; its header and the group names stay with it. */
+.data-table thead th:first-child { position: sticky; left: 0; background: var(--page); }
+.group-label { display: inline-block; position: sticky; left: 8px; }
+@media screen {
+  /* Set by app.js (fitTable) where the table scrolls sideways: the label column takes up the spare width. */
+  .data-table thead th:first-child { min-width: var(--label-width, 0); }
+  /* While scrolling, figures sliding under the pinned column fade out at its edge. 8px = the cell padding, so a
+     column that starts right at the edge is never covered. */
+  .table-scroll.scrolled .data-table thead th:first-child::after,
+  .table-scroll.scrolled .data-table tbody tr:not(.group) th::after {
+    content: ""; position: absolute; top: 0; bottom: 0; left: 100%; width: 8px; pointer-events: none;
+    background: linear-gradient(to right, var(--page), transparent);
+  }
+}
 .data-table td.unit { color: var(--muted); white-space: nowrap; font-size: 14px; }
 .data-table td.num { text-align: right; white-space: nowrap; }
 .data-table td.calc { font-style: italic; color: var(--ink-2); }
-.data-table td.missing { color: var(--muted); font-size: 14px; }
+.data-table td.missing { color: var(--muted); }
+/* Smaller text, same cell size: the trailing slots are sized in em of the cell, so they stay as wide as in other cells. */
+.missing-text { font-size: 14px; }
 .data-table tr.group th { font-weight: 600; padding-top: 16px; color: var(--ink); border-bottom-color: var(--rule); }
 .data-table tr.total th, .data-table tr.total td { font-weight: 600; }
 .mark-slot { display: inline-block; width: 0.8em; text-align: center; color: var(--muted); font-style: normal; }
@@ -241,7 +259,9 @@ main:focus { outline: none; }
   .chart > div, .chart canvas { width: 100% !important; height: auto !important; }
   .table-scroll { overflow: visible; }
   .data-table { font-size: 11px; }
-  .data-table td.unit, .data-table td.missing, .page-ref { font-size: 10px; }
+  .data-table td.unit, .missing-text, .page-ref { font-size: 10px; }
   .data-table th, .data-table td { padding: 3px 5px; }
+  .data-table thead th:nth-child(n+3) { padding-right: calc(5px + 3.8em); }
   .data-table tbody th { min-width: 0; position: static; }
+  .data-table thead th:first-child, .group-label { position: static; }
 }
