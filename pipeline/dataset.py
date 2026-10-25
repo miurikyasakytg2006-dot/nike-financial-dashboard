@@ -210,8 +210,7 @@ def apply_page_checks(obs, checks):
             continue
         if c["result"] == "match":
             o["status"] = STATUS_MATCHED
-            o["cross_check"] = (f"Đã đọc lại ngay trên trang 10-K (tr. {c['page']}): khớp. "
-                                f"Ảnh chụp đối chiếu: handover/bang-chung-doi-chieu/{c['screenshot']}.")
+            o["cross_check"] = f"Đã đọc lại ngay trên trang 10-K (tr. {c['page']}): khớp."
         else:
             o["status"] = STATUS_CONFLICT
             o["cross_check"] = f"CHÊNH LỆCH khi đọc lại trên trang 10-K (tr. {c['page']}): đọc được {c['read_value'] or 'không có số'}."
