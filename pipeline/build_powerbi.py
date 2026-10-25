@@ -601,9 +601,22 @@ def basis_slicer():
 
 
 def card(m):
-    return {"visualType": "card", "query": {"queryState": {"Values": {"projections": [proj(measure(m))]}}},
-            "objects": {"labels": props(fontFamily=SANS, fontSize=12.0, color=fill(C["ink"])),
-                        "categoryLabels": props(show=False), "wordWrap": props(show=True)},
+    """The new card visual. Unlike the old card it left-aligns, wraps like a text box (no-break spaces hold, so
+    "17,7 tỷ USD" stays whole) and draws nothing under the value, unlike a text box with a dynamic value. It shows
+    at most height × 3/4 ÷ line height lines; at 12 pt, 120 units give the four lines of the longest summary."""
+    default = {"id": "default"}
+
+    def off():
+        return [{"properties": {"show": lit(False)}, "selector": default}]
+
+    margins = {k: lit(0.0) for k in ("leftMargin", "rightMargin", "topMargin", "bottomMargin")}
+    return {"visualType": "cardVisual", "query": {"queryState": {"Data": {"projections": [proj(measure(m))]}}},
+            "objects": {"value": [{"properties": {"fontFamily": lit(SANS), "fontSize": lit(12.0), "fontColor": fill(C["ink"]),
+                                                  "horizontalAlignment": lit("left"), "textWrap": lit(True)},
+                                   "selector": default}],
+                        "label": off(), "accentBar": off(), "outline": off(), "shadowCustom": off(), "glowCustom": off(),
+                        "fillCustom": off(), "padding": [{"properties": margins, "selector": default}],
+                        "layout": props(alignment="top")},
             "visualContainerObjects": container_objects(), "drillFilterOtherVisuals": True}
 
 
@@ -638,10 +651,11 @@ def header(page, w, view):
     page.text("mo_ta", MARGIN, 66, 820, 50, [para(run(w.subtitle, 11, C["ink2"]))])
     page.add("loc_nam", 900, 16, 340, 110, year_slicer())
     # Question and summary each take half the row (580 units, the channel page's chart columns): at 460 units the
-    # performance summary needs five lines and the card cuts the fifth off with "…".
+    # performance summary needs five lines. The card is 120 units tall for its four lines (see card()); the first
+    # chart row starts at 300.
     page.text("cau_hoi", MARGIN, 140, 580, 110, [para(run(w.question[view], 17, C["ink"], True, SERIF))])
     page.text("tom_tat_nhan", 660, 140, 580, 26, [para(run(w.summary_label, 10, C["muted"]))])
-    page.add("tom_tat", 660, 166, 580, 110, card("Tóm tắt kênh" if view == "channels" else "Tóm tắt kết quả"))
+    page.add("tom_tat", 660, 166, 580, 120, card("Tóm tắt kênh" if view == "channels" else "Tóm tắt kết quả"))
 
 
 def source(page, name, x, y, w, text, h=44):
