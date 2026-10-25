@@ -5,7 +5,7 @@
     "x": 40,
     "y": 58,
     "z": 2000,
-    "height": 44,
+    "height": 64,
     "width": 1200,
     "tabOrder": 2000
   },
@@ -19,7 +19,33 @@
               {
                 "textRuns": [
                   {
-                    "value": "Số NIKE công bố có số trang ở cột nhỏ bên phải (Ctrl + bấm vào số trang để mở báo cáo trên SEC). Bảng theo quý không có cột số trang (xem bản web hoặc bộ dữ liệu Excel); quý 4 là cả năm trừ 9 tháng, ≈ là ước tính từ số đã làm tròn.",
+                    "value": "Số NIKE công bố có số trang ở cột nhỏ bên phải (Ctrl + bấm vào số trang để mở báo cáo trên SEC); ô không có số trang là số nhóm tự tính. Bảng theo quý không có cột số trang (xem bản web hoặc bộ dữ liệu Excel).",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
+                      "color": "#5b6472"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Quý 4: không có 10‑Q, nên nhóm lấy cả năm trừ 9 tháng; ≈ là ước tính từ số NIKE đã làm tròn. Tỷ lệ % quý 4 lấy từ thông cáo kết quả quý 4 (ghi “8‑K”).",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
+                      "color": "#5b6472"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Số tiền âm để trong ngoặc đơn, ví dụ (790); tỷ lệ âm có dấu trừ.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "9.5pt",

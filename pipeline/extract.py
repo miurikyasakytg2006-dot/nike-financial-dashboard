@@ -1,4 +1,4 @@
-"""Extract every catalogued metric, with provenance, from NIKE's 10-K and 10-Q filings.
+"""Extract every catalogued metric, with provenance, from NIKE's 10-K and 10-Q filings and fourth-quarter earnings releases.
 
 Usage:  python -m pipeline.extract
 
@@ -43,6 +43,11 @@ def filing_paths(f):
     folder = CACHE / f["accession"]
     doc = folder / f["document"]
     inst = folder / f["instance"] if f["instance"] else None
+    if f["form"] == "8-K":     # an earnings release: one HTML exhibit, no XBRL package
+        if not doc.exists():
+            folder.mkdir(parents=True, exist_ok=True)
+            doc.write_bytes(_get(ir_document_url(f)))
+        return doc, None
     if not doc.exists() or (inst and not inst.exists()):
         folder.mkdir(parents=True, exist_ok=True)
         with zipfile.ZipFile(io.BytesIO(_get(ir_package_url(f)))) as z:
@@ -173,6 +178,10 @@ REVENUE_ROWS = {
     "CONVERSE": ("converse_revenue", None, None),
     "CORPORATE": ("corporate_revenue", None, None),
 }
+SEGMENT_ROWS = {   # % change columns only; the amounts are read from the notes and the revenue table already
+    "TOTAL NIKE BRAND": (None, "nike_brand_pct_change_reported", "nike_brand_pct_change_cn"),
+    "TOTAL NIKE, INC. REVENUES": (None, "revenues_pct_change_reported", "revenues_pct_change_cn"),
+}
 MDNA = re.compile(r"^ITEM [27]\.", re.IGNORECASE)
 
 
@@ -229,6 +238,24 @@ def extract_mdna_tables(doc, f):
     missing = set(REVENUE_ROWS) - set(seen)
     if missing:
         problems.append(f"{f['id']}: MD&A revenue rows not found: {sorted(missing)}")
+
+    # The revenues-by-segment table of the Operating Segments discussion prints the NIKE Brand and NIKE, Inc. % changes
+    # a second time, on another page: a second place to read them.
+    seg = next((t for t in mdna_tables
+                if {"GREATER CHINA", "TOTAL NIKE BRAND", "TOTAL NIKE, INC. REVENUES"} <= {_label(r[0]) for r in t["rows"]}
+                and "SALES THROUGH NIKE DIRECT" not in {_label(r[0]) for r in t["rows"]}), None)
+    if seg is None:
+        problems.append(f"{f['id']}: MD&A revenues-by-segment table not found")
+    else:
+        for r in seg["rows"]:
+            ids = SEGMENT_ROWS.get(_label(r[0]))
+            if ids is None:
+                continue
+            got = _row_values(f, seg, r, ids)
+            if got is None:
+                problems.append(f"{f['id']}: MD&A segment row {r[0]} has {len(r) - 1} cells")
+                continue
+            rows += [dict(g, method="mdna_segment_table") for g in got]
 
     ebit = next(((t, r) for t in mdna_tables for r in t["rows"]
                  if re.match(r"^TOTAL NIKE, INC\. (EARNINGS BEFORE INTEREST AND TAXES|EBIT)$", _label(r[0]))), None)
@@ -364,11 +391,21 @@ def extract_narrative(doc, f):
                          method="mdna_text", concept="", dims="", page=line["page"], section=line["section"],
                          evidence=sentence))
 
-    done = {"share": set(), "digital": set()}
+    done = {"share": set(), "digital": set(), "direct_cn": set()}
     for line in doc.lines:
         if not MDNA.search(line["section"]):
             continue
         text = line["text"]
+        # The NIKE Brand discussion states the NIKE Direct currency-neutral change of the report's own period in a
+        # sentence, ahead of the regional sections (which use the same words for their own NIKE Direct sales).
+        for m in re.finditer(r"On a currency-neutral basis, NIKE Direct revenues (increased|decreased|grew|declined|rose|fell) "
+                             r"(\d+)%(?! and)", text):
+            s = _sentence(text, m.start())
+            if done["direct_cn"] or re.search(r"six months|nine months", s):
+                continue
+            (period,) = own
+            done["direct_cn"].add(period)
+            add("nike_direct_pct_change_cn", period, _pct(m.group(1), m.group(2)), line, s)
         for m in re.finditer(r"NIKE Direct revenues represented approximately", text):
             s = _sentence(text, m.start())
             for period, pct in parse_pairs(s, lambda x: [Decimal(p) / 100 for p in PCT_AMOUNT.findall(x)]):
@@ -381,7 +418,7 @@ def extract_narrative(doc, f):
                 if period not in done["digital"]:
                     done["digital"].add(period)
                     add("nike_brand_digital_sales", period, v, line, s)
-    for kind in ("share", "digital"):
+    for kind in ("share", "digital", "direct_cn"):
         if not own & done[kind] and f["role"] == "scope":
             problems.append(f"{f['id']}: no {kind} sentence for {sorted(own)}")
     return rows, problems
@@ -429,6 +466,139 @@ def extract_quotes(doc, f):
     return rows, problems
 
 
+# ---------------------------------------------------------------- fourth-quarter earnings releases (Form 8-K)
+# The release of each fiscal year gives the fourth quarter's three-month figures (income statement, revenues by
+# segment, EBIT) beside the same quarter of the year before, and the quarter's % change, reported and excluding
+# currency changes. Its tables have no page numbers; the section is the table title.
+RELEASE_INCOME = {
+    "REVENUES": "revenues", "COST OF SALES": "cost_of_sales", "GROSS PROFIT": "gross_profit",
+    "DEMAND CREATION EXPENSE": "demand_creation_expense", "OPERATING OVERHEAD EXPENSE": "operating_overhead_expense",
+    "TOTAL SELLING AND ADMINISTRATIVE EXPENSE": "total_selling_admin_expense",
+    "INTEREST EXPENSE (INCOME), NET": "interest_expense_net", "OTHER (INCOME) EXPENSE, NET": "other_expense_net",
+    "INCOME BEFORE INCOME TAXES": "income_before_taxes", "INCOME TAX EXPENSE": "income_tax_expense", "NET INCOME": "net_income",
+}
+RELEASE_SEGMENTS = {   # divisional revenues: (value metric, % change metric, % change excluding currency metric)
+    "GLOBAL BRAND DIVISIONS": ("global_brand_divisions_revenue", None, None),
+    "TOTAL NIKE BRAND": ("nike_brand_revenue", "nike_brand_pct_change_reported", "nike_brand_pct_change_cn"),
+    "CONVERSE": ("converse_revenue", None, None),
+    "CORPORATE": ("corporate_revenue", None, None),
+    "TOTAL NIKE, INC. REVENUES": ("revenues", "revenues_pct_change_reported", "revenues_pct_change_cn"),
+}
+RELEASE_REGIONS = {en.upper(): rid for rid, _, _, en, _ in REGIONS}
+NUMBER = re.compile(r"\(?-?[\d,]+(?:\.\d+)?\)?|—|–")
+
+
+def _release_label(cell):
+    """Row label without footnote digits and without the '(loss)' / '(benefit)' that NIKE adds in a loss quarter."""
+    s = re.sub(r"\d+$", "", cell).strip().upper()
+    return re.sub(r"\s*\((LOSS|BENEFIT)\)\s*", " ", s).strip()
+
+
+def _release_tables(path):
+    """{title: [(label, figures, printed row)]} for the release tables, the title being the first line naming one."""
+    from lxml import html as lxml_html
+    doc = lxml_html.fromstring(path.read_bytes().decode("utf-8", "replace"))
+    titles = ("CONSOLIDATED STATEMENTS OF INCOME", "DIVISIONAL REVENUES", "EARNINGS BEFORE INTEREST AND TAXES")
+    tables = {}
+    for t in doc.iter("table"):
+        text = " ".join(t.text_content().split()).upper()
+        title = next((x for x in titles if x in text and "THREE MONTHS ENDED" in text), None)
+        if title is None or title in tables:
+            continue
+        rows = []
+        for tr in t.iter("tr"):
+            cells = [c for c in (" ".join(td.text_content().split()) for td in tr.xpath("./td|./th")) if c and c != "$"]
+            if not cells or NUMBER.fullmatch(cells[0]):
+                continue
+            rows.append((cells[0], NUMBER.findall(" ".join(cells[1:])), " | ".join(cells)))
+        tables[title] = rows
+    narrative = " ".join(doc.text_content().split())
+    return tables, narrative
+
+
+def _pct(word, n):
+    return Decimal(n) / 100 * (-1 if word.lower() in ("decreased", "fell", "declined", "down", "were down") else 1)
+
+
+def extract_release(path, f):
+    """Facts from a fourth-quarter earnings release: three-month figures of the quarter and of the same quarter a year
+    earlier, the quarter's % changes, and the narrative sentences that state them again."""
+    fy = f["fy"]
+    cur, prior = f"FY{fy}Q4", f"FY{fy - 1}Q4"
+    tables, text = _release_tables(path)
+    rows, problems = [], []
+    common = dict(filing=f["id"], accession=f["accession"], concept="", dims="", page=None)
+
+    def add(mid, period, value, section, evidence, method="q4_release"):
+        rows.append(dict(common, metric_id=mid, period=period, value=value, method=method, section=section, evidence=evidence))
+
+    income = tables.get("CONSOLIDATED STATEMENTS OF INCOME", [])
+    for label, nums, printed in income:
+        mid = RELEASE_INCOME.get(_release_label(label))
+        if mid and len(nums) >= 2:
+            add(mid, cur, _num(nums[0]), "CONSOLIDATED STATEMENTS OF INCOME", printed)
+            add(mid, prior, _num(nums[1]), "CONSOLIDATED STATEMENTS OF INCOME", printed)
+            if mid == "revenues" and len(nums) >= 3 and _num(nums[2]) is not None:   # the quarter's % change, again
+                add("revenues_pct_change_reported", cur, _num(nums[2]) / 100, "CONSOLIDATED STATEMENTS OF INCOME", printed,
+                    "q4_release_repeat")
+    region, done = None, False
+    for label, nums, printed in tables.get("DIVISIONAL REVENUES", []):
+        key = _release_label(label)
+        if done:
+            # Below the NIKE, Inc. total the table repeats NIKE Brand by product type, ending with the same total.
+            if key == "TOTAL NIKE BRAND REVENUES" and len(nums) >= 4:
+                add("nike_brand_revenue", cur, _num(nums[0]), "DIVISIONAL REVENUES", printed, "q4_release_repeat")
+                add("nike_brand_pct_change_reported", cur, _num(nums[2]) / 100, "DIVISIONAL REVENUES", printed, "q4_release_repeat")
+                add("nike_brand_pct_change_cn", cur, _num(nums[3]) / 100, "DIVISIONAL REVENUES", printed, "q4_release_repeat")
+                break
+            continue
+        if key in RELEASE_REGIONS and not nums:
+            region = RELEASE_REGIONS[key]
+            continue
+        if key == "TOTAL" and region and len(nums) >= 2:
+            add(f"{region}_revenue", cur, _num(nums[0]), "DIVISIONAL REVENUES", printed)
+            add(f"{region}_revenue", prior, _num(nums[1]), "DIVISIONAL REVENUES", printed)
+            region = None
+            continue
+        ids = RELEASE_SEGMENTS.get(key)
+        if ids and len(nums) >= 4:
+            add(ids[0], cur, _num(nums[0]), "DIVISIONAL REVENUES", printed)
+            add(ids[0], prior, _num(nums[1]), "DIVISIONAL REVENUES", printed)
+            for mid, cell in ((ids[1], nums[2]), (ids[2], nums[3])):
+                if mid and _num(cell) is not None:
+                    add(mid, cur, _num(cell) / 100, "DIVISIONAL REVENUES", printed)
+            done = key == "TOTAL NIKE, INC. REVENUES"
+    for label, nums, printed in tables.get("EARNINGS BEFORE INTEREST AND TAXES", []):
+        key = _release_label(label)
+        if key.startswith("TOTAL NIKE, INC.") and "EARNINGS BEFORE INTEREST AND TAXES" in key and len(nums) >= 2:
+            add("ebit_reported", cur, _num(nums[0]), "EARNINGS BEFORE INTEREST AND TAXES", printed)
+            add("ebit_reported", prior, _num(nums[1]), "EARNINGS BEFORE INTEREST AND TAXES", printed)
+    # Narrative: the fourth-quarter review, up to the review of the full year.
+    start = text.find("Fourth Quarter Income Statement Review")
+    end = min([i for i in (text.find(f"Fiscal {fy} Income Statement Review", start), text.find("Full Year Income Statement Review", start))
+               if i > start] or [len(text)])
+    quarter = text[start:end] if start >= 0 else ""
+    section = "Fourth Quarter Income Statement Review"
+    rest = r"(?:[^.]|\.(?=\d))*\."     # the rest of the sentence; a decimal point ($4.5 billion) does not end it
+    m = re.search(r"Revenues for NIKE, Inc\. (increased|decreased|rose|fell) (\d+) percent to \$[\d.]+ (?:billion|million), (up|down) "
+                  r"(\d+) percent on a currency-neutral basis" + rest, quarter)
+    if m:
+        add("revenues_pct_change_cn", cur, _pct(m.group(3), m.group(4)), section, m.group(0), "q4_release_text")
+    m = re.search(r"Revenues for the NIKE Brand were \$[\d.]+ (?:billion|million), (up|down) (\d+) percent[^.]*?currency-neutral basis" + rest,
+                  quarter)
+    if m:
+        add("nike_brand_pct_change_cn", cur, _pct(m.group(1), m.group(2)), section, m.group(0), "q4_release_text")
+    m = re.search(r"NIKE Direct fourth quarter (?:sales|revenues) (increased|decreased|rose|fell) (\d+) percent" + rest, text)
+    if m:
+        add("nike_direct_pct_change_reported", cur, _pct(m.group(1), m.group(2)), "Highlights", m.group(0), "q4_release_text")
+    for title in ("CONSOLIDATED STATEMENTS OF INCOME", "DIVISIONAL REVENUES", "EARNINGS BEFORE INTEREST AND TAXES"):
+        if not tables.get(title):
+            problems.append(f"{f['id']}: release table {title} not found")
+    if not quarter:
+        problems.append(f"{f['id']}: fourth-quarter review not found")
+    return rows, problems
+
+
 # ---------------------------------------------------------------- output
 def _fmt(v):
     if isinstance(v, Decimal):
@@ -448,6 +618,13 @@ def write_csv(path, rows, fields):
 def main():
     all_rows, quotes, problems = [], [], []
     for f in all_filings():
+        if f["form"] == "8-K":
+            path, _ = filing_paths(f)
+            rows, probs = extract_release(path, f)
+            all_rows += rows
+            problems += probs
+            print(f"{f['id']}: {f['accession']} parsed, {len(rows)} values from the earnings release")
+            continue
         doc = Document(*filing_paths(f))
         for extractor in (extract_xbrl, extract_mdna_tables, extract_narrative, extract_quarterly_table, extract_inventory_note):
             rows, probs = extractor(doc, f)

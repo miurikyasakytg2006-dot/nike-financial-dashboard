@@ -60,7 +60,8 @@ def glue(text):
     build_excel_dashboard.py): "10-K", "10-Q" and "non-GAAP" take a non-breaking hyphen, a report stays with its
     period, a figure with its unit, and the two ends of a period range."""
     text = (text.replace("10-K", "10" + NB_HYPHEN + "K").replace("10-Q", "10" + NB_HYPHEN + "Q")
-            .replace("non-GAAP", "non" + NB_HYPHEN + "GAAP"))
+            .replace("8-K", "8" + NB_HYPHEN + "K").replace("non-GAAP", "non" + NB_HYPHEN + "GAAP")
+            .replace("COVID-19", "COVID" + NB_HYPHEN + "19"))
     text = re.sub(r"(10" + NB_HYPHEN + "[KQ]) (?=Q[1-4]|FY)", "\\1" + NBSP, text)
     text = re.sub(r"\b(Q[1-4]) (FY\d{4})", "\\1" + NBSP + "\\2", text)
     text = re.sub(r"(FY\d{4}) → (FY\d{4})", "\\1" + NBSP + "→" + NBSP + "\\2", text)
@@ -72,10 +73,11 @@ def glue(text):
 
 
 def for_pbi(text):
-    """Web wording that does not hold in the report: the grey band of the quarterly charts, where the list of reports
-    is, and the page references of the quarterly table."""
+    """Web wording that does not hold in the report: the grey band of the quarterly charts, the hollow fourth-quarter
+    points, the totals printed at the end of the web's Digital bars, and where the list of reports is."""
     text = re.sub(r" ?Vùng tô xám là quý 4 FY2020[^.]*\.", "", text)
-    text = text.replace("Điểm rỗng ở quý 4 là ước tính.", "Số quý 4 là ước tính.")
+    text = text.replace("Điểm rỗng (quý 4) là ước tính.", "Số quý 4 là ước tính.")
+    text = text.replace(" Nhãn cuối thanh là tổng NIKE Direct.", "")
     return text.replace("(danh sách ở cuối trang)", f"(danh sách ở trang “{SRC_PAGE}”)")
 
 
@@ -124,11 +126,11 @@ CHANNEL_ROWS = [
     ("g", "Cơ cấu và tăng trưởng"),
     ("kpi", "direct_share", "Tỷ trọng NIKE Direct", "%", "pct1"),
     ("obs", "nike_direct_share_stated", "Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)", "%", "pct0"),
-    ("kpi", "direct_growth", "Tăng trưởng NIKE Direct, theo báo cáo", "%", "spct1"),
+    ("kpi", "direct_growth", "Tăng trưởng NIKE Direct, theo USD", "%", "spct1"),
     ("obs", "nike_direct_pct_change_cn", "Tăng trưởng NIKE Direct, loại trừ tỷ giá (non-GAAP)", "%", "spct0"),
-    ("kpi", "wholesale_growth", "Tăng trưởng bán buôn, theo báo cáo", "%", "spct1"),
+    ("kpi", "wholesale_growth", "Tăng trưởng bán buôn, theo USD", "%", "spct1"),
     ("obs", "nike_brand_wholesale_pct_change_cn", "Tăng trưởng bán buôn, loại trừ tỷ giá (non-GAAP)", "%", "spct0"),
-    ("kpi", "nike_brand_growth", "Tăng trưởng NIKE Brand, theo báo cáo", "%", "spct1"),
+    ("kpi", "nike_brand_growth", "Tăng trưởng NIKE Brand, theo USD", "%", "spct1"),
     ("kpi", "direct_contribution", "Trong đó: đóng góp của NIKE Direct", "điểm %", "pts1"),
     ("kpi", "wholesale_contribution", "Trong đó: đóng góp của bán buôn", "điểm %", "pts1"),
     ("g", "NIKE Brand Digital (một phần của NIKE Direct)"),
@@ -150,7 +152,7 @@ FINANCE_ROWS = [
     ("obs", "income_tax_expense", "Chi phí thuế thu nhập", "triệu USD", "amount"),
     ("obs", "net_income", "Lợi nhuận sau thuế", "triệu USD", "amount"),
     ("g", "Tỷ lệ trên doanh thu và tăng trưởng"),
-    ("kpi", "revenue_growth", "Tăng trưởng doanh thu, theo báo cáo", "%", "spct1"),
+    ("kpi", "revenue_growth", "Tăng trưởng doanh thu, theo USD", "%", "spct1"),
     ("obs", "revenues_pct_change_cn", "Tăng trưởng doanh thu, loại trừ tỷ giá (non-GAAP)", "%", "spct0"),
     ("kpi", "gross_margin", "Biên lợi nhuận gộp", "%", "pct1"),
     ("kpi", "demand_creation_ratio", "Chi phí tạo nhu cầu / doanh thu", "%", "pct1"),
@@ -175,7 +177,7 @@ def region_rows(regions):
                  ("obs", f"{rid}_direct_revenue", "NIKE Direct", "triệu USD", "amount"),
                  ("obs", f"{rid}_wholesale_revenue", "Bán buôn", "triệu USD", "amount"),
                  ("kpi", f"{rid}_direct_share", "Tỷ trọng NIKE Direct", "%", "pct1"),
-                 ("kpi", f"{rid}_growth", "Tăng trưởng doanh thu, theo báo cáo", "%", "spct1"),
+                 ("kpi", f"{rid}_growth", "Tăng trưởng doanh thu, theo USD", "%", "spct1"),
                  ("obs", f"{rid}_ebit", "EBIT", "triệu USD", "amount"),
                  ("kpi", f"{rid}_ebit_margin", "Biên EBIT", "%", "pct1")]
     return rows
@@ -193,9 +195,12 @@ def table_cell(row, p, d):
     if o["method"] == "q4_derived":
         return ("≈" + num(o["value"], 1)) if o["approx"] else FORMATS[fmt](o["value"]), "", None
     mark = "†" if o["status"] == STATUS_PENDING else ""
+    url = d["filings"][o["source"]]["url"]
+    if d["filings"][o["source"]]["form"] == "8-K":   # an earnings release has no page numbers
+        return FORMATS[fmt](o["value"]), " ".join(filter(None, [mark, "8-K"])), url
     if not o.get("page"):
         return FORMATS[fmt](o["value"]), mark, None
-    return FORMATS[fmt](o["value"]), " ".join(filter(None, [mark, f"tr. {o['page']}"])), d["filings"][o["source"]]["url"]
+    return FORMATS[fmt](o["value"]), " ".join(filter(None, [mark, f"tr. {o['page']}"])), url
 
 
 # ------------------------------------------------------------------ wording from the web dashboard
@@ -217,6 +222,11 @@ class Wording:
         self.subtitle = text("//p[@class='masthead-sub']")
         self.findings_title = text("//section[@id='phat-hien']//h2")
         self.findings_note = text("//section[@id='phat-hien']//p[@class='block-note']")
+        # The terms line as (bold, text) runs: the names are bold, as on the web page.
+        terms = one("//p[@id='terms']")
+        flat = lambda s: re.sub(r"\s+", " ", s or "")
+        runs = [(False, flat(terms.text))] + [r for el in terms for r in ((el.tag == "b", flat(el.text_content())), (False, flat(el.tail)))]
+        self.terms = [(bold, t) for bold, t in runs if t]
         self.sections = {s: (text(f"//section[@id='{s}']//p[@class='block-kicker']"), text(f"//section[@id='{s}']//h2"))
                          for s in ("kenh", "quy", "digital", "khu-vuc", "loi-nhuan", "nike-giai-thich")}
         self.quotes_note = text("//section[@id='nike-giai-thich']//p[@class='block-note']")
@@ -333,7 +343,7 @@ def measures_for(table):
         dict(name="Tăng trưởng NIKE Direct", expr=s("direct_growth"), format=SIGNED),
         dict(name="Tăng trưởng bán buôn", expr=s("wholesale_growth"), format=SIGNED),
         dict(name="Digital (tỷ USD)", expr=s("nike_brand_digital_sales"), format="#,0.0"),
-        dict(name="Phần còn lại của NIKE Direct (tỷ USD)", expr=bn("direct_ex_digital"), format="#,0.0"),
+        dict(name="NIKE Direct ngoài Digital (tỷ USD)", expr=bn("direct_ex_digital"), format="#,0.0"),
         dict(name="Digital trong NIKE Direct", expr=s("digital_share_of_direct"), format="0%"),
         dict(name="Doanh thu (tỷ USD)", expr=bn("revenues"), format="#,0.0"),
         dict(name="Biên lợi nhuận gộp", expr=s("gross_margin"), format="0.0%"),
@@ -369,7 +379,7 @@ def semantic_model(d, w, out):
     # Change of NIKE Brand revenue by channel, FY2019 -> FY2021 (one measure per colour).
     a, z = A[0], A[-1]
     items = [("NIKE Direct", "nike_direct_revenue", "Direct"), ("Bán buôn", "nike_brand_wholesale_revenue", "Bán buôn"),
-             ("Global Brand Divisions", "global_brand_divisions_revenue", "GBD"), ("Tổng NIKE Brand", "nike_brand_revenue", "Tổng")]
+             ("Global Brand Divisions", "global_brand_divisions_revenue", "GBD"), ("Toàn NIKE Brand", "nike_brand_revenue", "Tổng")]
     # The figure goes into the row name ("NIKE Direct  +4,6"): labels inside stacked bars would be unreadable or dropped.
     delta = lambda m: (obs[m][z]["value"] - obs[m][a]["value"]) / 1000
     ch_rows = [{"Kênh": f"{n}  {signed(delta(m), 2 if abs(delta(m)) < 0.1 else 1)}", "Thứ tự": i, "Nhóm": g, "Thay đổi": delta(m)}
@@ -443,14 +453,15 @@ def semantic_model(d, w, out):
     tables["BangKhuVuc"] = cells("BangKhuVuc", A, region_rows(d["regions"]), True, lambda p: p)
 
     # Reports list for the sources page.
-    groups = {("10-K", "scope"): (1, "Báo cáo năm (10-K)"), ("10-Q", "scope"): (2, "Báo cáo quý (10-Q)")}
+    groups = {("10-K", "scope"): (1, "Báo cáo năm (10-K)"), ("10-Q", "scope"): (2, "Báo cáo quý (10-Q)"),
+              ("8-K", "q4release"): (3, "Thông cáo kết quả quý 4 (8-K)")}
     bc_rows = []
     for i, (fid, f) in enumerate(d["filings"].items()):
-        g = groups.get((f["form"], f["role"]), (3, "Chỉ để xem số có bị trình bày lại không"))
+        g = groups.get((f["form"], f["role"]), (4, "Báo cáo các năm sau (chỉ để kiểm tra NIKE có in lại số cũ khác đi không)"))
         bc_rows.append({"Báo cáo": glue(fid), "Thứ tự": g[0] * 100 + i, "Nhóm": g[1],
-                        "Ngày nộp SEC": vn_date(f["filed"]), "Số accession": f["accession"], "Liên kết SEC EDGAR": f["url"]})
+                        "Ngày nộp SEC": vn_date(f["filed"]), "Số hồ sơ SEC": f["accession"], "Liên kết SEC EDGAR": f["url"]})
     tables["BaoCao"] = tmdl_table("BaoCao", [col("Báo cáo", "string", sort_by="Thứ tự"), col("Thứ tự", "int64", hidden=True),
-                                             col("Nhóm", "string"), col("Ngày nộp SEC", "string"), col("Số accession", "string"),
+                                             col("Nhóm", "string"), col("Ngày nộp SEC", "string"), col("Số hồ sơ SEC", "string"),
                                              col("Liên kết SEC EDGAR", "string", category="WebUrl")], bc_rows)
 
     sm = out / f"{NAME}.SemanticModel"
@@ -626,7 +637,7 @@ def matrix(table, wide=False):
 # ------------------------------------------------------------------ pages
 def header(page, w):
     page.text("tieu_de", MARGIN, 16, 900, 70, [para(run(w.title, 20, C["ink"], True, SERIF))])
-    page.text("mo_ta", MARGIN, 88, 900, 50, [para(run(w.subtitle, 10.5, C["ink2"]))])
+    page.text("mo_ta", MARGIN, 88, 900, 60, [para(run(w.subtitle, 10.5, C["ink2"]))])
     page.text("lien_ket", 960, 20, 280, 70, [
         para(run("Mở dashboard web", 10.5, C["direct"], url=DASHBOARD_URL)),
         para(run("Tải bộ dữ liệu Excel", 10.5, C["direct"], url=DASHBOARD_URL + "downloads/NIKE_Financial_Dataset_FY2019-2021.xlsx"))])
@@ -651,9 +662,10 @@ def source(page, name, x, y, w_, text, h=46):
 def page_overview(w, d):
     p = Page("tong_quan", "Tổng quan")
     y = header(p, w)
-    p.text("phat_hien_tieu_de", MARGIN, y, 1200, 56, [para(run(w.findings_title, 16, C["ink"], True, SERIF)),
-                                                      para(run(w.findings_note, 10.5, C["ink2"]))])
-    y += 64
+    p.text("phat_hien_tieu_de", MARGIN, y, 1200, 100, [
+        para(run(w.findings_title, 16, C["ink"], True, SERIF)), para(run(w.findings_note, 10.5, C["ink2"])),
+        para(*[run(t, 9.5, C["ink"] if bold else C["ink2"], bold) for bold, t in w.terms])])
+    y += 108
     for i, f in enumerate(d["findings"]):
         row, c = divmod(i, 3)
         x = MARGIN + c * 410
@@ -674,7 +686,7 @@ def page_overview(w, d):
     source(p, "nguon_co_cau", L, y + 304, CW, w.sources["share"] + " Báo cáo: " + ", ".join(f"10-K {x}" for x in d["periods"]["A"]) + ".")
     t, _ = w.fig["fig-change"]
     groups = [("Thay đổi – Direct", "NIKE Direct", C["direct"]), ("Thay đổi – Bán buôn", "Bán buôn", C["wholesale"]),
-              ("Thay đổi – GBD", "Global Brand Divisions", C["gbd"]), ("Thay đổi – Tổng", "Tổng NIKE Brand", C["total"])]
+              ("Thay đổi – GBD", "Global Brand Divisions", C["gbd"]), ("Thay đổi – Tổng", "Toàn NIKE Brand", C["total"])]
     # Stacked, not clustered: each row has one non-blank measure (its colour), so its bar sits centred on the row.
     v = cartesian("barChart", "ThayDoi", column("ThayDoi", "Kênh"), groups, t, w.sub("change-sub", a, z), legend=False,
                   labels=False)
@@ -707,9 +719,9 @@ def page_quarters(w, d):
     t, s = w.fig["fig-digital"]
     v = cartesian("barChart", "Nam", column("Nam", "Kỳ"),
                   [("Digital (tỷ USD)", "NIKE Brand Digital", C["digital"]),
-                   ("Phần còn lại của NIKE Direct (tỷ USD)", "Phần còn lại, chủ yếu là cửa hàng (ước tính)", C["directLight"])],
+                   ("NIKE Direct ngoài Digital (tỷ USD)", "NIKE Direct ngoài Digital (ước tính)", C["directLight"])],
                   t, s, tooltips=[("NIKE Direct (tỷ USD)", "NIKE Direct (tổng), tỷ USD"), ("Digital trong NIKE Direct", "Digital trong NIKE Direct (≈)")],
-                  label_colors=[("Digital (tỷ USD)", "#FFFFFF"), ("Phần còn lại của NIKE Direct (tỷ USD)", C["ink"])])
+                  label_colors=[("Digital (tỷ USD)", "#FFFFFF"), ("NIKE Direct ngoài Digital (tỷ USD)", C["ink"])])
     v["objects"]["categoryAxis"][0]["properties"]["innerPadding"] = lit(30.0)
     p.add("digital", L, y, CW, 300, v)
     source(p, "nguon_digital", L, y + 304, CW, w.sources["digital"] + " Báo cáo: " + ", ".join(f"10-K {x}" for x in d["periods"]["A"]) + ".")
@@ -790,12 +802,15 @@ def page_profit(w, d):
 def page_tables(w, d):
     p = Page("bang_so_lieu", "Bảng số liệu")
     p.text("tieu_de", MARGIN, 16, 1200, 40, [para(run("Bảng số liệu", 20, C["ink"], True, SERIF))])
-    p.text("chu_thich", MARGIN, 58, 1200, 44, [para(run(
-        "Số NIKE công bố có số trang ở cột nhỏ bên phải (Ctrl + bấm vào số trang để mở báo cáo trên SEC). Bảng theo quý "
-        "không có cột số trang (xem bản web hoặc bộ dữ liệu Excel); quý 4 là cả năm trừ 9 tháng, ≈ là ước tính từ số đã làm tròn.",
-        9.5, C["muted"]))])
+    # Power BI tables cannot set italics per cell, so the key says in words which figures the team calculated.
+    p.text("chu_thich", MARGIN, 58, 1200, 64, [para(run(text, 9.5, C["muted"])) for text in (
+        "Số NIKE công bố có số trang ở cột nhỏ bên phải (Ctrl + bấm vào số trang để mở báo cáo trên SEC); ô không có số trang "
+        "là số nhóm tự tính. Bảng theo quý không có cột số trang (xem bản web hoặc bộ dữ liệu Excel).",
+        "Quý 4: không có 10-Q, nên nhóm lấy cả năm trừ 9 tháng; ≈ là ước tính từ số NIKE đã làm tròn. Tỷ lệ % quý 4 lấy từ "
+        "thông cáo kết quả quý 4 (ghi “8-K”).",
+        "Số tiền âm để trong ngoặc đơn, ví dụ (790); tỷ lệ âm có dấu trừ.")])
     n = len(CHANNEL_ROWS + FINANCE_ROWS)
-    y = 110
+    y = 130
     for name, title, rows, wide in (("BangNam", "Theo năm, FY2019–FY2021", n, False), ("BangQuy", "Theo quý, Q1 FY2019 – Q4 FY2021", n, True),
                                     ("BangKhuVuc", "Bốn khu vực của NIKE Brand, FY2019–FY2021", len(region_rows(d["regions"])), False)):
         p.text(f"{name}_tieu_de", MARGIN, y, 1200, 30, [para(run(title, 13, C["ink"], True))])
@@ -819,8 +834,8 @@ def page_sources(w, d):
             para(run(f"NIKE, {q['filing']}, tr. {q['page']} · ", 8.5, C["muted"]), run("mở trên SEC", 8.5, C["direct"], url=q["url"]))])
     y += ((len(d["quotes"]) + 1) // 2) * 225 + 10
     p.text("bao_cao_tieu_de", MARGIN, y, 1200, 30, [para(run(w.footer_heads[0], 13, C["ink"], True))])
-    fields = [column("BaoCao", c) for c in ("Nhóm", "Báo cáo", "Ngày nộp SEC", "Số accession", "Liên kết SEC EDGAR")]
-    p.add("bao_cao", MARGIN, y + 32, 1200, 480, {
+    fields = [column("BaoCao", c) for c in ("Nhóm", "Báo cáo", "Ngày nộp SEC", "Số hồ sơ SEC", "Liên kết SEC EDGAR")]
+    p.add("bao_cao", MARGIN, y + 32, 1200, 560, {
         "visualType": "tableEx",
         "query": {"queryState": {"Values": {"projections": [proj(f) for f in fields]}},
                   "sortDefinition": {"sort": [{"field": fields[1], "direction": "Ascending"}], "isDefaultSort": False}},
@@ -828,8 +843,8 @@ def page_sources(w, d):
                     "columnHeaders": props(fontFamily=SANS, fontSize=10.0, bold=True),
                     "total": props(totals=False)},
         "visualContainerObjects": container_objects(), "drillFilterOtherVisuals": True})
-    y += 540
-    p.text("phuong_phap", MARGIN, y, 740, 300,
+    y += 620
+    p.text("phuong_phap", MARGIN, y, 740, 440,
            [para(run(w.footer_heads[1], 13, C["ink"], True))] + [para(run("– " + li, 10.5, C["ink2"])) for li in w.method])
     p.text("tinh_trang", 820, y, 420, 300, [
         para(run(w.footer_heads[2], 13, C["ink"], True)), para(run(status_sentence(d), 10.5, C["ink2"])),
@@ -843,12 +858,12 @@ def status_sentence(d):
     c = d["meta"]["status_counts"]
     missing = [p for m in d["observations"].values() for p, o in m.items() if o["value"] is None]
     all_q4 = bool(missing) and all(p.endswith("Q4") for p in missing)
-    parts = [(c.get("Khớp nguồn chính thức", 0), " khớp nguồn chính thức"),
-             (c.get("Đã xác minh (người)", 0), " đã được nhóm kiểm tra trên báo cáo"),
-             (c.get(STATUS_PENDING, 0), " chưa được kiểm tra (†)"),
-             (c.get("Thiếu / không công bố", 0), " là các tỷ lệ % NIKE không nêu cho riêng quý 4" if all_q4 else " NIKE không công bố")]
+    parts = [(c.get("Khớp nguồn chính thức", 0), " số đã được kiểm tra lại và khớp"),
+             (c.get("Đã xác minh (người)", 0), " số đã được nhóm kiểm tra trên báo cáo"),
+             (c.get(STATUS_PENDING, 0), " số chưa được kiểm tra (†)"),
+             (c.get("Thiếu / không công bố", 0), " ô là tỷ lệ % NIKE không nêu cho riêng quý 4" if all_q4 else " ô NIKE không công bố")]
     shown = ", ".join(f"{n}{t}" for n, t in parts if n)
-    return f"{sum(c.values())} số liệu báo cáo: {shown}. Dữ liệu trích xuất ngày {vn_date(d['meta']['extracted_on'])}."
+    return f"{sum(c.values())} số liệu: {shown}. Dữ liệu lấy ngày {vn_date(d['meta']['extracted_on'])}."
 
 
 def report(d, w, out):

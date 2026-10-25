@@ -560,7 +560,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Tỷ USD, phạm vi NIKE Brand. Quý 4 là cả năm trừ 9 tháng.'"
+                  "Value": "'Tỷ USD, NIKE Brand. Không có báo cáo quý (10‑Q) cho quý 4, nên số quý 4 = cả năm trừ 9 tháng đầu.'"
                 }
               }
             },

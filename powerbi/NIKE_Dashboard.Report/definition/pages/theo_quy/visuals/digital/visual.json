@@ -57,12 +57,12 @@
                       "Entity": "Nam"
                     }
                   },
-                  "Property": "Phần còn lại của NIKE Direct (tỷ USD)"
+                  "Property": "NIKE Direct ngoài Digital (tỷ USD)"
                 }
               },
-              "queryRef": "Nam.Phần còn lại của NIKE Direct (tỷ USD)",
-              "nativeQueryRef": "Phần còn lại của NIKE Direct (tỷ USD)",
-              "displayName": "Phần còn lại, chủ yếu là cửa hàng (ước tính)"
+              "queryRef": "Nam.NIKE Direct ngoài Digital (tỷ USD)",
+              "nativeQueryRef": "NIKE Direct ngoài Digital (tỷ USD)",
+              "displayName": "NIKE Direct ngoài Digital (ước tính)"
             }
           ]
         },
@@ -358,7 +358,7 @@
             }
           },
           "selector": {
-            "metadata": "Nam.Phần còn lại của NIKE Direct (tỷ USD)"
+            "metadata": "Nam.NIKE Direct ngoài Digital (tỷ USD)"
           }
         }
       ],
@@ -411,7 +411,7 @@
             }
           },
           "selector": {
-            "metadata": "Nam.Phần còn lại của NIKE Direct (tỷ USD)"
+            "metadata": "Nam.NIKE Direct ngoài Digital (tỷ USD)"
           }
         }
       ]
@@ -503,7 +503,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'NIKE Direct: Digital và phần còn lại'"
+                  "Value": "'NIKE Direct: Digital và phần ngoài Digital'"
                 }
               }
             },
@@ -569,7 +569,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Tỷ USD. Phần còn lại (chủ yếu là cửa hàng do NIKE sở hữu) là ước tính: NIKE Direct trừ doanh số Digital.'"
+                  "Value": "'Tỷ USD. NIKE Direct ngoài Digital (chủ yếu là cửa hàng do NIKE sở hữu) là ước tính: NIKE Direct trừ doanh số Digital.'"
                 }
               }
             },

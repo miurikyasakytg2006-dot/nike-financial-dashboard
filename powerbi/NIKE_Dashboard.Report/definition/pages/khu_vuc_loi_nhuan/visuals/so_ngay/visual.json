@@ -541,7 +541,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Ngày. Trục tung không bắt đầu từ 0.'"
+                  "Value": "'Số ngày hàng nằm trong kho trước khi bán được, tính bình quân. Trục tung không bắt đầu từ 0.'"
                 }
               }
             },

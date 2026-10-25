@@ -579,7 +579,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Điểm %, NIKE, Inc., từ FY2019 đến FY2021. Chi phí giảm (so với doanh thu) làm biên EBIT tăng. Cột xám là biên EBIT, xanh lá làm biên tăng, đỏ làm biên giảm.'"
+                  "Value": "'NIKE, Inc. Cột đầu và cuối: biên EBIT năm FY2019 và FY2021 (% doanh thu). Cột giữa: mức thay đổi do từng khoản (điểm %); khoản chi phí nào giảm so với doanh thu thì làm biên EBIT tăng. Cột xám là biên EBIT, xanh lá làm biên tăng, đỏ làm biên giảm.'"
                 }
               }
             },

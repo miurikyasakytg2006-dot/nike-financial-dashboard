@@ -3,7 +3,7 @@
   "name": "tinh_trang",
   "position": {
     "x": 820,
-    "y": 1570,
+    "y": 1650,
     "z": 13000,
     "height": 300,
     "width": 420,
@@ -33,7 +33,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "627 số liệu báo cáo: 600 khớp nguồn chính thức, 27 là các tỷ lệ % NIKE không nêu cho riêng quý 4. Dữ liệu trích xuất ngày 25/10/2026.",
+                    "value": "627 số liệu: 613 số đã được kiểm tra lại và khớp, 14 ô là tỷ lệ % NIKE không nêu cho riêng quý 4. Dữ liệu lấy ngày 25/10/2026.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",

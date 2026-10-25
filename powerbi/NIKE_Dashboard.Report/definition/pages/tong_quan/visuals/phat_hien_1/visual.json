@@ -3,7 +3,7 @@
   "name": "phat_hien_1",
   "position": {
     "x": 40,
-    "y": 214,
+    "y": 258,
     "z": 5000,
     "height": 220,
     "width": 380,
@@ -73,7 +73,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Thuyết minh “Revenues”, 10‑K FY2019 và FY2021. Tỷ trọng tự tính.",
+                    "value": "Thuyết minh “Revenues”, 10‑K FY2019 và FY2021. Tỷ trọng do nhóm tự tính.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "8.5pt",

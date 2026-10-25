@@ -3,7 +3,7 @@
   "name": "thay_doi",
   "position": {
     "x": 660,
-    "y": 756,
+    "y": 800,
     "z": 14000,
     "height": 300,
     "width": 580,
@@ -92,7 +92,7 @@
               },
               "queryRef": "ThayDoi.Thay đổi – Tổng",
               "nativeQueryRef": "Thay đổi – Tổng",
-              "displayName": "Tổng NIKE Brand"
+              "displayName": "Toàn NIKE Brand"
             }
           ]
         }

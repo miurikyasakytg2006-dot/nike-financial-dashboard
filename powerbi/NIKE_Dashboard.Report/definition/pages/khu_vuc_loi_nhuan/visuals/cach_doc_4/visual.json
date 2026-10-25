@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Chi phí là số của cả công ty",
+                    "value": "Hai khoản chi phí chính",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -33,7 +33,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "NIKE không công bố chi phí hay lợi nhuận riêng của NIKE Direct và bán buôn, nên trang này không so sánh khả năng sinh lời giữa các kênh.",
+                    "value": "Chi phí tạo nhu cầu (Demand creation): quảng cáo, tài trợ, sự kiện thương hiệu, trưng bày ở cửa hàng. Chi phí vận hành chung (Operating overhead): lương, thuê mặt bằng, nghiên cứu phát triển và chi phí hành chính khác. Hai khoản cộng lại là chi phí bán hàng và quản lý (SG&A).",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10pt",

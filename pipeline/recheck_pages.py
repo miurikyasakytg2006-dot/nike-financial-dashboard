@@ -1,10 +1,12 @@
-"""Re-read the MD&A-only figures that no other source confirms, a second way, on the rendered report pages.
+"""Re-read the quarterly currency-neutral % changes a second way, on the rendered report pages.
 
 Usage:  python -m pipeline.recheck_pages                # read the pages
         python -m pipeline.recheck_pages --from-saved   # re-evaluate the saved readings only
 
 The quarterly "% change excluding currency changes" figures have no XBRL tag, and a later report does not print
-them again, so extraction alone leaves them unconfirmed. This step opens each quarterly report (the copy downloaded
+them again. Within the same 10-Q, the NIKE, Inc. and NIKE Brand figures are printed again in the revenues-by-segment
+table and the NIKE Direct figure in a sentence (pipeline.extract reads both), but the wholesale figure is printed
+once only. So all 36 are also read on the page itself. This step opens each quarterly report (the copy downloaded
 from NIKE Investor Relations, rendered by Chrome through Playwright), finds the printed page by its page number,
 and reads the four values of the three-month column by POSITION under the first "% change excluding currency
 changes" header of the revenue table. The extractor reads cells by index, so a wrong column or a shifted cell would
@@ -120,39 +122,57 @@ def show(v):
     return f"{'+' if p > 0 else '−' if p < 0 else ''}{abs(p)}%"
 
 
-def write_evidence_page(rows):
+def second_place(facts, r):
+    """Where the same 10-Q prints the figure again, as (value, where), or None (the wholesale figure)."""
+    for method, where in (("mdna_segment_table", "bảng doanh thu theo khu vực"), ("mdna_text", "câu trong MD&A")):
+        f = facts.get((r["filing"], r["metric_id"], r["period"], method))
+        if f is not None:
+            return f["value"], f"{where}, tr. {f['page']}"
+    return None
+
+
+def write_evidence_page(rows, facts):
     ok = sum(r["result"] == "match" for r in rows)
     y, m, d = max(r["checked_on"] for r in rows).split("-")
     out = ["<!doctype html><html lang='vi'><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'>"
            f"<title>Đối chiếu {len(rows)} số trên trang 10-Q</title>",
            "<style>body{font:15px/1.55 Segoe UI,Arial,sans-serif;margin:28px auto;max-width:1400px;padding:0 16px;color:#15191e}"
            "table{border-collapse:collapse;margin:8px 0 14px}td,th{border-bottom:1px solid #ddd;padding:5px 12px;text-align:left}"
-           "td+td{white-space:nowrap}"
+           "td+td{white-space:nowrap}td.where{white-space:normal;min-width:12em}"
            "th{background:#f4f5f7}.ok{color:#0a7a3d;font-weight:600}.bad{color:#b42318;font-weight:700}"
            "img{max-width:100%;border:1px solid #ccc;margin:6px 0 20px}h2{margin-top:40px;border-top:2px solid #15191e;padding-top:12px}"
            "@media (max-width:640px){body{font-size:14px;margin:16px auto}table{width:100%}td,th{padding:5px 6px}}</style>",
            f"<h1>Đối chiếu {len(rows)} tỷ lệ tăng trưởng loại trừ tỷ giá với trang 10-Q</h1>",
-           f"<p><b>{ok}/{len(rows)} số khớp.</b> Kiểm tra ngày {d}/{m}/{y} bằng trình duyệt Chrome điều khiển tự động (Playwright). "
-           "Đây là những số chỉ có trong phần MD&amp;A của báo cáo quý, không gắn thẻ XBRL và không được in lại ở báo cáo sau. "
-           "Cách làm: mở từng báo cáo 10-Q, tìm đúng trang theo số trang in ở cuối trang, rồi đọc lại số trên trang đã hiển thị, "
-           "theo vị trí cột “% CHANGE EXCLUDING CURRENCY CHANGES” <i>đầu tiên</i> (cột của ba tháng; báo cáo quý 2 và quý 3 còn "
-           "một cột cùng tên cho số lũy kế). Ô số đã đọc được tô nền vàng, dòng tương ứng có viền đỏ.</p>",
-           "<p>Ảnh chụp từ bản báo cáo tải về từ NIKE Investor Relations, cùng số accession và cùng nội dung với bản trên SEC "
-           "EDGAR (liên kết SEC ở từng quý).</p>"]
+           f"<p><b>{ok}/{len(rows)} số khớp.</b> Kiểm tra ngày {d}/{m}/{y}.</p>",
+           "<p>Vì sao đọc lại: các tỷ lệ này không có thẻ XBRL và báo cáo năm sau không in lại. Trong cùng 10-Q, NIKE in lại tỷ lệ "
+           "của NIKE, Inc. và NIKE Brand ở bảng doanh thu theo khu vực, tỷ lệ của NIKE Direct trong một câu ở phần thảo luận của "
+           "ban điều hành (MD&amp;A); riêng tỷ lệ bán buôn chỉ in một lần. Vì vậy nhóm đọc lại cả 36 số ngay trên trang báo cáo "
+           "quý.</p>",
+           "<p>Cách đọc ảnh: số lấy ở cột “% CHANGE EXCLUDING CURRENCY CHANGES” ở phần 3 tháng (Three Months Ended). Báo cáo quý "
+           "2 và quý 3 có thêm một cột cùng tên cho 6 hoặc 9 tháng; cột đó không dùng. Ô chứa số cần đọc tô vàng, cả dòng có "
+           "khung đỏ.</p>",
+           "<p>Ảnh chụp từ bản báo cáo tải về từ trang nhà đầu tư của NIKE (Investor Relations), cùng số hồ sơ và nội dung với "
+           "bản trên SEC EDGAR (liên kết SEC ở từng quý).</p>"]
     for fy, q in QUARTERS:
         yr = [r for r in rows if r["period"] == f"FY{fy}Q{q}"]
         if not yr:
             continue
         f = quarterly_filing(fy, q)
         out.append(f"<h2>Quý {q} FY{fy}</h2><p><a href='{sec_document_url(f)}'>Mở {html.escape(document_title(f))} trên SEC EDGAR</a></p>"
-                   "<table><tr><th>Chỉ tiêu</th><th>Trang</th><th>Số trong bộ dữ liệu</th><th>Đọc lại trên trang</th><th>Kết quả</th></tr>")
+                   "<table><tr><th>Chỉ tiêu</th><th>Trang</th><th>Số trong bộ dữ liệu</th><th>Đọc lại trên trang</th>"
+                   "<th>In lại trong cùng 10-Q</th><th>Kết quả</th></tr>")
         for r in yr:
-            good = r["result"] == "match"
+            again = second_place(facts, r)
+            good = r["result"] == "match" and (again is None or again[0] == r["extracted_value"])
+            shown = f"{show(again[0])} ({html.escape(again[1])})" if again else "Không in lại"
             out.append(f"<tr><td>{html.escape(r['label'])}</td><td>{r['page']}</td><td>{show(r['extracted_value'])}</td>"
-                       f"<td>{show(r['read_value'])}</td><td class='{'ok' if good else 'bad'}'>{'Khớp' if good else 'KHÔNG KHỚP'}</td></tr>")
+                       f"<td>{show(r['read_value'])}</td><td class='where'>{shown}</td>"
+                       f"<td class='{'ok' if good else 'bad'}'>{'Khớp' if good else 'KHÔNG KHỚP'}</td></tr>")
         out.append("</table>")
         for shot in dict.fromkeys(r["screenshot"] for r in yr if r["screenshot"]):
-            out.append(f"<img src='{html.escape(shot)}' alt='{html.escape(shot)}'>")
+            page = next(r["page"] for r in yr if r["screenshot"] == shot)
+            out.append(f"<img src='{html.escape(shot)}' alt='Bảng doanh thu trong 10-Q quý {q} FY{fy}, trang {page}: các ô đã đọc "
+                       f"tô vàng'>")
     (EVIDENCE / EVIDENCE_PAGE).write_text("\n".join(out) + "\n", encoding="utf-8")
 
 
@@ -205,7 +225,7 @@ def main():
         w.writeheader()
         for r in rows:
             w.writerow({k: ("" if r[k] is None else r[k]) for k in fields})
-    write_evidence_page(rows)
+    write_evidence_page(rows, facts)
     bad = [r for r in rows if r["result"] != "match"]
     print(f"{len(rows) - len(bad)}/{len(rows)} figures match the rendered 10-Q pages -> {OUT_CSV.relative_to(ROOT)}, "
           f"{EVIDENCE.relative_to(ROOT)}")

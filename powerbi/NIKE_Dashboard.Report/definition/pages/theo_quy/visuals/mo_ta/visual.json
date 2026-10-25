@@ -5,7 +5,7 @@
     "x": 40,
     "y": 88,
     "z": 2000,
-    "height": 50,
+    "height": 60,
     "width": 900,
     "tabOrder": 2000
   },
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Số liệu theo năm và theo 12 quý, lấy từ các báo cáo Form 10‑K và 10‑Q mà NIKE, Inc. nộp cho Ủy ban Chứng khoán Mỹ (SEC). Năm tài chính của NIKE kết thúc ngày 31/5: FY2019 là từ 01/06/2018 đến 31/05/2019.",
+                    "value": "Số liệu theo năm và theo 12 quý, lấy từ báo cáo năm (Form 10‑K), báo cáo quý (Form 10‑Q) và thông cáo kết quả quý 4 (Form 8‑K) mà NIKE, Inc. nộp cho Ủy ban Chứng khoán Mỹ (SEC). Năm tài chính của NIKE kết thúc ngày 31 tháng 5: FY2019 là từ 01/06/2018 đến 31/05/2019.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",

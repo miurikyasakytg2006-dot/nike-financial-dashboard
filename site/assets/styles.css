@@ -53,7 +53,8 @@ a:hover { text-decoration-thickness: 2px; }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
 button, select, input { font: inherit; color: inherit; touch-action: manipulation; }
 h1, h2, h3 { text-wrap: balance; margin: 0; }
-p { text-wrap: pretty; }
+/* No last line of a single word or figure. */
+p, dd, li, blockquote, figcaption { text-wrap: pretty; }
 
 .wrap { max-width: 1240px; margin: 0 auto; padding: 0 var(--gutter); }
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -93,6 +94,9 @@ main:focus { outline: none; }
 .block-note { margin: 10px 0 0; color: var(--ink-2); font-size: 17px; max-width: 75ch; }
 .block-note-after { margin: -20px 0 36px; }
 .block-note:empty { display: none; }
+/* The few terms the key findings use, explained once where they first appear */
+.block-terms { margin: 10px 0 0; color: var(--ink-2); font-size: 15px; line-height: 1.5; max-width: 110ch; }
+.block-terms b { color: var(--ink); font-weight: 600; }
 
 /* Key findings */
 .findings { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 40px; margin-bottom: 36px; }
@@ -158,6 +162,9 @@ main:focus { outline: none; }
 .quote-vi { margin: 8px 0 0; color: var(--ink-2); }
 .quote figcaption { margin-top: 8px; font-size: 13.5px; color: var(--muted); }
 .quote figcaption a { color: var(--muted); }
+/* An odd last quote takes the whole row instead of leaving half of it empty. */
+.quotes > .quote:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.quotes > .quote:last-child:nth-child(odd) > * { max-width: 80ch; }
 
 /* Tables */
 .table-section { padding-bottom: 8px; }
@@ -174,7 +181,11 @@ main:focus { outline: none; }
 /* Two-row header of the quarterly table: the fiscal year spans its four quarters. */
 .data-table thead tr.years th { text-align: center; border-bottom: 1px solid var(--rule); padding-bottom: 2px; }
 .data-table thead tr.years th.year { border-left: 1px solid var(--grid); }
-.data-table tbody th { text-align: left; font-weight: 400; min-width: 12rem; position: sticky; left: 0; background: var(--page); }
+/* The year stays readable beside the pinned label column while its quarters scroll under it (--pin: set by app.js). */
+.year-label { display: inline-block; position: sticky; left: calc(var(--pin, 12rem) + 8px); right: 8px; }
+.data-table tbody th { text-align: left; font-weight: 400; min-width: 15rem; position: sticky; left: 0; background: var(--page); text-wrap: balance; }
+/* On a phone the unit goes next to the label (its own column would scroll under the pinned labels). */
+.unit-inline { display: none; color: var(--muted); font-size: 13px; white-space: nowrap; }
 /* When the table scrolls sideways the label column stays put; its header and the group names stay with it. */
 .data-table thead th:first-child { position: sticky; left: 0; background: var(--page); }
 .group-label { display: inline-block; position: sticky; left: 8px; }
@@ -237,6 +248,9 @@ main:focus { outline: none; }
 }
 @media (max-width: 900px) {
   :root { --gutter: 24px; }
+  /* The section links scroll sideways: the faded edge shows there is more. */
+  .section-nav-inner { padding-right: 40px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); }
   .grid-2, .quotes { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; grid-template-areas: "sources" "method" "status"; }
   .masthead-inner { flex-direction: column; align-items: flex-start; }
@@ -255,7 +269,7 @@ main:focus { outline: none; }
   .chart { height: 280px; }
   .chart-share { height: 260px; }
   /* Every chart keeps "Tải PNG" on its title line; the subtitle runs full width below. */
-  .figure-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; align-items: baseline; }
+  .figure-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; row-gap: 2px; align-items: baseline; }
   .figure-head > div { display: contents; }
   .figure-head h3 { grid-column: 1; grid-row: 1; }
   /* The button's padding stays clickable but does not push the subtitle down. */
@@ -266,18 +280,52 @@ main:focus { outline: none; }
   .segmented label { padding: 6px 4px; font-size: 13.5px; justify-content: center; }
   .data-table { font-size: 14px; }
   .data-table tbody th { min-width: 11rem; }
+  .unit-inline { display: inline; }
+  .data-table .col-unit { display: none; }
   .filing-table td:last-child, .filing-table thead th:last-child { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; }
 }
+/* The three tables, built once for printing (the page shows one at a time). */
+.print-tables { display: none; }
 @media print {
   @page { size: A4 landscape; margin: 10mm; }
-  .section-nav, .export-png, .table-head button, .masthead-links, .figure-tools, .skip-link { display: none !important; }
+  /* The period buttons go, the bridge chart's colour legend beside them stays. */
+  .section-nav, .export-png, .table-head button, .masthead-links, .figure-tools .segmented, .skip-link { display: none !important; }
   html { scroll-padding-top: 0; }
   .block { break-before: auto; }
   #quy, #loi-nhuan, #bang-so-lieu { break-before: page; }
   .figure, .reading-notes, .finding, .quote { break-inside: avoid; }
+  /* A heading never ends a page: it moves to the next page with what it introduces. */
+  .block-head, .table-head, .figure-head, .reading-notes h3, .site-footer h2, .site-footer h3 { break-inside: avoid; break-after: avoid; }
+  .filing-table tbody tr:first-child { break-after: avoid; }
+  /* Page 1 holds the title and the six key findings. */
+  .masthead h1, .masthead-sub, .block-head, .block-note, .block-terms { max-width: none; }
+  .masthead { padding: 0 0 6px; }
+  .masthead h1 { font-size: 24px; }
+  .masthead-sub, .block-note { font-size: 13.5px; }
+  .question, .table-head h2 { font-size: 22px; }
+  .block-terms { font-size: 12.5px; }
+  .block { padding-top: 16px; }
+  .block-head { margin-bottom: 10px; }
+  .findings { margin-bottom: 12px; }
+  .finding { padding: 8px 0 8px; }
+  .finding h3 { font-size: 13px; }
+  .finding-value { margin: 2px 0 4px; font-size: 24px; }
+  .finding-text { font-size: 12.5px; line-height: 1.4; }
+  .finding-foot { font-size: 11px; line-height: 1.4; padding-top: 4px; }
+  /* Six quotes to a page instead of four. */
+  .quote { padding: 10px 0 12px; }
+  .quote blockquote { font-size: 13px; }
+  .quote-vi { font-size: 13px; }
+  .quote figcaption { font-size: 11.5px; }
+  .site-footer { background: none; }
+  .table-key, #bang-so-lieu .figure-tools, #bang-so-lieu .table-scroll { display: none; }
+  .print-tables { display: block; }
+  .print-tables h3 { font-size: 15px; margin: 14px 0 4px; break-after: avoid; }
+  .print-tables .table-key { display: block; margin: 0 0 6px; font-size: 11px; }
+  .print-tables .data-table:not(.print-q) { font-size: 11.5px; }
   /* Chrome evaluates the width media queries against a portrait page; keep the desktop columns on paper. */
   .grid-2, .quotes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .findings { grid-template-columns: repeat(3, minmax(0, 1fr)); }

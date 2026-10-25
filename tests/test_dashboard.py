@@ -12,8 +12,10 @@ ECHARTS_SERIES = """id => {
           series: o.series.map(s => ({name: s.name || null, type: s.type, data: (s.data || []).map(value)}))};
 }"""
 
+# Cell texts; a row label without the unit it repeats for phones (span.unit-inline).
 TABLE = """() => Array.from(document.querySelectorAll('#data-table tbody tr')).filter(r => !r.classList.contains('group'))
-    .map(r => Array.from(r.children).map(c => c.textContent.trim()))"""
+    .map(r => Array.from(r.children).map(c => Array.from(c.childNodes)
+        .filter(n => !(n.classList && n.classList.contains('unit-inline'))).map(n => n.textContent).join('').trim()))"""
 
 
 def vi_number(text):
@@ -71,15 +73,18 @@ def test_quarterly_table(page, site_data):
     rows = {r[0]: r for r in page.evaluate(TABLE)}
     for i, p in enumerate(periods):
         assert vi_number(rows["NIKE Direct"][2 + i]) == site_data["observations"]["nike_direct_revenue"][p]["value"], p
-    # A fourth-quarter flow is calculated, so it has no page reference (only the 31 May balance is printed in the
-    # 10-K); an estimate from rounded figures keeps one decimal.
+    # A fourth-quarter flow is calculated, so it has no page reference; only the 31 May balance (10-K page) and the
+    # percentage stated in the fourth-quarter earnings release ("8-K") link to a document. An estimate from rounded
+    # figures keeps one decimal.
     q4 = periods.index("FY2020Q4")
     assert rows["Doanh số Digital"][2 + q4] == "≈1,7"
     assert rows["Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)"][2 + q4] == "Không công bố"
+    assert rows["Tăng trưởng doanh thu, loại trừ tỷ giá (non-GAAP)"][2 + q4] == "−36%8-K"
     for i in (j for j, p in enumerate(periods) if p.endswith("Q4")):
         linked = page.eval_on_selector_all("#data-table tbody tr:not(.group)",
-                                           f"rs => rs.filter(r => r.children[{2 + i}].querySelector('a')).map(r => r.children[0].textContent)")
-        assert linked == ["Hàng tồn kho cuối kỳ"], periods[i]
+                                           f"rs => rs.filter(r => r.children[{2 + i}].querySelector('a')).map(r => "
+                                           "r.children[0].textContent.replace(r.children[0].querySelector('.unit-inline').textContent, ''))")
+        assert linked == ["Tăng trưởng doanh thu, loại trừ tỷ giá (non-GAAP)", "Hàng tồn kho cuối kỳ"], periods[i]
 
 
 def test_region_table(page, site_data):
@@ -130,7 +135,8 @@ COVID_BAND = """id => {
   const el = document.querySelector('.chart[data-chart="' + id + '"]'), chart = echarts.getInstanceByDom(el);
   const rect = chart.getModel().getComponent('grid').coordinateSystem.getRect();
   const x = chart.convertToPixel({xAxisIndex: 0}, 'FY2020Q4'), step = chart.convertToPixel({xAxisIndex: 0}, 'FY2021Q1') - x;
-  const ctx = el.querySelector('canvas').getContext('2d'), dpr = window.devicePixelRatio;
+  const canvas = el.querySelector('canvas'), ctx = canvas.getContext('2d');
+  const dpr = canvas.width / canvas.getBoundingClientRect().width;   // the chart draws at 2x or more
   // Opacity of the canvas just below the top of the plot: the band is the only thing drawn there.
   const alpha = dx => ctx.getImageData(Math.round((x + dx) * dpr), Math.round((rect.y + 2) * dpr), 1, 1).data[3];
   return {inside: [alpha(-0.4 * step), alpha(0), alpha(0.4 * step)], outside: [alpha(-0.6 * step), alpha(0.6 * step)]};
@@ -157,7 +163,7 @@ def test_period_toggles_redraw_the_comparisons(page, site_data):
         assert page.evaluate(ECHARTS_SERIES, "change")["series"][0]["data"] == [(v(m, b) - v(m, a)) / 1000 for m in channels]
         bars = page.evaluate(ECHARTS_SERIES, "bridge")["series"][1]["data"]
         assert bars[0] == k("ebit_margin", a) and bars[-1] == k("ebit_margin", b), (a, b)
-        assert f"từ {a} đến {b}" in page.inner_text("#bridge-sub")
+        assert f"biên EBIT năm {a} và {b}" in page.inner_text("#bridge-sub")
     assert page.console_errors == []
 
 
@@ -171,7 +177,7 @@ def test_tooltip_shows_units_and_source(page):
     tip = page.evaluate("""() => Array.from(document.querySelectorAll('.chart[data-chart="channelQ"] div'))
         .map(d => d.innerText).filter(t => t.includes('tỷ USD')).join(' ')""")
     assert "tỷ USD" in tip and "so với cùng kỳ" in tip
-    assert re.search(r"Nguồn: 10-Q Q[1-3] FY20\d\d, tr\. \d+|Tự tính: 10-K FY20\d\d", tip), tip
+    assert re.search(r"Nguồn: 10-Q Q[1-3] FY20\d\d, tr\. \d+|Quý 4 tự tính: cả năm ở 10-K FY20\d\d", tip), tip
 
 
 def test_source_links_and_footer(page, site_data, server):
@@ -182,13 +188,14 @@ def test_source_links_and_footer(page, site_data, server):
         hrefs = page.eval_on_selector_all("#data-table a.page-ref", "as => as.map(a => a.href)")
         assert hrefs and set(hrefs) <= allowed, kind
     assert all(h.startswith("https://www.sec.gov/Archives/edgar/data/320187/") for h in allowed)
-    # Annual reports, quarterly reports, and the later reports used only to look for restatements.
+    # Annual reports, quarterly reports, fourth-quarter earnings releases, and the later reports used only to look for
+    # restatements.
     groups = page.eval_on_selector_all("#filing-list tbody", "bs => bs.map(b => b.querySelectorAll('a').length)")
-    assert groups == [3, 9, 5] and sum(groups) == len(site_data["filings"])
+    assert groups == [3, 9, 3, 5] and sum(groups) == len(site_data["filings"])
     href = page.get_attribute("#evidence-link", "href")
     assert href == site_data["meta"]["evidence"] and page.request.get(server + href).ok
     total = sum(site_data["meta"]["status_counts"].values())
-    assert page.inner_text("#status-summary").startswith(f"{total} số liệu báo cáo: ")
+    assert page.inner_text("#status-summary").startswith(f"{total} số liệu: ")
 
 
 def test_xlsx_and_png_exports(page, site_data, tmp_path):
@@ -322,9 +329,13 @@ def test_print_draws_every_chart(page):
         size = page.evaluate("id => { const c = document.querySelector('.chart[data-chart=\"' + id + '\"] canvas'); "
                              "return c ? c.width * c.height : 0; }", chart)
         assert size > 0, chart
-    assert page.locator("#data-table tbody tr").count() > 20
-    assert_headers_align(page, "A")
+    # Paper gets all three tables, not the one the page happens to show.
+    printed = page.evaluate("""() => Array.from(document.querySelectorAll('#print-tables table')).map(t =>
+        [t.getBoundingClientRect().height > 0, t.querySelectorAll('tbody tr').length])""")
+    assert len(printed) == 3 and all(shown and rows > 20 for shown, rows in printed), printed
+    assert page.evaluate("document.querySelector('#bang-so-lieu .table-scroll').getBoundingClientRect().height") == 0
     page.emulate_media(media="screen")
+    assert page.evaluate("document.getElementById('print-tables').getBoundingClientRect().height") == 0
     page.evaluate("() => window.dispatchEvent(new Event('afterprint'))")
 
 

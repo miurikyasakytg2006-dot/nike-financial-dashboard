@@ -3,7 +3,7 @@
   "name": "phat_hien_3",
   "position": {
     "x": 860,
-    "y": 214,
+    "y": 258,
     "z": 7000,
     "height": 220,
     "width": 380,
@@ -47,7 +47,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Doanh số Digital tăng từ 3,8 lên 9,1 tỷ USD (+5,3 tỷ USD), nhiều hơn mức tăng của cả NIKE Direct. Phần NIKE Direct ngoài Digital, chủ yếu là cửa hàng, giảm từ khoảng 8,0 xuống 7,3 tỷ USD (ước tính).",
+                    "value": "Doanh số Digital tăng từ 3,8 lên 9,1 tỷ USD (+5,3 tỷ USD), nhiều hơn mức tăng của cả NIKE Direct. NIKE Direct ngoài Digital (chủ yếu là cửa hàng) giảm từ khoảng 8,0 xuống 7,3 tỷ USD (ước tính).",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -73,7 +73,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "MD&A, 10‑K FY2019 và FY2021 (số Digital đã làm tròn).",
+                    "value": "Phần thảo luận của ban điều hành (MD&A), 10‑K FY2019 và FY2021 (số Digital đã làm tròn).",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "8.5pt",

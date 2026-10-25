@@ -33,7 +33,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Tỷ trọng các kênh tính trên doanh thu NIKE Brand. Converse (có kênh bán trực tiếp riêng) và Corporate không nằm trong các con số này.",
+                    "value": "Tỷ trọng các kênh tính trên doanh thu NIKE Brand. Không gồm Converse (thương hiệu riêng, có kênh bán trực tiếp riêng) và khoản Corporate (chủ yếu là lãi, lỗ từ phòng ngừa tỷ giá).",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10pt",

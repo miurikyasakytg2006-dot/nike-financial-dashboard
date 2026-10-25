@@ -5,7 +5,7 @@
     "x": 40,
     "y": 150,
     "z": 4000,
-    "height": 56,
+    "height": 100,
     "width": 1200,
     "tabOrder": 4000
   },
@@ -37,6 +37,113 @@
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
+                      "color": "#3b4350"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "NIKE Direct",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
+                      "color": "#15191e",
+                      "fontWeight": "bold"
+                    }
+                  },
+                  {
+                    "value": ": NIKE tự bán cho người mua, ở cửa hàng của NIKE và qua Digital (ứng dụng, website của NIKE). ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
+                      "color": "#3b4350"
+                    }
+                  },
+                  {
+                    "value": "Bán buôn (Wholesale)",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
+                      "color": "#15191e",
+                      "fontWeight": "bold"
+                    }
+                  },
+                  {
+                    "value": ": NIKE bán cho nhà bán lẻ, nhà phân phối. ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
+                      "color": "#3b4350"
+                    }
+                  },
+                  {
+                    "value": "NIKE Brand",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
+                      "color": "#15191e",
+                      "fontWeight": "bold"
+                    }
+                  },
+                  {
+                    "value": ": NIKE và Jordan, không gồm Converse. ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
+                      "color": "#3b4350"
+                    }
+                  },
+                  {
+                    "value": "Global Brand Divisions",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
+                      "color": "#15191e",
+                      "fontWeight": "bold"
+                    }
+                  },
+                  {
+                    "value": ": doanh thu cấp phép thương hiệu, dưới 0,2%. ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
+                      "color": "#3b4350"
+                    }
+                  },
+                  {
+                    "value": "EBIT",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
+                      "color": "#15191e",
+                      "fontWeight": "bold"
+                    }
+                  },
+                  {
+                    "value": ": lợi nhuận trước lãi vay và thuế. ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
+                      "color": "#3b4350"
+                    }
+                  },
+                  {
+                    "value": "MD&A",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
+                      "color": "#15191e",
+                      "fontWeight": "bold"
+                    }
+                  },
+                  {
+                    "value": ": phần thảo luận của ban điều hành trong báo cáo.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "9.5pt",
                       "color": "#3b4350"
                     }
                   }

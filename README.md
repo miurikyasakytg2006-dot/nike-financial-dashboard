@@ -1,8 +1,8 @@
 # NIKE FY2019–FY2021: dữ liệu tài chính và dashboard
 
-Mã nguồn phần số liệu của đề tài về chiến lược bán trực tiếp (D2C) của NIKE, giai đoạn FY2019–FY2021. Nếu chỉ cần dùng số liệu, bạn không cần đọc tài liệu này: các file dùng ngay nằm trong thư mục `handover/`.
+Mã nguồn phần số liệu của đề tài về chiến lược bán trực tiếp (NIKE Direct) của NIKE, giai đoạn FY2019–FY2021. Nếu chỉ cần dùng số liệu, bạn không cần đọc tài liệu này: các file dùng ngay nằm trong thư mục `handover/`.
 
-Toàn bộ số liệu lấy từ báo cáo Form 10-K (năm) và Form 10-Q (quý) mà NIKE, Inc. nộp cho SEC. Năm tài chính của NIKE kết thúc ngày 31/5, nên FY2019–FY2021 là từ 01/06/2018 đến 31/05/2021. Đây là sản phẩm học tập của sinh viên, không liên quan đến NIKE, Inc.
+Toàn bộ số liệu lấy từ báo cáo Form 10-K (năm), Form 10-Q (quý) và thông cáo kết quả quý 4 (Form 8-K) mà NIKE, Inc. nộp cho SEC. Năm tài chính của NIKE kết thúc ngày 31/5, nên FY2019–FY2021 là từ 01/06/2018 đến 31/05/2021. Đây là sản phẩm học tập của sinh viên, không liên quan đến NIKE, Inc.
 
 ## Cấu trúc
 
@@ -11,13 +11,13 @@ Toàn bộ số liệu lấy từ báo cáo Form 10-K (năm) và Form 10-Q (quý
 | `handover/NIKE_Financial_Dataset_FY2019-2021.xlsx` | Bộ dữ liệu chuẩn của nhóm, đồng thời là đầu vào của dashboard: số liệu năm, số liệu 12 quý, bốn khu vực, các chỉ số tự tính (đều là công thức Excel) và nguồn của từng số. |
 | `handover/NIKE_Dashboard_FY2019-2021.xlsx`, `.pbix` | Bản Excel và bản Power BI của dashboard. |
 | `handover/bang-chung-doi-chieu/` | Ảnh chụp trang 10-Q và trang “Đối chiếu 36 số” (xem `recheck_pages` ở dưới). |
-| `pipeline/sources.py` | 17 báo cáo dùng trong dự án: 3 báo cáo 10-K và 9 báo cáo 10-Q của FY2019–FY2021 là nguồn số liệu; 5 báo cáo của FY2022–FY2023 chỉ dùng để xem NIKE có trình bày lại số cũ khác đi không. |
+| `pipeline/sources.py` | 20 tài liệu dùng trong dự án: 3 báo cáo 10-K và 9 báo cáo 10-Q của FY2019–FY2021 là nguồn số liệu; 3 thông cáo kết quả quý 4 (Form 8-K) cho tỷ lệ % của quý 4 và để đối chiếu số quý 4 tự tính; 5 báo cáo của FY2022–FY2023 chỉ dùng để xem NIKE có in lại số cũ khác đi không. |
 | `pipeline/metrics.py` | Định nghĩa các chỉ tiêu, công thức tính chỉ số và các phép kiểm tra. Excel, Python và dashboard dùng chung một bộ công thức này. |
 | `pipeline/ixbrl.py` | Đọc báo cáo: dữ liệu Inline XBRL (từ FY2020) hoặc tệp XBRL riêng đi kèm bản HTML (các báo cáo FY2019), cùng số trang và mục của từng số. |
-| `pipeline/extract.py` | Tải báo cáo, trích số liệu ra `data/extracted/facts.csv` và các đoạn trích dẫn ra `data/extracted/quotes.csv`. |
+| `pipeline/extract.py` | Tải báo cáo, trích số liệu ra `data/extracted/facts.csv` và các đoạn trích dẫn ra `data/extracted/quotes.csv`. Ngoài bảng doanh thu, đọc cả những chỗ NIKE in lại cùng tỷ lệ trong một báo cáo (bảng doanh thu theo khu vực, câu về NIKE Direct trong MD&A). Với thông cáo quý 4: đọc báo cáo kết quả kinh doanh 3 tháng, bảng doanh thu theo khu vực, bảng EBIT và các câu nêu % thay đổi của quý. |
 | `pipeline/quotes.py` | Bảy đoạn NIKE tự giải thích chiến lược trong 10-K, kèm ý chính bằng tiếng Việt. |
 | `pipeline/dataset.py` | Chọn số cho từng kỳ, đối chiếu chéo giữa các nguồn và tính các chỉ số. |
-| `pipeline/recheck_pages.py` | Mở trang 10-Q bằng Chrome và đọc lại 36 tỷ lệ tăng trưởng loại trừ tỷ giá của các quý (số chỉ có trong MD&A, không được in lại ở báo cáo sau). Kết quả ghi vào `data/extracted/page_check.csv`, ảnh chụp lưu trong `handover/bang-chung-doi-chieu/`. |
+| `pipeline/recheck_pages.py` | Mở trang 10-Q bằng Chrome và đọc lại 36 tỷ lệ tăng trưởng loại trừ tỷ giá của các quý (không có thẻ XBRL, báo cáo năm sau không in lại; riêng tỷ lệ bán buôn chỉ in một lần trong mỗi 10-Q). Kết quả ghi vào `data/extracted/page_check.csv`, ảnh chụp lưu trong `handover/bang-chung-doi-chieu/`. |
 | `pipeline/build_workbook.py` | Tạo file Excel bộ dữ liệu, giữ lại các cột xác minh mà nhóm đã điền. |
 | `pipeline/verify_workbook.py` | Tính lại mọi công thức Excel bằng một công cụ độc lập rồi so với kết quả Python. |
 | `pipeline/insights.py` | Sáu phát hiện chính và các câu tóm tắt, viết một lần từ số liệu. Cả ba bản dashboard hiện đúng các câu này. |
@@ -31,9 +31,9 @@ Toàn bộ số liệu lấy từ báo cáo Form 10-K (năm) và Form 10-Q (quý
 ## Số của mỗi kỳ lấy từ đâu
 
 - **Năm:** từ 10-K của chính năm đó. **Quý 1–3:** từ 10-Q của chính quý đó (cột 3 tháng).
-- **Quý 4:** NIKE không nộp 10-Q cho quý 4, nên số quý 4 bằng số cả năm (10-K) trừ số 9 tháng (10-Q quý 3). Số dư hàng tồn kho cuối quý 4 là số dư ngày 31/5 trong 10-K. Các tỷ lệ % mà NIKE tự nêu không có cho riêng quý 4, nên các ô đó ghi “Không công bố”.
-- **Tăng trưởng:** so với số cùng kỳ năm trước in trong cùng báo cáo, giống cách NIKE tự tính.
-- **Đối chiếu:** mỗi số được so với ít nhất một nguồn thứ hai: bảng trong MD&A, câu trong thuyết minh, số lũy kế 6 và 9 tháng, bảng số liệu quý của 10-K FY2019 và FY2020, số in lại ở báo cáo năm sau, hoặc lần đọc lại trên trang. Kết quả hiện tại: 627 số liệu, 600 khớp nguồn chính thức, 27 là tỷ lệ % NIKE không nêu cho riêng quý 4. Không có số nào bị NIKE trình bày lại khác đi ở các báo cáo sau.
+- **Quý 4:** NIKE không nộp 10-Q cho quý 4, nên số quý 4 bằng số cả năm (10-K) trừ số 9 tháng (10-Q quý 3). Số dư hàng tồn kho cuối quý 4 là số dư ngày 31/5 trong 10-K. Thông cáo kết quả quý 4 (8-K) của NIKE in số riêng của quý 4 (báo cáo kết quả kinh doanh, doanh thu theo khu vực, EBIT): số nào có trong đó đều khớp với số tự tính; thông cáo không có NIKE Direct, bán buôn và Digital. Tỷ lệ % của quý 4 lấy từ thông cáo này; tỷ lệ nào NIKE không nêu ở đâu cả (phần lớn tỷ lệ của NIKE Direct, bán buôn, tỷ trọng NIKE Direct) thì ghi “Không công bố”.
+- **Tăng trưởng:** so với số cùng kỳ năm trước in trong cùng báo cáo, giống cách NIKE tự tính. Riêng tồn kho cuối quý 1–3: 10-Q chỉ in kèm số dư ngày 31/5, nên số cùng kỳ lấy từ 10-Q cùng quý năm trước. Không tính tăng trưởng Digital, vì số Digital đã làm tròn đến 0,1 tỷ USD làm tăng trưởng lệch với tỷ lệ NIKE nêu (FY2020: 44,7% so với 47%).
+- **Đối chiếu:** mỗi số được kiểm tra thêm ít nhất một lần: so với chỗ khác NIKE in cùng số (bảng trong MD&A, câu trong thuyết minh, bảng doanh thu theo khu vực, bảng số liệu quý của 10-K FY2019 và FY2020, thông cáo kết quả quý 4, số in lại ở báo cáo năm sau), so với số lũy kế 6 và 9 tháng, tính lại từ báo cáo tài chính, hoặc đọc lại trên trang. Kết quả hiện tại: 627 số liệu, 613 khớp, 14 là tỷ lệ % NIKE không nêu cho riêng quý 4. Không có số nào bị NIKE in lại khác đi ở các báo cáo sau.
 
 ## Cài đặt
 
@@ -49,12 +49,12 @@ Kiểm thử trên trình duyệt dùng Google Chrome nếu máy có cài, nếu
 
 ```bash
 .venv/bin/python -m pipeline.extract           # tải báo cáo (lưu tạm trong data/cache/), trích số liệu và trích dẫn
-.venv/bin/python -m pipeline.recheck_pages     # đọc lại 36 số MD&A trên trang 10-Q (cần Chrome)
+.venv/bin/python -m pipeline.recheck_pages     # đọc lại 36 tỷ lệ trên trang 10-Q (cần Chrome)
 .venv/bin/python -m pipeline.build_workbook    # tạo handover/NIKE_Financial_Dataset_FY2019-2021.xlsx
 .venv/bin/python -m pipeline.verify_workbook   # tính lại công thức Excel bằng công cụ độc lập
 .venv/bin/python -m pipeline.build_site_data   # kiểm tra file Excel và xuất JSON cho dashboard
 .venv/bin/python -m pipeline.build_excel_dashboard   # tạo handover/NIKE_Dashboard_FY2019-2021.xlsx
-.venv/bin/python -m pytest tests -q            # 67 kiểm thử: dữ liệu, 3 bản dashboard và trình duyệt
+.venv/bin/python -m pytest tests -q            # 81 kiểm thử: dữ liệu, 3 bản dashboard và trình duyệt
 ```
 
 Trên Windows, thay `.venv/bin/python` bằng `.venv\Scripts\python.exe`. `recheck_pages --from-saved` chỉ đánh giá lại các lần đọc đã lưu, không mở lại trang.
@@ -69,7 +69,7 @@ Ghi chú:
 
 - File Excel là nguồn chuẩn. `build_site_data` đọc sheet 02, 03 và 04, so từng giá trị và số trang với dữ liệu trích từ báo cáo, rồi dừng lại (mã lỗi 1, không xuất JSON) nếu gặp một trong các lỗi sau: thiếu dòng, trùng khóa, sai đơn vị hoặc phạm vi, ô trống mà không ghi “Thiếu / không công bố”, phần trăm nhập dạng số nguyên, thiếu nguồn, giá trị hoặc số trang khác số trích từ báo cáo, “Đã xác minh (người)” thiếu tên hoặc ngày, có “Bằng chứng mâu thuẫn”, hoặc phép kiểm tra vượt ngưỡng. Bước này giữ cho dashboard không bị sai khi file Excel bị sửa nhầm, nhưng không thay cho việc kiểm tra chính các số trích xuất (đã làm ở `extract`, `dataset` và `recheck_pages`).
 - Các cột xác minh của nhóm (người xác minh, ngày, ghi chú) đang ẩn trong sheet 02–04. Khi nhóm đánh dấu “Đã xác minh (người)” trong file Excel trên Google Drive: tải file đó về, chép đè vào `handover/` rồi chạy lại `build_site_data`. Chạy lại `build_workbook` vẫn giữ nguyên các cột xác minh. Nếu số liệu mới khác số đã xác minh, dòng đó sẽ chuyển sang “Bằng chứng mâu thuẫn”.
-- Báo cáo được tải từ bản sao chính thức trên trang NIKE Investor Relations (cùng số accession với bản trên SEC EDGAR); liên kết trong dashboard và bộ dữ liệu trỏ về SEC EDGAR. Trang NIKE IR có thể tạm chặn (HTTP 403) nếu tải dồn dập; khi đó chờ một lúc rồi chạy lại.
+- Báo cáo được tải từ bản sao chính thức trên trang NIKE Investor Relations (cùng số hồ sơ SEC, tức accession number, với bản trên SEC EDGAR); liên kết trong dashboard và bộ dữ liệu trỏ về SEC EDGAR. Trang NIKE IR có thể tạm chặn (HTTP 403) nếu tải dồn dập; khi đó chờ một lúc rồi chạy lại.
 
 ## Xem dashboard trên máy
 

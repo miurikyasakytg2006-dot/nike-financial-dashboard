@@ -10,6 +10,7 @@ stops the build with a non-zero exit code; nothing is exported from data that fa
 import datetime
 import json
 import math
+import re
 import shutil
 import sys
 from decimal import Decimal
@@ -19,8 +20,8 @@ import pandas as pd
 from openpyxl import load_workbook
 
 from . import dataset
-from .build_workbook import (HEADER_ROW, OBS_COLUMNS, OBS_SHEETS, SHEET_KPI_A, SHEET_KPI_Q, WORKBOOK, date_text, load_quotes,
-                             obs_key, period_dates)
+from .build_workbook import (HEADER_ROW, NO_VALUE, OBS_COLUMNS, OBS_SHEETS, SHEET_KPI_A, SHEET_KPI_Q, WORKBOOK, date_text,
+                             load_quotes, obs_key, period_dates)
 from .insights import findings, section_notes
 from .metrics import (A, CHECKS, COMPARISONS, KPIS, Q, REGIONS, REPORTED, REPORTED_BY_ID, STATUS_CONFLICT, STATUS_HUMAN,
                       STATUS_MISSING, STATUSES, applies, location)
@@ -42,13 +43,23 @@ class ValidationError(Exception):
     pass
 
 
+def _page(v):
+    """The page column holds a number, or on a fourth-quarter row '50 (10-K)' and '4 (10-Q)' on two lines."""
+    if v is None or (isinstance(v, float) and math.isnan(v)):
+        return pd.NA
+    m = re.match(r"\s*(\d+)", str(v))
+    return int(m.group(1)) if m else pd.NA
+
+
 def read_observations(path=WORKBOOK):
     frames = []
     for sheet in OBS_SHEETS:
-        df = pd.read_excel(path, sheet_name=sheet, header=HEADER_ROW, dtype={HEADERS["page"]: "Int64"})
+        df = pd.read_excel(path, sheet_name=sheet, header=HEADER_ROW, dtype={HEADERS["page"]: "object"})
         missing_cols = [h for h in HEADERS.values() if h not in df.columns]
         if missing_cols:
             raise ValidationError(f"{sheet}: missing columns {missing_cols}")
+        df["page_text"] = df[HEADERS["page"]].astype(str)
+        df[HEADERS["page"]] = df[HEADERS["page"]].map(_page)
         df["sheet_name"] = sheet
         frames.append(df)
     return pd.concat(frames, ignore_index=True).rename(columns={v: k for k, v in HEADERS.items()})
@@ -115,12 +126,17 @@ def validate(df, expected):
                 errors.append(f"{where}: unexpected negative value {value}")
             if m["unit"] == "%" and abs(value) > 5:
                 errors.append(f"{where}: percentage {value} looks like it was entered in whole percent instead of a fraction")
-            if r.page is pd.NA or _blank(r.section) or str(r.section) == "—" or _blank(r.evidence) or _blank(r.accession):
+            # An earnings release (8-K) has no page numbers; its section is the table or paragraph instead.
+            needs_page = not o["source"].startswith("8-K")
+            if (needs_page and r.page is pd.NA) or _blank(r.section) or str(r.section) == "—" or _blank(r.evidence) or \
+                    _blank(r.accession):
                 errors.append(f"{where}: incomplete provenance (page, section, evidence and accession are required)")
             if r.accession != o["accession"]:
                 errors.append(f"{where}: accession {r.accession} is not the one of {o['source']}")
             if r.page is not pd.NA and o["page"] is not None and int(r.page) != o["page"]:
                 errors.append(f"{where}: page {r.page} differs from the extraction (page {o['page']})")
+            if o["page2"] and f"{o['page2']} (10-Q)" not in r.page_text:
+                errors.append(f"{where}: the page of {o['source2']} ({o['page2']}) is missing from the page column")
     return errors
 
 
@@ -142,7 +158,7 @@ def check_results(results):
         for c in CHECKS + COMPARISONS:
             v = env.get(c["id"])
             if v is None:
-                # Comparisons need a figure NIKE states, which the fourth quarter does not have.
+                # Comparisons need a figure NIKE states, which most fourth quarters do not have.
                 if c in CHECKS and applies(c, freq):
                     errors.append(f"Check {c['id']} {period}: cannot be computed (missing input)")
                 continue
@@ -155,7 +171,8 @@ def compare_with_workbook_formulas(results, path=WORKBOOK):
     """Cached results of the KPI sheet formulas must equal the Python results."""
     wb = load_workbook(path, data_only=True, read_only=True)
     errors, compared = [], 0
-    points = {c["id"] for c in COMPARISONS}    # shown in percentage points (×100)
+    # Comparisons and the two contributions are shown in percentage points (×100).
+    scale = {**{k["id"]: k.get("scale", 1) for k in KPIS}, **{c["id"]: 100 for c in COMPARISONS}}
     for sheet, freq in ((SHEET_KPI_A, A), (SHEET_KPI_Q, Q)):
         rows = list(wb[sheet].iter_rows(min_row=HEADER_ROW + 1, values_only=True))
         header = rows[0]
@@ -167,12 +184,12 @@ def compare_with_workbook_formulas(results, path=WORKBOOK):
                 continue
             for p, i in cols.items():
                 want, got = results[p][row[0]], row[i]
-                if want is not None and row[0] in points:
-                    want *= 100
+                if want is not None:
+                    want *= scale.get(row[0], 1)
                 compared += 1
                 if want is None:
-                    if got not in ("–", None):
-                        errors.append(f"{sheet} {row[0]} {p}: expected '–', workbook shows {got!r}")
+                    if got not in (NO_VALUE, None):
+                        errors.append(f"{sheet} {row[0]} {p}: expected '{NO_VALUE}', workbook shows {got!r}")
                 elif not isinstance(got, (int, float)) or not math.isclose(float(want), got, rel_tol=1e-9, abs_tol=1e-9):
                     errors.append(f"{sheet} {row[0]} {p}: workbook {got!r} vs recomputed {float(want)}")
     if compared == 0:
@@ -194,7 +211,7 @@ def export(obs, results, extracted_on):
                            url=sec_document_url(f), text=q["text"], vi=QUOTES_BY_ID[q["id"]]["vi"]))
     data = {
         "meta": {
-            "title": "NIKE: bán trực tiếp (D2C) và kết quả tài chính, FY2019–FY2021",
+            "title": "NIKE FY2019–FY2021: bán trực tiếp và kết quả tài chính",
             "generated_on": datetime.date.today().isoformat(),
             "extracted_on": extracted_on,
             "workbook": f"downloads/{WORKBOOK.name}",

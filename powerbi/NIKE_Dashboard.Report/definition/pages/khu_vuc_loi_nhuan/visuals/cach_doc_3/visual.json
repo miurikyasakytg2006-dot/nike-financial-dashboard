@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Không có dòng “operating income”",
+                    "value": "Không có dòng lợi nhuận hoạt động",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -33,7 +33,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Báo cáo kết quả kinh doanh của NIKE không có dòng này. EBIT (lợi nhuận sau thuế + chi phí lãi thuần + thuế) là chỉ tiêu non‑GAAP do NIKE định nghĩa. Biên EBIT = biên gộp − tạo nhu cầu − vận hành chung − chi phí (thu nhập) khác, tất cả tính trên doanh thu.",
+                    "value": "NIKE không có dòng “operating income” mà dùng EBIT = lợi nhuận sau thuế + chi phí (thu nhập) lãi thuần + chi phí thuế (non‑GAAP, tức ngoài chuẩn mực kế toán). Biên EBIT = biên lợi nhuận gộp − chi phí tạo nhu cầu − chi phí vận hành chung − chi phí khác, đều theo % doanh thu.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10pt",

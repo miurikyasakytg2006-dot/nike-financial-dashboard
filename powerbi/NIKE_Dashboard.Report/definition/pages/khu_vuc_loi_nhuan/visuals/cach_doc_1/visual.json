@@ -33,7 +33,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "NIKE không nộp báo cáo quý 4. Số quý 4 bằng số cả năm trong 10‑K trừ số 9 tháng trong 10‑Q quý 3. Các tỷ lệ % mà NIKE tự nêu không có cho riêng quý 4.",
+                    "value": "Không có 10‑Q cho quý 4, nên số quý 4 = cả năm (10‑K) trừ 9 tháng (10‑Q quý 3). Số nào có trong thông cáo kết quả quý 4 (8‑K) đều khớp; thông cáo không có NIKE Direct, bán buôn và Digital. Tỷ lệ % quý 4 lấy từ thông cáo; tỷ lệ NIKE không nêu ghi “Không công bố”.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10pt",

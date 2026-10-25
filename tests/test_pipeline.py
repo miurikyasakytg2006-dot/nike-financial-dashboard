@@ -28,7 +28,15 @@ GOLDEN = {
     ("FY2021", "nike_brand_digital_sales"): Decimal("9.1"), ("FY2019Q1", "revenues"): 9948,
     ("FY2019Q1", "nike_brand_digital_sales"): Decimal("0.77"), ("FY2020Q4", "revenues"): 6313,
     ("FY2020Q4", "net_income"): -790, ("FY2020Q4", "inventories"): 7367, ("FY2021Q4", "revenues"): 12344,
+    # Fourth-quarter percentages, from NIKE's fourth-quarter earnings releases (Form 8-K)
+    ("FY2019Q4", "revenues_pct_change_reported"): Decimal("0.04"), ("FY2019Q4", "revenues_pct_change_cn"): Decimal("0.1"),
+    ("FY2020Q4", "nike_brand_pct_change_cn"): Decimal("-0.36"), ("FY2021Q4", "revenues_pct_change_cn"): Decimal("0.88"),
+    ("FY2021Q4", "nike_direct_pct_change_reported"): Decimal("0.73"),
 }
+# The fourth-quarter percentages NIKE states nowhere: not in a 10-K, a 10-Q or the fourth-quarter earnings release.
+NOT_STATED = ({(f"FY{fy}Q4", mid) for fy in (2019, 2020, 2021) for mid in (
+    "nike_direct_pct_change_cn", "nike_brand_wholesale_pct_change_reported", "nike_brand_wholesale_pct_change_cn",
+    "nike_direct_share_stated")} | {("FY2019Q4", "nike_direct_pct_change_reported"), ("FY2020Q4", "nike_direct_pct_change_reported")})
 PAGES = ["tong_quan", "theo_quy", "khu_vuc_loi_nhuan", "bang_so_lieu", "nguon"]
 
 
@@ -46,11 +54,22 @@ def test_every_metric_and_period_present_once(assembled):
     obs, _ = assembled
     keys = [o["key"] for o in obs]
     assert len(keys) == len(set(keys)) == sum(len(dataset.PERIODS[f]) for m in REPORTED for f in (A, Q) if applies(m, f))
-    # Only the percentages NIKE states are missing, and only for the fourth quarter, which has no 10-Q.
+    # Only fourth-quarter percentages are missing (no 10-Q), and only those the fourth-quarter release does not state.
     missing = [o for o in obs if o["value"] is None]
-    percentages = {m["id"] for m in REPORTED if m["unit"] == "%"}
-    assert {o["metric"]["id"] for o in missing} == percentages and len(missing) == 3 * len(percentages)
-    assert all(o["quarter"] == 4 and o["status"] == STATUS_MISSING for o in missing)
+    assert {(o["period"], o["metric"]["id"]) for o in missing} == NOT_STATED
+    assert all(o["status"] == STATUS_MISSING and "thông cáo kết quả quý 4" in o["cross_check"] for o in missing)
+    released = [o for o in obs if o["method"] == "q4_release"]
+    assert len(released) == 13 and all(o["source"].startswith("8-K Q4") and o["page"] is None for o in released)
+
+
+def test_fourth_quarter_matches_nike_earnings_releases(assembled):
+    """Every fourth-quarter figure the earnings release prints (income statement, revenues by segment, EBIT) equals
+    the year minus nine months."""
+    obs, _ = assembled
+    derived = [o for o in obs if o["method"] == "q4_derived" and "thông cáo kết quả quý 4" in o["cross_check"]]
+    assert len(derived) >= 50 and not [o for o in obs if o["conflicts"]]
+    for key in ("FY2020Q4|revenues", "FY2020Q4|net_income", "FY2021Q4|ebit_reported", "FY2019Q4|na_revenue"):
+        assert key in {o["key"] for o in derived}, key
 
 
 @pytest.mark.parametrize("key,value", sorted(GOLDEN.items()))
@@ -65,7 +84,7 @@ def test_fourth_quarter_is_the_year_minus_nine_months(facts, assembled):
     by = {(o["period"], o["metric"]["id"]): o for o in obs}
     checked = 0
     for o in obs:
-        if o["quarter"] != 4 or o["value"] is None:
+        if o["quarter"] != 4 or o["value"] is None or o["method"] == "q4_release":   # a percentage NIKE states
             continue
         m, fy = o["metric"], o["fy"]
         year = by[(f"FY{fy}", m["id"])]["value"]
@@ -130,9 +149,44 @@ def test_missing_values_never_become_zero(assembled):
     assert dataset.evaluate("a / b", {"a": Decimal(1), "b": None}) is None
 
 
+def test_quarterly_currency_neutral_rates_printed_twice_are_matched(assembled):
+    """In each 10-Q, NIKE prints the NIKE, Inc. and NIKE Brand currency-neutral changes again in the revenues-by-segment
+    table and the NIKE Direct one in a sentence of its MD&A; the wholesale one is printed once only."""
+    from pipeline.recheck_pages import EVIDENCE_PAGE
+    obs, _ = assembled
+    rates = [o for o in obs if o["freq"] == Q and o["quarter"] < 4 and o["metric"]["id"].endswith("_pct_change_cn")]
+    assert len(rates) == 36
+    for o in rates:
+        again = [c for c in o["confirms"] if c.startswith(("khớp bảng doanh thu theo khu vực", "khớp câu trong MD&A"))]
+        assert bool(again) == (o["metric"]["id"] != "nike_brand_wholesale_pct_change_cn"), (o["key"], o["confirms"])
+    page = (dataset.ROOT / "handover" / "bang-chung-doi-chieu" / EVIDENCE_PAGE).read_text(encoding="utf-8")
+    assert page.count("Không in lại") == 9 and "riêng tỷ lệ bán buôn chỉ in một lần" in page
+
+
+def test_fourth_quarter_estimates_show_their_inputs(assembled):
+    """A fourth-quarter figure names the two printed figures it comes from (as NIKE prints them) and, for Digital sales,
+    which of them NIKE rounded."""
+    obs, _ = assembled
+    by = {o["key"]: o for o in obs}
+    assert by["FY2020Q4|revenues"]["evidence"] == "10-K FY2020 (cả năm): 37,403; 10-Q Q3 FY2020 (9 tháng): 31,090"
+    assert by["FY2020Q4|net_income"]["evidence"].startswith("10-K FY2020 (cả năm): 2,539;")
+    assert "số cả năm đã làm tròn" in by["FY2019Q4|nike_brand_digital_sales"]["cross_check"]
+    assert by["FY2019Q4|nike_brand_digital_sales"]["evidence"].endswith("(9 tháng): $2,781 million")
+    for fy in (2020, 2021):
+        assert "hai số đều đã làm tròn" in by[f"FY{fy}Q4|nike_brand_digital_sales"]["cross_check"]
+
+
+def test_no_growth_rate_from_rounded_digital_figures():
+    """Digital sales are rounded to 0.1 billion: a growth rate computed from them misses NIKE's own stated rates by
+    several points (fiscal 2020: 44.7% against 47%), so the dataset does not compute one."""
+    from pipeline.metrics import KPIS_BY_ID
+    assert "digital_growth" not in KPIS_BY_ID
+    assert KPIS_BY_ID["direct_contribution"]["unit_label"] == "điểm %" and KPIS_BY_ID["direct_contribution"]["scale"] == 100
+
+
 def test_quarterly_mdna_figures_were_read_again_on_the_page(assembled):
-    """Currency-neutral growth of a quarter is printed only in that 10-Q's MD&A and never again, so each figure was
-    read a second time on the rendered page, with a screenshot."""
+    """Currency-neutral growth of a quarter has no XBRL tag and no later report prints it again, so each of the 36
+    figures was also read on the rendered 10-Q page, with a screenshot."""
     from pipeline.recheck_pages import EVIDENCE_PAGE
     obs, _ = assembled
     checks = dataset.load_page_check()
@@ -178,6 +232,7 @@ def _mutated_copy(tmp_path, sheet, key, field, new_value):
     (SHEET_Q, "Q1 FY2021|nike_direct_revenue", "status", STATUS_HUMAN, "verifier's name"),
     (SHEET_A, "FY2020|net_income", "page", None, "incomplete provenance"),
     (SHEET_A, "FY2020|net_income", "page", 99, "page 99 differs"),
+    (SHEET_Q, "Q4 FY2020|revenues", "page", 50, "is missing from the page column"),
     (SHEET_A, "FY2021|inventories", "prior", 6000, "comparative"),
     (SHEET_R, "FY2021|gc_revenue", "key", "FY2021|na_revenue", "Duplicate"),
 ])
@@ -185,6 +240,19 @@ def test_validator_rejects_bad_data(tmp_path, assembled, sheet, key, field, valu
     obs, _ = assembled
     errors = validate(read_observations(_mutated_copy(tmp_path, sheet, key, field, value)), obs)
     assert any(expected in e for e in errors), errors
+
+
+def test_workbook_fourth_quarter_rows_give_both_pages(assembled):
+    obs, _ = assembled
+    o = next(o for o in obs if o["key"] == "FY2020Q4|revenues")
+    wb = load_workbook(WORKBOOK, read_only=True)
+    row = next(r for r in wb[SHEET_Q].iter_rows(min_row=HEADER_ROW + 2, values_only=True)
+               if r[FIELD_COL["key"]] == "Q4 FY2020|revenues")
+    assert row[FIELD_COL["page"]] == f"{o['page']} (10-K)\n{o['page2']} (10-Q)"
+    assert row[FIELD_COL["kind"]] == "Nhóm tự tính: cả năm trừ 9 tháng đầu"
+    q1 = next(r for r in wb[SHEET_Q].iter_rows(min_row=HEADER_ROW + 2, values_only=True)
+              if r[FIELD_COL["key"]] == "Q1 FY2020|revenues")
+    assert q1[FIELD_COL["kind"]] == "Báo cáo tài chính quý, không kiểm toán (10-Q)"
 
 
 def test_workbook_formulas_recalculate_independently():
@@ -279,7 +347,7 @@ def _check_excel_dashboard(path, site_data):
     for row in ws.iter_rows(min_row=5, max_col=15, values_only=True):
         cells = [v or "" for v in row[3:]]
         if row[1] is None and any(cells) and not any(re.fullmatch(r"FY\d{4}", v) for v in cells):
-            assert all(re.fullmatch(r"(† )?(tr\. \d+)?", v) for v in cells), row
+            assert all(re.fullmatch(r"(† )?(tr\. \d+|8-K)?", v) for v in cells), row
             page_rows += 1
         else:
             assert not any("tr." in v for v in cells), row
@@ -410,8 +478,9 @@ def test_powerbi_model_matches_site_data(pbip, site_data):
         assert figures and len(pages) == (len(figures) if with_pages else 0), name
         assert all("tr." not in c["Hiển thị"] and c["Liên kết"] is None for c in figures), name
         for c in pages:
-            assert re.fullmatch(r"(†|† tr\. \d+|tr\. \d+)?", c["Hiển thị"]), c
-            assert (c["Liên kết"] in filings) if "tr." in c["Hiển thị"] else c["Liên kết"] is None, c
+            assert re.fullmatch(r"(†|(† )?tr\. \d+|(† )?8-K)?", c["Hiển thị"]), c
+            linked = "tr." in c["Hiển thị"] or "8-K" in c["Hiển thị"]
+            assert (c["Liên kết"] in filings) if linked else c["Liên kết"] is None, c
         # A page column has a blank header of non-breaking spaces, a different number per period: plain spaces would be
         # trimmed by Power BI and the page columns of the three years would merge into one.
         heads = {c["Kỳ"]: c["Cột"] for c in pages}
@@ -437,8 +506,8 @@ def test_powerbi_report_pages(pbip, site_data):
 
 def test_delivered_pbix_is_current(site_data):
     """The .pbix handed to the team is saved from the project by Power BI Desktop, so it can lag behind a rebuild:
-    it must have the five pages, no saved filter but the regional one, and the current findings."""
-    from pipeline.build_powerbi import glue
+    it must have the five pages, no saved filter but the regional one, and the current findings and status wording."""
+    from pipeline.build_powerbi import glue, status_sentence
     with zipfile.ZipFile(dataset.ROOT / "handover" / "NIKE_Dashboard_FY2019-2021.pbix") as z:
         assert json.loads(z.read("Report/definition/pages/pages.json"))["pageOrder"] == PAGES
         visuals = {"/".join(n.split("/")[-4::2]): json.loads(z.read(n)) for n in z.namelist() if n.endswith("/visual.json")}
@@ -447,3 +516,4 @@ def test_delivered_pbix_is_current(site_data):
     strings = set(_strings(list(visuals.values())))
     for f in site_data["findings"]:
         assert glue(f["text"]) in strings, f["id"]
+    assert glue(status_sentence(site_data)) in strings

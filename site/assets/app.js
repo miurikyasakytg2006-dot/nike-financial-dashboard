@@ -60,7 +60,7 @@
     var o = ob(id, p);
     if (!o) return '';
     if (o.method === 'q4_derived')
-      return 'Tự tính: ' + o.source + (o.page ? ' (tr. ' + o.page + ')' : '') + ' trừ 9 tháng ở ' + o.source2 +
+      return 'Quý 4 tự tính: cả năm ở ' + o.source + (o.page ? ' (tr. ' + o.page + ')' : '') + ' trừ 9 tháng đầu ở ' + o.source2 +
         (o.page2 ? ' (tr. ' + o.page2 + ')' : '') + '.';
     return 'Nguồn: ' + o.source + (o.page ? ', tr. ' + o.page : '') + '.';
   }
@@ -150,7 +150,8 @@
 
   function setChart(id, option, description) {
     var el = document.querySelector('.chart[data-chart="' + id + '"]');
-    if (!charts[id]) charts[id] = echarts.init(el, null, { renderer: 'canvas' });
+    // At least two canvas pixels per CSS pixel, so a printed chart is as sharp as the text around it.
+    if (!charts[id]) charts[id] = echarts.init(el, null, { renderer: 'canvas', devicePixelRatio: Math.max(2, window.devicePixelRatio || 1) });
     charts[id].setOption(option, { notMerge: true });
     el.setAttribute('aria-label', description + ' Số liệu chi tiết có trong bảng ở cuối trang.');
   }
@@ -232,7 +233,7 @@
     { name: 'NIKE Direct', id: 'nike_direct_revenue', color: C.direct },
     { name: 'Bán buôn', id: 'nike_brand_wholesale_revenue', color: C.wholesale },
     { name: 'Global Brand Divisions', id: 'global_brand_divisions_revenue', color: C.gbd },
-    { name: 'Tổng NIKE Brand', id: 'nike_brand_revenue', color: C.total }
+    { name: 'Toàn NIKE Brand', id: 'nike_brand_revenue', color: C.total }
   ];
   function bnDelta(v) { return signed(v, Math.abs(v) < 0.1 ? 2 : 1); }
   function renderChange() {
@@ -250,8 +251,10 @@
         { color: it.color, value: signedPct(vb / va - 1), label: 'so với ' + a }
       ], 'Nguồn: thuyết minh “Revenues”, 10-K ' + a + ' và 10-K ' + b + '.');
     };
-    var span = Math.max.apply(null, vals.map(Math.abs));
-    o.xAxis = valAxis(function (v) { return num(v, Math.abs(span) < 1 ? 1 : 0); }, { min: vals.some(function (v) { return v < 0; }) ? null : 0 });
+    // Every bar carries its figure, so the value axis shows no labels; it starts just short of the lowest bar (a
+    // decline of 0,02 should not stretch the axis to −1).
+    var lo = Math.min.apply(null, vals.concat(0)), hi = Math.max.apply(null, vals.concat(0));
+    o.xAxis = valAxis(null, { min: lo < 0 ? lo - (hi - lo) * 0.04 : 0, max: hi, axisLabel: { show: false }, splitLine: { show: false } });
     o.yAxis = { type: 'category', inverse: true, data: CHANGE_ITEMS.map(function (it) { return it.name; }), axisTick: { show: false },
       axisLine: { show: false }, axisLabel: axisText({ fontSize: 13.5, color: C.ink2 }) };
     o.series = [{
@@ -275,7 +278,7 @@
   function renderShareQ() {
     var ps = Q(), data = ps.map(function (p) { return kpi('direct_share', p); });
     var o = base();
-    o.tooltip.axisPointer = { type: 'line', lineStyle: { color: C.axis } };
+    o.tooltip.axisPointer = { type: 'line', z: 1, lineStyle: { color: C.axis } };
     o.tooltip.formatter = function (pp) {
       var p = ps[pp[0].dataIndex], said = val('nike_direct_share_stated', p);
       return tip(title(p), [
@@ -292,7 +295,7 @@
     var hi = extremes(data, 1);
     setChart('shareQ', o, 'Biểu đồ đường 12 quý: tỷ trọng NIKE Direct từ ' + pct(data[0]) + ' (' + label(ps[0]) + ') đến ' +
       pct(data[data.length - 1]) + ' (' + label(ps[ps.length - 1]) + '), cao nhất ' + pct(data[hi]) + ' ở ' + label(ps[hi]) + '.');
-    sourceLine('shareQ', quarterSources('Nguồn: thuyết minh “Revenues”. Quý 4 = cả năm trừ 9 tháng. Tỷ trọng do nhóm tự tính.'));
+    sourceLine('shareQ', quarterSources('Nguồn: thuyết minh “Revenues”. Tỷ trọng do nhóm tự tính; quý 4 = cả năm trừ 9 tháng đầu.'));
   }
 
   function renderChannelQ() {
@@ -301,7 +304,7 @@
     var w = ps.map(function (p) { return val('nike_brand_wholesale_revenue', p) / 1000; });
     var c = ps.indexOf(COVID), last = ps.length - 1;
     var o = base();
-    o.tooltip.axisPointer = { type: 'line', lineStyle: { color: C.axis } };
+    o.tooltip.axisPointer = { type: 'line', z: 1, lineStyle: { color: C.axis } };
     o.tooltip.formatter = function (pp) {
       var p = ps[pp[0].dataIndex];
       return tip(title(p), [
@@ -334,7 +337,7 @@
       var p = ys[pp[0].dataIndex];
       return tip(title(p), [
         { color: C.digital, value: stated(val('nike_brand_digital_sales', p)) + ' tỷ USD', label: 'Digital, ≈ ' + pct(kpi('digital_share_of_direct', p), 0) + ' NIKE Direct' },
-        { color: C.directLight, value: '≈ ' + bn(kpi('direct_ex_digital', p)) + ' tỷ USD', label: 'Phần còn lại (ước tính)' },
+        { color: C.directLight, value: '≈ ' + bn(kpi('direct_ex_digital', p)) + ' tỷ USD', label: 'NIKE Direct ngoài Digital (ước tính)' },
         { color: C.total, value: bn(val('nike_direct_revenue', p), 2) + ' tỷ USD', label: 'NIKE Direct' }
       ], 'Digital: ' + srcNote('nike_brand_digital_sales', p).replace('Nguồn: ', '') + ' NIKE Direct: thuyết minh “Revenues”.');
     };
@@ -347,7 +350,7 @@
     o.series = [
       { name: 'Digital', type: 'bar', stack: 'direct', barWidth: 24, data: dig, label: inside('#fff'),
         itemStyle: { color: C.digital, borderColor: '#fff', borderWidth: 1 } },
-      { name: 'Phần còn lại', type: 'bar', stack: 'direct', barWidth: 24, data: rest,
+      { name: 'Ngoài Digital', type: 'bar', stack: 'direct', barWidth: 24, data: rest,
         label: inside(C.ink), itemStyle: { color: C.directLight, borderColor: '#fff', borderWidth: 1, borderRadius: [0, 4, 4, 0] } },
       // Total at the end of each bar.
       { name: 'NIKE Direct', type: 'bar', stack: 'direct', barWidth: 24, data: ys.map(function () { return 0; }), silent: true,
@@ -355,10 +358,10 @@
         label: labelStyle({ position: 'right', distance: 8, fontWeight: 600,
           formatter: function (pnt) { return num(val('nike_direct_revenue', ys[pnt.dataIndex]) / 1000, 1); } }) }
     ];
-    legend('digital', [{ label: 'NIKE Brand Digital', color: C.digital }, { label: 'Phần còn lại, chủ yếu là cửa hàng (ước tính)', color: C.directLight }]);
+    legend('digital', [{ label: 'NIKE Brand Digital', color: C.digital }, { label: 'NIKE Direct ngoài Digital (ước tính)', color: C.directLight }]);
     setChart('digital', o, 'Biểu đồ thanh chồng: doanh số Digital ' + dig.map(function (v, i) { return stated(v) + ' tỷ USD ở ' + ys[i]; }).join(', ') +
-      '; phần NIKE Direct còn lại khoảng ' + rest.map(function (v) { return num(v, 1); }).join(', ') + ' tỷ USD.');
-    sourceLine('digital', 'Nguồn: MD&A, đoạn về NIKE Direct (số Digital do NIKE làm tròn) và thuyết minh “Revenues”. Nhãn cuối thanh là tổng NIKE Direct.',
+      '; NIKE Direct ngoài Digital khoảng ' + rest.map(function (v) { return num(v, 1); }).join(', ') + ' tỷ USD.');
+    sourceLine('digital', 'Nguồn: phần thảo luận của ban điều hành (MD&A), đoạn về NIKE Direct (số Digital do NIKE làm tròn), và thuyết minh “Revenues”. Nhãn cuối thanh là tổng NIKE Direct.',
       annualFilings());
   }
 
@@ -370,7 +373,7 @@
   function renderDigitalQ() {
     var ps = Q(), data = ps.map(function (p) { return kpi('digital_share_of_direct', p); });
     var o = base();
-    o.tooltip.axisPointer = { type: 'line', lineStyle: { color: C.axis } };
+    o.tooltip.axisPointer = { type: 'line', z: 1, lineStyle: { color: C.axis } };
     o.tooltip.formatter = function (pp) {
       var p = ps[pp[0].dataIndex], q4 = quarter(p) === 4;
       return tip(title(p), [
@@ -378,7 +381,8 @@
         { color: C.digital, value: (q4 ? '≈ ' + num(val('nike_brand_digital_sales', p), 1) : stated(val('nike_brand_digital_sales', p))) + ' tỷ USD',
           label: 'Digital' + (q4 ? ' (ước tính)' : '') },
         { color: C.total, value: bn(val('nike_direct_revenue', p), 2) + ' tỷ USD', label: 'NIKE Direct' }
-      ], (q4 ? 'Ước tính: Digital cả năm trừ 9 tháng, đều là số đã làm tròn; sai số khoảng ±' + num(q4Uncertainty(p) * 100, 0) + ' điểm %. ' : '') +
+      ], (q4 ? 'Ước tính: Digital cả năm trừ 9 tháng đầu, ' + (fyOf(p) === 'FY2019' ? 'trong đó số cả năm đã làm tròn' : 'cả hai số đều đã làm tròn') +
+        '; sai số khoảng ±' + num(q4Uncertainty(p) * 100, 0) + ' điểm %. ' : '') +
         srcNote('nike_brand_digital_sales', p));
     };
     o.xAxis = quarterAxis();
@@ -392,7 +396,7 @@
     var hi = extremes(data, 1);
     setChart('digitalQ', o, 'Biểu đồ đường 12 quý: tỷ trọng Digital trong NIKE Direct khoảng ' + pct(data[0], 0) + ' ở ' + label(ps[0]) +
       ', cao nhất khoảng ' + pct(data[hi], 0) + ' ở ' + label(ps[hi]) + ' (ước tính), ' + pct(data[data.length - 1], 0) + ' ở ' + label(ps[ps.length - 1]) + '.');
-    sourceLine('digitalQ', quarterSources('Nguồn: MD&A của từng báo cáo (số Digital) và thuyết minh “Revenues”.'));
+    sourceLine('digitalQ', quarterSources('Nguồn: phần thảo luận của ban điều hành (MD&A) ở từng báo cáo (số Digital) và thuyết minh “Revenues”.'));
   }
 
   // ------------------------------------------------------------------ 4. regions
@@ -472,7 +476,7 @@
     setChart('regionsEbit', o, 'Biểu đồ điểm: biên EBIT khu vực FY2019 và FY2021: ' + rows.map(function (r) {
       return r.name + ' ' + pct(r.a) + ' và ' + pct(r.b); }).join('; ') + '.');
     fitDumbbell('regionsEbit', o, rows);
-    sourceLine('regionsEbit', 'Nguồn: thuyết minh “Operating Segments”. Biên do nhóm tự tính: EBIT khu vực / doanh thu khu vực.',
+    sourceLine('regionsEbit', 'Nguồn: thuyết minh về các bộ phận kinh doanh (“Operating Segments”). Biên do nhóm tự tính: EBIT khu vực / doanh thu khu vực.',
       ['10-K FY2019', '10-K FY2021']);
   }
 
@@ -498,8 +502,8 @@
       running += s.d;
     });
     baseData.push(0); barData.push({ value: end, itemStyle: { color: C.total, borderRadius: [4, 4, 0, 0] } });
-    document.getElementById('bridge-sub').textContent = 'Điểm %, NIKE, Inc., từ ' + a + ' đến ' + b +
-      '. Chi phí giảm (so với doanh thu) làm biên EBIT tăng.';
+    document.getElementById('bridge-sub').textContent = 'NIKE, Inc. Cột đầu và cuối: biên EBIT năm ' + a + ' và ' + b +
+      ' (% doanh thu). Cột giữa: mức thay đổi do từng khoản (điểm %); khoản chi phí nào giảm so với doanh thu thì làm biên EBIT tăng.';
     var o = base();
     o.tooltip.formatter = function (pp) {
       var i = pp[0].dataIndex;
@@ -532,10 +536,14 @@
           return signed(steps[i - 1].d * 100, 1);
         } }) }
     ];
-    legend('bridge', [{ label: 'Biên EBIT', color: C.total }, { label: 'Làm biên EBIT tăng', color: C.up }, { label: 'Làm biên EBIT giảm', color: C.down }]);
+    // The legend lists only the colours this period shows.
+    var keys = [{ label: 'Biên EBIT', color: C.total }];
+    if (steps.some(function (s) { return s.d >= 0; })) keys.push({ label: 'Làm biên EBIT tăng', color: C.up });
+    if (steps.some(function (s) { return s.d < 0; })) keys.push({ label: 'Làm biên EBIT giảm', color: C.down });
+    legend('bridge', keys);
     setChart('bridge', o, 'Biểu đồ thác nước: biên EBIT từ ' + pct(start) + ' (' + a + ') đến ' + pct(end) + ' (' + b + '); ' +
       steps.map(function (s) { return s.name + ' ' + pts(s.d); }).join(', ') + '.');
-    sourceLine('bridge', 'Nguồn: báo cáo kết quả kinh doanh và bảng EBIT trong MD&A. Các tỷ lệ do nhóm tự tính.', ['10-K ' + a, '10-K ' + b]);
+    sourceLine('bridge', 'Nguồn: báo cáo kết quả kinh doanh và bảng EBIT ở phần thảo luận của ban điều hành (MD&A). Các tỷ lệ do nhóm tự tính.', ['10-K ' + a, '10-K ' + b]);
   }
 
   function renderMarginsQ() {
@@ -544,7 +552,7 @@
     var em = ps.map(function (p) { return kpi('ebit_margin', p); });
     var c = ps.indexOf(COVID), last = ps.length - 1;
     var o = base();
-    o.tooltip.axisPointer = { type: 'line', lineStyle: { color: C.axis } };
+    o.tooltip.axisPointer = { type: 'line', z: 1, lineStyle: { color: C.axis } };
     o.tooltip.formatter = function (pp) {
       var p = ps[pp[0].dataIndex];
       return tip(title(p), [
@@ -563,7 +571,7 @@
     legend('marginsQ', [{ label: 'Biên lợi nhuận gộp', color: C.total, shape: 'line' }, { label: 'Biên EBIT (non-GAAP)', color: C.margin, shape: 'line' }]);
     setChart('marginsQ', o, 'Biểu đồ đường 12 quý: biên gộp ' + pct(gm[c]) + ' và biên EBIT ' + pct(em[c]) + ' ở ' + label(COVID) +
       '; quý cuối ' + pct(gm[last]) + ' và ' + pct(em[last]) + '.');
-    sourceLine('marginsQ', quarterSources('Nguồn: báo cáo kết quả kinh doanh. Biên do nhóm tự tính; quý 4 = cả năm trừ 9 tháng.'));
+    sourceLine('marginsQ', quarterSources('Nguồn: báo cáo kết quả kinh doanh. Biên do nhóm tự tính; quý 4 = cả năm trừ 9 tháng đầu.'));
   }
 
   function renderInventoryQ() {
@@ -588,14 +596,14 @@
     }, covidBand(data[ps.indexOf(COVID)])];
     setChart('inventoryQ', o, 'Biểu đồ cột 12 quý: hàng tồn kho cuối quý từ ' + num(data[0], 1) + ' tỷ USD (' + label(ps[0]) +
       '), cao nhất ' + num(data[hi], 1) + ' tỷ USD (' + label(ps[hi]) + '), cuối kỳ ' + num(data[last], 1) + ' tỷ USD.');
-    sourceLine('inventoryQ', quarterSources('Nguồn: bảng cân đối kế toán. Số dư cuối quý 4 là số dư 31/5 trong 10-K.'));
+    sourceLine('inventoryQ', quarterSources('Nguồn: bảng cân đối kế toán. Tồn kho cuối quý 4 là tồn kho ngày 31/5 in trong báo cáo năm (10-K).'));
   }
 
   function renderDaysQ() {
     var ps = Q(), data = ps.map(function (p) { return kpi('days_inventory', p); });
     var hi = extremes(data, 1), last = ps.length - 1;
     var o = base();
-    o.tooltip.axisPointer = { type: 'line', lineStyle: { color: C.axis } };
+    o.tooltip.axisPointer = { type: 'line', z: 1, lineStyle: { color: C.axis } };
     o.tooltip.formatter = function (pp) {
       var p = ps[pp[0].dataIndex];
       return tip(title(p), [
@@ -676,11 +684,11 @@
     { g: 'Cơ cấu và tăng trưởng' },
     { kpi: 'direct_share', label: 'Tỷ trọng NIKE Direct', unit: '%', fmt: fmtPct1 },
     { obs: 'nike_direct_share_stated', label: 'Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)', unit: '%', fmt: fmtPct0 },
-    { kpi: 'direct_growth', label: 'Tăng trưởng NIKE Direct, theo báo cáo', unit: '%', fmt: fmtGrowth },
+    { kpi: 'direct_growth', label: 'Tăng trưởng NIKE Direct, theo USD', unit: '%', fmt: fmtGrowth },
     { obs: 'nike_direct_pct_change_cn', label: 'Tăng trưởng NIKE Direct, loại trừ tỷ giá (non-GAAP)', unit: '%', fmt: fmtGrowth0 },
-    { kpi: 'wholesale_growth', label: 'Tăng trưởng bán buôn, theo báo cáo', unit: '%', fmt: fmtGrowth },
+    { kpi: 'wholesale_growth', label: 'Tăng trưởng bán buôn, theo USD', unit: '%', fmt: fmtGrowth },
     { obs: 'nike_brand_wholesale_pct_change_cn', label: 'Tăng trưởng bán buôn, loại trừ tỷ giá (non-GAAP)', unit: '%', fmt: fmtGrowth0 },
-    { kpi: 'nike_brand_growth', label: 'Tăng trưởng NIKE Brand, theo báo cáo', unit: '%', fmt: fmtGrowth },
+    { kpi: 'nike_brand_growth', label: 'Tăng trưởng NIKE Brand, theo USD', unit: '%', fmt: fmtGrowth },
     { kpi: 'direct_contribution', label: 'Trong đó: đóng góp của NIKE Direct', unit: 'điểm %', fmt: fmtPts },
     { kpi: 'wholesale_contribution', label: 'Trong đó: đóng góp của bán buôn', unit: 'điểm %', fmt: fmtPts },
     { g: 'NIKE Brand Digital (một phần của NIKE Direct)' },
@@ -702,7 +710,7 @@
     { obs: 'income_tax_expense', label: 'Chi phí thuế thu nhập', unit: 'triệu USD', fmt: amount },
     { obs: 'net_income', label: 'Lợi nhuận sau thuế', unit: 'triệu USD', fmt: amount, total: true },
     { g: 'Tỷ lệ trên doanh thu và tăng trưởng' },
-    { kpi: 'revenue_growth', label: 'Tăng trưởng doanh thu, theo báo cáo', unit: '%', fmt: fmtGrowth },
+    { kpi: 'revenue_growth', label: 'Tăng trưởng doanh thu, theo USD', unit: '%', fmt: fmtGrowth },
     { obs: 'revenues_pct_change_cn', label: 'Tăng trưởng doanh thu, loại trừ tỷ giá (non-GAAP)', unit: '%', fmt: fmtGrowth0 },
     { kpi: 'gross_margin', label: 'Biên lợi nhuận gộp', unit: '%', fmt: fmtPct1 },
     { kpi: 'demand_creation_ratio', label: 'Chi phí tạo nhu cầu / doanh thu', unit: '%', fmt: fmtPct1 },
@@ -724,7 +732,7 @@
       rows.push({ obs: r.id + '_direct_revenue', label: 'NIKE Direct', unit: 'triệu USD', fmt: amount });
       rows.push({ obs: r.id + '_wholesale_revenue', label: 'Bán buôn', unit: 'triệu USD', fmt: amount });
       rows.push({ kpi: r.id + '_direct_share', label: 'Tỷ trọng NIKE Direct', unit: '%', fmt: fmtPct1 });
-      rows.push({ kpi: r.id + '_growth', label: 'Tăng trưởng doanh thu, theo báo cáo', unit: '%', fmt: fmtGrowth });
+      rows.push({ kpi: r.id + '_growth', label: 'Tăng trưởng doanh thu, theo USD', unit: '%', fmt: fmtGrowth });
       rows.push({ obs: r.id + '_ebit', label: 'EBIT', unit: 'triệu USD', fmt: amount });
       rows.push({ kpi: r.id + '_ebit_margin', label: 'Biên EBIT', unit: '%', fmt: fmtPct1 });
     });
@@ -735,25 +743,32 @@
     return { periods: kind === 'A' ? A() : Q(), rows: CHANNEL_ROWS.concat(FINANCE_ROWS),
       name: kind === 'A' ? 'Theo năm' : 'Theo quý', file: kind === 'A' ? 'theo-nam' : 'theo-quy' };
   }
+  var NEGATIVE = 'Số tiền âm để trong ngoặc đơn, ví dụ (790); tỷ lệ âm có dấu trừ.';
   var TABLE_KEYS = {
-    A: 'Số NIKE công bố có kèm số trang của 10-K (bấm để mở báo cáo trên SEC). <i>Số in nghiêng</i> là số nhóm tự tính. Số âm để trong ngoặc đơn.',
-    Q: 'Q1–Q3 lấy từ 10-Q, có kèm số trang. <i>Số in nghiêng</i> là số nhóm tự tính, gồm cả số quý 4 (cả năm trừ 9 tháng). ≈ là ước tính từ số đã làm tròn.',
-    R: 'Số NIKE công bố có kèm số trang của 10-K. <i>Số in nghiêng</i> là số nhóm tự tính. EBIT khu vực không gồm chi phí chung toàn cầu.'
+    A: 'Số NIKE công bố có kèm số trang của 10-K (bấm để mở báo cáo trên SEC). <i>Số in nghiêng</i> là số nhóm tự tính. ' + NEGATIVE,
+    Q: 'Quý 1–3: số trong báo cáo quý (10-Q), có số trang. Quý 4: không có 10-Q, nên nhóm lấy cả năm trừ 9 tháng.<br>' +
+      '<i>Số in nghiêng</i> là số nhóm tự tính; ≈ là ước tính từ số NIKE đã làm tròn. Tỷ lệ % quý 4 lấy từ thông cáo kết quả quý 4 (ghi “8-K”).<br>' +
+      NEGATIVE,
+    R: 'Số NIKE công bố có kèm số trang của 10-K. <i>Số in nghiêng</i> là số nhóm tự tính. EBIT khu vực chưa trừ chi phí Global Brand Divisions và Corporate. ' +
+      NEGATIVE
   };
-  function renderTable() {
-    var kind = state.table, spec = tableSpec(kind), ps = spec.periods;
-    var table = document.getElementById('data-table');
+  function buildTable(kind, table) {
+    var spec = tableSpec(kind), ps = spec.periods;
     table.replaceChildren();
     var thead = document.createElement('thead');
     if (kind === 'Q') {
       var yr = document.createElement('tr');
       yr.className = 'years';
-      yr.append(cell('th'), cell('th'));
-      A().forEach(function (y) { var th = cell('th', y, 'year'); th.colSpan = 4; th.scope = 'colgroup'; yr.append(th); });
+      yr.append(cell('th'), cell('th', null, 'col-unit'));
+      A().forEach(function (y) {
+        var th = cell('th', null, 'year'); th.colSpan = 4; th.scope = 'colgroup';
+        th.append(cell('span', y, 'year-label'));
+        yr.append(th);
+      });
       thead.append(yr);
     }
     var hr = document.createElement('tr');
-    var h0 = cell('th', 'Chỉ tiêu'), h1 = cell('th', 'Đơn vị');
+    var h0 = cell('th', 'Chỉ tiêu'), h1 = cell('th', 'Đơn vị', 'col-unit');
     h0.scope = 'col'; h1.scope = 'col';
     hr.append(h0, h1);
     ps.forEach(function (p) {
@@ -774,7 +789,8 @@
       }
       if (row.total) tr.className = 'total';
       var rh = cell('th', row.label); rh.scope = 'row';
-      tr.append(rh, cell('td', row.unit, 'unit'));
+      rh.append(cell('span', ' (' + row.unit + ')', 'unit-inline'));
+      tr.append(rh, cell('td', row.unit, 'unit col-unit'));
       ps.forEach(function (p) {
         // Every numeric cell has the same two trailing slots (marker, page reference), so reported and calculated
         // figures share one right edge.
@@ -796,16 +812,19 @@
           } else if (o.method === 'q4_derived') {
             // An estimate from rounded figures keeps one decimal only.
             td = cell('td', o.approx ? '≈' + num(o.value, 1) : row.fmt(o.value), 'num calc' + q1);
-            td.title = 'Tự tính: cả năm trừ 9 tháng. ' + o.evidence + '. ' + o.cross_check;
+            td.title = o.cross_check + ' Số in trong báo cáo (kiểu Mỹ): ' + o.evidence + '.';
           } else {
             td = cell('td', row.fmt(o.value), 'num' + q1);
-            td.title = D.metrics[row.obs].en + '. ' + o.status + '. ' + (o.restatement || '');
+            td.title = D.metrics[row.obs].en + '. ' + o.status + '. ' + (o.method === 'q4_release' ? o.cross_check : o.restatement || '');
             if (o.status === STATUS_PENDING) { mark.textContent = '†'; mark.setAttribute('aria-label', 'chờ người kiểm tra'); }
-            if (o.page) {
+            // A page reference links to the report; a fourth-quarter earnings release has no page numbers.
+            var release = D.filings[o.source].form === '8-K';
+            if (o.page || release) {
               var a = document.createElement('a');
               a.className = 'page-ref'; a.href = D.filings[o.source].url; a.target = '_blank'; a.rel = 'noopener';
-              a.textContent = 'tr. ' + o.page;
-              a.setAttribute('aria-label', 'Mở ' + o.source + ' trên SEC, trang ' + o.page);
+              a.textContent = release ? '8-K' : 'tr. ' + o.page;
+              a.setAttribute('aria-label', release ? 'Mở thông cáo kết quả quý 4 (' + o.source + ') trên SEC' :
+                'Mở ' + o.source + ' trên SEC, trang ' + o.page);
               ref.append(a);
             }
           }
@@ -818,8 +837,24 @@
       tbody.append(tr);
     });
     table.append(thead, tbody);
-    document.getElementById('table-key').innerHTML = TABLE_KEYS[kind];
+  }
+  function renderTable() {
+    var table = document.getElementById('data-table');
+    buildTable(state.table, table);
+    document.getElementById('table-key').innerHTML = TABLE_KEYS[state.table];
     fitTable(table);
+  }
+  // The page shows one table at a time; a printed copy has all three.
+  function renderPrintTables() {
+    var box = document.getElementById('print-tables');
+    box.replaceChildren();
+    ['A', 'Q', 'R'].forEach(function (kind) {
+      var table = cell('table', null, 'data-table' + (kind === 'Q' ? ' print-q' : ''));
+      buildTable(kind, table);
+      var key = cell('p', null, 'table-key');
+      key.innerHTML = TABLE_KEYS[kind];
+      box.append(cell('h3', 'Bảng số liệu – ' + tableSpec(kind).name.toLowerCase()), key, table);
+    });
   }
   // Where the table scrolls sideways (narrow screens, the quarterly table) it opens on the latest periods, beside the
   // pinned label column. The label column takes up the spare width, so the first period in view starts right at its
@@ -833,6 +868,7 @@
       while (i > 1 && used + width(cols[i - 1]) <= room + 0.5) used += width(cols[--i]);
       if (used > 0) box.style.setProperty('--label-width', (width(cols[0]) + room - used) + 'px');
     }
+    box.style.setProperty('--pin', width(cols[0]) + 'px');
     box.scrollLeft = box.scrollWidth;
     markScrolled(box);
   }
@@ -871,8 +907,8 @@
       rows.push([row.label, row.unit, row.kpi ? 'Nhóm tự tính' : 'NIKE công bố'].concat(vals, [source, id]));
     });
     rows.push([]);
-    if (kind === 'Q') rows.push(['Quý 4 = số cả năm (10-K) trừ số 9 tháng (10-Q quý 3).']);
-    rows.push(['Nguồn: NIKE, Inc. Form 10-K và 10-Q, FY2019–FY2021 (SEC EDGAR). Dữ liệu trích xuất ngày ' +
+    if (kind === 'Q') rows.push(['Không có 10-Q cho quý 4, nên quý 4 = số cả năm (10-K) trừ số 9 tháng đầu (10-Q quý 3); tỷ lệ % quý 4 lấy từ thông cáo kết quả quý 4 (8-K).']);
+    rows.push(['Nguồn: NIKE, Inc. Form 10-K, 10-Q và thông cáo kết quả quý 4 (Form 8-K), FY2019–FY2021 (SEC EDGAR). Dữ liệu lấy ngày ' +
       isoDate(D.meta.extracted_on) + '. Dashboard: ' + location.href.split(/[?#]/)[0]]);
     return rows;
   }
@@ -1013,7 +1049,8 @@
     table.querySelectorAll('tbody').forEach(function (b) { b.remove(); });
     var groups = [['Báo cáo năm (10-K)', function (f) { return f.form === '10-K' && f.role === 'scope'; }],
       ['Báo cáo quý (10-Q)', function (f) { return f.form === '10-Q' && f.role === 'scope'; }],
-      ['Chỉ dùng để xem số có bị trình bày lại không', function (f) { return f.role === 'check'; }]];
+      ['Thông cáo kết quả quý 4 (8-K)', function (f) { return f.role === 'q4release'; }],
+      ['Báo cáo các năm sau (chỉ để kiểm tra NIKE có in lại số cũ khác đi không)', function (f) { return f.role === 'check'; }]];
     groups.forEach(function (g) {
       var tbody = document.createElement('tbody'), gr = document.createElement('tr'), th = cell('th', g[0]);
       th.colSpan = 3; th.scope = 'colgroup';
@@ -1038,12 +1075,12 @@
     });
     var allQ4 = missing.length && missing.every(function (p) { return /Q4$/.test(p); });
     // Only statuses that occur are listed.
-    var parts = [[c['Khớp nguồn chính thức'], ' khớp nguồn chính thức'], [c['Đã xác minh (người)'], ' đã được nhóm kiểm tra trên báo cáo'],
-      [c[STATUS_PENDING], ' chưa được kiểm tra (†)'],
-      [c['Thiếu / không công bố'], allQ4 ? ' là các tỷ lệ % NIKE không nêu cho riêng quý 4' : ' NIKE không công bố']]
+    var parts = [[c['Khớp nguồn chính thức'], ' số đã được kiểm tra lại và khớp'],
+      [c['Đã xác minh (người)'], ' số đã được nhóm kiểm tra trên báo cáo'], [c[STATUS_PENDING], ' số chưa được kiểm tra (†)'],
+      [c['Thiếu / không công bố'], allQ4 ? ' ô là tỷ lệ % NIKE không nêu cho riêng quý 4' : ' ô NIKE không công bố']]
       .filter(function (p) { return p[0]; }).map(function (p) { return p[0] + p[1]; });
     document.getElementById('status-summary').textContent =
-      total + ' số liệu báo cáo: ' + parts.join(', ') + '. Dữ liệu trích xuất ngày ' + isoDate(D.meta.extracted_on) + '.';
+      total + ' số liệu: ' + parts.join(', ') + '. Dữ liệu lấy ngày ' + isoDate(D.meta.extracted_on) + '.';
     document.getElementById('evidence-link').href = D.meta.evidence;
   }
 
@@ -1055,10 +1092,14 @@
     clearTimeout(liveTimer);
     liveTimer = setTimeout(function () { el.textContent = msg; }, 50);
   }
-  // Kept on one line because they read badly when split: a report name with its period ("10-K FY2020",
-  // "10-Q Q3 FY2020", "Q4 FY2020"), "non-GAAP" (browsers may break right after its hyphen), a period range, a figure
-  // and its unit (USD, điểm %, ngày), "(xấp xỉ)" and "(ước tính)".
-  var KEEP = /(10-[KQ](?: Q[1-4])?(?: FY\d{4})?|Q[1-4] FY\d{4}|non-GAAP|FY\d{4}(?:–| → )FY\d{4}|[±+−]?\d[\d.,]*(?:–\d[\d.,]*)? (?:tỷ|triệu) USD|[+−]?\d[\d.,]* điểm %|\d[\d.,]* ngày|\((?:xấp xỉ|ước tính)\))/;
+  // Kept on one line because they read badly when split: a report name with its period ("Form 10-Q", "10-Q quý 3
+  // FY2020", "10-Q Q3 FY2020", "8-K"), a quarter or months with their numbers ("quý 4 FY2020", "quý 1–3", "tháng
+  // 3–5/2020"), "non-GAAP" and "COVID-19" (browsers may break right after a hyphen), a period range, a figure and its
+  // unit (USD, điểm %, ngày), "tỷ lệ %", "(xấp xỉ)", "(ước tính)" and a short name in quotation marks.
+  var KEEP = new RegExp('((?:Form )?10-[KQ](?: quý [1-4])?(?: Q[1-4])?(?: FY\\d{4})?|(?:Form )?8-K(?: Q4 FY\\d{4})?|' +
+    'quý [1-4](?:–[1-4])?(?: FY\\d{4})?|Q[1-4] FY\\d{4}|tháng \\d{1,2}(?:–\\d{1,2})?(?:/\\d{4})?|non-GAAP|COVID-19|' +
+    'FY\\d{4}(?:–| → )FY\\d{4}|[±+−]?\\d[\\d.,]*(?:–\\d[\\d.,]*)? (?:tỷ|triệu) USD|(?:[+−]?\\d[\\d.,]* )?điểm %|tỷ lệ %|' +
+    '\\d[\\d.,]* ngày|\\((?:xấp xỉ|ước tính)\\)|“[^”]{1,24}”)');
   function keepTogether(root) {
     var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), found = [], n;
     while ((n = walker.nextNode())) {
@@ -1143,6 +1184,7 @@
         renderQuotes();
         renderCharts();
         renderTable();
+        renderPrintTables();
         keepTogether(document.body);
         watchSections();
         document.documentElement.dataset.ready = 'true';

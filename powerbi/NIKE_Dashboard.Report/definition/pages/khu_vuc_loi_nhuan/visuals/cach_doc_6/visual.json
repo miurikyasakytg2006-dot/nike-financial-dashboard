@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Digital là số đã làm tròn",
+                    "value": "Số ngày tồn kho",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -33,7 +33,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Các quý của FY2019 tính bằng triệu USD, từ FY2020 làm tròn đến 0,1 tỷ USD. Vì vậy tỷ trọng Digital và phần NIKE Direct ngoài Digital chỉ là xấp xỉ.",
+                    "value": "Hàng nằm trong kho bao nhiêu ngày thì bán được. Quý: 91,25 ngày (365/4) × tồn kho bình quân đầu và cuối quý / giá vốn hàng bán của quý. Năm: dùng 365 ngày.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10pt",

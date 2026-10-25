@@ -3,7 +3,7 @@
   "name": "phat_hien_6",
   "position": {
     "x": 860,
-    "y": 444,
+    "y": 488,
     "z": 10000,
     "height": 220,
     "width": 380,
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Bắc Mỹ: tỷ trọng NIKE Direct",
+                    "value": "Bắc Mỹ: tỷ trọng NIKE Direct tăng, FY2019 → FY2021",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10pt",
@@ -73,7 +73,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Thuyết minh “Revenues”, 10‑K FY2019 và FY2021. Tỷ trọng tự tính.",
+                    "value": "Thuyết minh “Revenues”, 10‑K FY2019 và FY2021. Tỷ trọng do nhóm tự tính.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "8.5pt",

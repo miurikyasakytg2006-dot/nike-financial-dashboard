@@ -6,7 +6,9 @@ Selection rule (documented in the workbook):
   * The fourth quarter has no 10-Q. Its flow values are the year (10-K) minus the first nine months (third-quarter
     10-Q); its balances are the 31 May balances of the 10-K.
   * The "prior" value is the same period one year earlier as presented in the same report (its comparative
-    column). Growth is always computed on that same-report basis, as NIKE does.
+    column). Growth is always computed on that same-report basis, as NIKE does. The exception is a first- to
+    third-quarter inventory balance: the 10-Q compares it with the previous 31 May, so its prior is the balance in the
+    previous year's 10-Q for the same quarter.
   * Later reports that present a period again are compared with the original; any difference is reported as a
     restatement note, never silently substituted.
 """
@@ -16,9 +18,9 @@ import re
 from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
-from .metrics import (A, CHECK_CONFIRMS, CHECKS, COMPARISONS, KIND_Q4, KPIS, Q, REPORTED, STATUS_CONFLICT,
+from .metrics import (A, CHECK_CONFIRMS, CHECKS, COMPARISONS, KIND_Q4, KIND_RELEASE, KPIS, Q, REPORTED, STATUS_CONFLICT,
                       STATUS_MATCHED, STATUS_MISSING, STATUS_PENDING, USD_B, applies)
-from .sources import QUARTERS, SCOPE_YEARS, all_filings, annual_filing, filing, quarterly_filing
+from .sources import QUARTERS, SCOPE_YEARS, all_filings, annual_filing, filing, quarterly_filing, release_filing
 
 ROOT = Path(__file__).resolve().parent.parent
 FACTS_CSV = ROOT / "data" / "extracted" / "facts.csv"
@@ -30,6 +32,11 @@ IDENT = re.compile(r"[a-z][a-z0-9_]*")
 FILED = {f["id"]: f["filed"] for f in all_filings()}
 YTD = {2: "H1", 3: "M9"}
 MINUS = "−"
+# What a later report shows for a figure it prints again (column "Ở báo cáo năm sau" of the workbook).
+REPEATED = "Báo cáo năm sau in lại đúng số này: "
+REPEATED_Q4 = "Báo cáo năm sau in lại đúng số cả năm và số 9 tháng: "
+NOT_REPEATED = "Báo cáo năm sau không in lại số này."
+CHANGED = "CÓ THAY ĐỔI: "
 
 
 def method_of(m):
@@ -102,6 +109,13 @@ def fmt_value(v, unit, signed=False):
     return vi_num(v, 0, signed) + " triệu USD"
 
 
+def printed(v, unit):
+    """An amount the way NIKE prints it (US style): 37,403 and (790) in millions; $5.5 billion or $2,781 million."""
+    if unit == USD_B:
+        return f"${v} billion" if _decimals(v) <= 1 else f"${v * 1000:,.0f} million"
+    return f"({abs(v):,.0f})" if v < 0 else f"{v:,.0f}"
+
+
 def same_value(a, b, unit):
     """Equal, allowing for a figure given once in millions and once rounded to 0.1 billion (Digital sales)."""
     if a == b:
@@ -157,7 +171,7 @@ def _blank(key, period, m, src):
     return dict(key=key, period=period, freq=freq_of(period), fy=int(period[2:6]),
                 quarter=int(period[7]) if freq_of(period) == Q else None, metric=m, value=None, prior=None, begin=None,
                 source=src["id"], source2="", accession=src["accession"], filed=src["filed"], page=None, page2=None,
-                section="", evidence="", concept="", dims="", method=method_of(m), approx=False, confirms=[],
+                section="", evidence="", concept="", dims="", method=method_of(m), approx=False, rounded="", confirms=[],
                 conflicts=[], cross_check="", status=None, restatement="", verified_by="", verified_on="", team_note="")
 
 
@@ -172,12 +186,11 @@ def _fill(o, r):
 def _restatement(fx, o, m, period, fid):
     later = fx.later(m, period, fid)
     if not later:
-        return "Báo cáo sau không trình bày lại số này."
+        return NOT_REPEATED
     changed = [r for r in later if not same_value(r["value"], o["value"], m["unit"])]
     if not changed:
-        return "Không thay đổi khi trình bày lại trong " + ", ".join(dict.fromkeys(r["filing"] for r in later)) + "."
-    return "CÓ THAY ĐỔI: " + "; ".join(
-        f"{r['filing']} trình bày lại là {fmt_value(r['value'], m['unit'])}" for r in changed) + "."
+        return REPEATED + ", ".join(dict.fromkeys(r["filing"] for r in later)) + "."
+    return CHANGED + "; ".join(f"{r['filing']} in lại là {fmt_value(r['value'], m['unit'])}" for r in changed) + "."
 
 
 def observe(fx, m, period):
@@ -206,37 +219,46 @@ def observe(fx, m, period):
             o["prior"] = p["value"] if p else None
         o["restatement"] = _restatement(fx, o, m, own, src["id"])
         return o
-    # Fourth quarter of a flow metric: year minus nine months.
     ann, q3 = annual_filing(fy), quarterly_filing(fy, 3)
+    if m["unit"] == "%":
+        # A fourth-quarter percentage cannot be derived; NIKE states some in its fourth-quarter earnings release.
+        rel = release_filing(fy)
+        r = fx.get(rel["id"], m, period, ["q4_release", "q4_release_text"]) if rel else None
+        o = _blank(key, period, m, rel or ann)
+        if r is None:
+            o["status"] = STATUS_MISSING
+            o["cross_check"] = "NIKE không nêu tỷ lệ này cho riêng quý 4: không có trong 10-K, 10-Q và thông cáo kết quả quý 4."
+            return o
+        _fill(o, r)
+        o.update(method="q4_release", kind=KIND_RELEASE, restatement=NOT_REPEATED)
+        return o
+    # Fourth quarter of a flow metric: year minus nine months.
     o = _blank(key, period, m, ann)
     o.update(method="q4_derived", source2=q3["id"], kind=KIND_Q4)
-    if m["unit"] == "%":
-        o["status"] = STATUS_MISSING
-        o["cross_check"] = "NIKE không công bố tỷ lệ này cho riêng quý 4 (10-K chỉ có số cả năm)."
-        return o
     y, n = fx.get(ann["id"], m, f"FY{fy}"), fx.get(q3["id"], m, f"FY{fy}M9")
     if y is None or n is None:
         o["status"] = STATUS_MISSING
         o["cross_check"] = "Thiếu số cả năm hoặc số 9 tháng để tính quý 4."
         return o
-    o.update(value=y["value"] - n["value"], page=y["page"], page2=n["page"], section=short_section(y["section"]),
-             approx=m["unit"] == USD_B, concept=y["concept"], dims=y["dims"])
     unit = m["unit"]
-    o["evidence"] = (f"{ann['id']} (cả năm): {fmt_value(y['value'], unit)}; {q3['id']} (9 tháng): "
-                     f"{fmt_value(n['value'], unit)}")
+    # Digital sales are given rounded to 0.1 billion, except the fiscal 2019 quarters (in millions).
+    rounded = [what for what, r in (("số cả năm", y), ("số 9 tháng", n)) if unit == USD_B and _decimals(r["value"]) <= 1]
+    o.update(value=y["value"] - n["value"], page=y["page"], page2=n["page"], section=short_section(y["section"]),
+             approx=bool(rounded), concept=y["concept"], dims=y["dims"],
+             rounded="hai số đều đã làm tròn" if len(rounded) == 2 else f"{rounded[0]} đã làm tròn" if rounded else "")
+    o["evidence"] = f"{ann['id']} (cả năm): {printed(y['value'], unit)}; {q3['id']} (9 tháng): {printed(n['value'], unit)}"
     yp, np_ = fx.get(ann["id"], m, f"FY{fy - 1}", _prior_methods(m)), fx.get(q3["id"], m, f"FY{fy - 1}M9", _prior_methods(m))
     o["prior"] = yp["value"] - np_["value"] if yp and np_ else None
     later_y, later_n = fx.later(m, f"FY{fy}", ann["id"]), fx.later(m, f"FY{fy}M9", q3["id"])
     changed = [r for r in later_y if not same_value(r["value"], y["value"], unit)] + \
               [r for r in later_n if not same_value(r["value"], n["value"], unit)]
     if changed:
-        o["restatement"] = "CÓ THAY ĐỔI ở số cả năm hoặc 9 tháng: " + "; ".join(
-            f"{r['filing']} trình bày lại là {fmt_value(r['value'], unit)}" for r in changed) + "."
+        o["restatement"] = "CÓ THAY ĐỔI ở số cả năm hoặc số 9 tháng: " + "; ".join(
+            f"{r['filing']} in lại là {fmt_value(r['value'], unit)}" for r in changed) + "."
     elif later_y or later_n:
-        o["restatement"] = ("Số cả năm và số 9 tháng không thay đổi khi trình bày lại trong "
-                            + ", ".join(dict.fromkeys(r["filing"] for r in later_y + later_n)) + ".")
+        o["restatement"] = (REPEATED_Q4 + ", ".join(dict.fromkeys(r["filing"] for r in later_y + later_n)) + ".")
     else:
-        o["restatement"] = "Báo cáo sau không trình bày lại số này."
+        o["restatement"] = NOT_REPEATED
     return o
 
 
@@ -307,6 +329,39 @@ def cross_check(fx, obs):
                     else:
                         o["conflicts"].append(f"bảng số liệu quý của {r['filing']} ghi {fmt_value(r['value'], unit)}")
                     break
+            # NIKE's fourth-quarter earnings release prints the quarter's three-month figure (and the next year's
+            # release prints it again as the comparative).
+            released = [r for r in fx.by_metric.get((m["id"], o["period"]), []) if r["method"] == "q4_release"]
+            same = sorted({r["filing"] for r in released if r["value"] == o["value"]}, key=lambda fid: FILED[fid])
+            if same:
+                o["confirms"].append("khớp số quý 4 NIKE công bố trong thông cáo kết quả quý 4 (" + ", ".join(same) + ")")
+            for r in released:
+                if r["value"] != o["value"]:
+                    o["conflicts"].append(f"thông cáo {r['filing']} ghi {fmt_value(r['value'], unit)}")
+        if o["method"] == "q4_release":
+            # The same percentage printed a second time in the release: in a sentence, or in a repeated table row.
+            for r in fx.by_metric.get((m["id"], o["period"]), []):
+                if r["filing"] != o["source"] or r["method"] not in ("q4_release_text", "q4_release_repeat") or \
+                        r["evidence"] == o["evidence"]:
+                    continue
+                where = (f"câu trong phần “{r['section']}” của cùng thông cáo" if r["method"] == "q4_release_text"
+                         else f"dòng in lại trong bảng “{r['section']}” của cùng thông cáo")
+                if r["value"] == o["value"]:
+                    o["confirms"].append(f"khớp {where}")
+                else:
+                    o["conflicts"].append(f"{where} ghi {fmt_value(r['value'], unit)}")
+        if o["method"] == "mdna_table" and unit == "%":
+            # The same % change printed a second time in the same report: the revenues-by-segment table (NIKE Brand,
+            # NIKE, Inc.) or the NIKE Direct sentence of the NIKE Brand discussion.
+            own = o["period"] if o["freq"] == Q else f"FY{o['fy']}"
+            for method, where in (("mdna_segment_table", "bảng doanh thu theo khu vực trong MD&A"), ("mdna_text", "câu trong MD&A")):
+                r = fx.facts.get((o["source"], m["id"], own, method))
+                if r is None:
+                    continue
+                if r["value"] == o["value"]:
+                    o["confirms"].append(f"khớp {where} (tr. {r['page']})")
+                else:
+                    o["conflicts"].append(f"{where} (tr. {r['page']}) ghi {fmt_value(r['value'], unit)}")
         # A quarter's figures add up to the year-to-date figure printed in the next 10-Q of the same year.
         if o["freq"] == Q and o["quarter"] in (2, 3) and not is_instant(m) and unit != "%":
             parts = [by_key.get(f"FY{o['fy']}Q{k}|{m['id']}") for k in range(1, o["quarter"] + 1)]
@@ -319,8 +374,8 @@ def cross_check(fx, obs):
                 else:
                     o["conflicts"].append(f"cộng các quý ra {fmt_value(total, unit)}, khác số {months} tháng "
                                           f"{fmt_value(ytd['value'], unit)}")
-        if o["restatement"].startswith("Không thay đổi") or o["restatement"].startswith("Số cả năm và số 9 tháng"):
-            o["confirms"].append("in lại không đổi ở báo cáo sau")
+        if o["restatement"].startswith((REPEATED, REPEATED_Q4)):
+            o["confirms"].append("báo cáo năm sau in lại đúng số này")
 
 
 def finalize_statuses(obs):
@@ -334,8 +389,8 @@ def finalize_statuses(obs):
             continue
         lead = ""
         if o["method"] == "q4_derived":
-            lead = ("Ước tính: cả năm trừ 9 tháng, từ hai số đã làm tròn. " if o["approx"]
-                    else "Tự tính: cả năm trừ 9 tháng. ")
+            lead = (f"Quý 4 ước tính (không có 10-Q cho quý 4): cả năm trừ 9 tháng đầu, {o['rounded']}. " if o["approx"]
+                    else "Quý 4 tự tính (không có 10-Q cho quý 4): cả năm trừ 9 tháng đầu. ")
         if o["confirms"]:
             o["status"] = STATUS_MATCHED
             text = "; ".join(dict.fromkeys(o["confirms"]))
@@ -392,7 +447,7 @@ def apply_cross_check_statuses(obs, results):
         shown = vi_num(diff * 100, 2, signed=True) + " điểm %" if pts else vi_num(diff, 0, signed=True) + " triệu USD"
         tol = vi_num(Decimal(str(c["tol"])) * (100 if pts else 1), 0) + (" điểm %" if pts else " triệu USD")
         if abs(diff) <= Decimal(str(c["tol"])):
-            o["confirms"].append(f"khớp giá trị tự tính từ BCTC (chênh {shown}, ngưỡng ±{tol})")
+            o["confirms"].append(f"khớp số tính lại từ báo cáo tài chính (chênh {shown}, ngưỡng ±{tol})")
         else:
             o["conflicts"].append(f"chênh {shown} so với giá trị tự tính")
     return obs

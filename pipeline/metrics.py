@@ -8,8 +8,9 @@ cell references, so the workbook formulas and the exported JSON cannot drift apa
 Every metric is observed by fiscal year ("A": FY2019–FY2021) and, where NIKE reports it
 quarterly, by fiscal quarter ("Q": Q1 FY2019 – Q4 FY2021). Identifiers ending in "__prior"
 mean "the same period one year earlier, as presented in the same report" (the comparative
-column), which is the basis NIKE itself uses for % change. "__begin" (inventories only) is
-the balance at the start of the period.
+column), which is the basis NIKE itself uses for % change; a quarter-end inventory balance,
+which the 10-Q compares with 31 May instead, takes it from the previous year's 10-Q.
+"__begin" (inventories only) is the balance at the start of the period.
 """
 
 # Data status vocabulary (Vietnamese label, English label).
@@ -30,11 +31,14 @@ USD_M = "triệu USD"
 USD_B = "tỷ USD"
 PCT = "%"
 
-KIND_GAAP = "GAAP – BCTC đã kiểm toán (quý: đã soát xét)"
-KIND_NONGAAP = "Non-GAAP – NIKE định nghĩa"
-KIND_MDNA = "MD&A – ban điều hành nêu, không kiểm toán"
-KIND_MDNA_GAAP = "MD&A – % tính từ số GAAP"
-KIND_Q4 = "Tự tính: cả năm trừ 9 tháng"
+KIND_GAAP = "Báo cáo tài chính"   # the workbook shows KIND_GAAP_A or KIND_GAAP_Q, by the report the row comes from
+KIND_GAAP_A = "Báo cáo tài chính năm, đã kiểm toán (10-K)"
+KIND_GAAP_Q = "Báo cáo tài chính quý, không kiểm toán (10-Q)"
+KIND_NONGAAP = "Chỉ tiêu NIKE tự định nghĩa (non-GAAP)"
+KIND_MDNA = "Ban điều hành nêu trong MD&A, không kiểm toán"
+KIND_MDNA_GAAP = "Tỷ lệ % NIKE in trong MD&A"
+KIND_Q4 = "Nhóm tự tính: cả năm trừ 9 tháng đầu"
+KIND_RELEASE = "Thông cáo kết quả quý 4 của NIKE (8-K), không kiểm toán"
 
 A, Q = "A", "Q"
 _DUR = "duration"
@@ -91,18 +95,20 @@ REPORTED = [
        xbrl=_xbrl(["GrossProfit"], row=r"Gross profit")),
     _m(id="demand_creation_expense", sheet="financial", scope="NIKE, Inc.", unit=USD_M, kind=KIND_GAAP,
        vi="Chi phí tạo nhu cầu", en="Demand creation expense", line="Demand creation expense",
-       definition="Phần chi cho marketing trong tổng chi phí bán hàng và quản lý: quảng cáo, khuyến mại, hợp đồng tài trợ "
-                  "vận động viên, truyền thông và sự kiện thương hiệu (theo 10-K FY2020).",
+       definition="Chi phí quảng cáo và quảng bá, một phần của tổng chi phí bán hàng và quản lý: hợp đồng tài trợ "
+                  "(endorsement), sản phẩm tặng, quảng cáo truyền hình, kỹ thuật số và báo in, chi phí truyền thông, sự kiện "
+                  "thương hiệu và trưng bày thương hiệu ở cửa hàng (theo 10-K FY2020).",
        xbrl=_xbrl(["MarketingAndAdvertisingExpense"], row=r"Demand creation expense")),
     _m(id="operating_overhead_expense", sheet="financial", scope="NIKE, Inc.", unit=USD_M, kind=KIND_GAAP,
        vi="Chi phí vận hành chung", en="Operating overhead expense", line="Operating overhead expense",
-       definition="Phần còn lại của tổng chi phí bán hàng và quản lý: lương và phúc lợi, tiền thuê, khấu hao, nợ khó đòi, "
-                  "dịch vụ chuyên môn, công nghệ và các chi phí vận hành khác.",
+       definition="Phần còn lại của tổng chi phí bán hàng và quản lý, chủ yếu là lương và phúc lợi, chi phí nghiên cứu và "
+                  "phát triển, nợ khó đòi, và chi phí hành chính khác như tiền thuê, khấu hao, dịch vụ chuyên môn, hội họp và "
+                  "đi lại (theo 10-K FY2020).",
        xbrl=_xbrl(["GeneralAndAdministrativeExpense"], row=r"Operating overhead expense")),
     _m(id="total_selling_admin_expense", sheet="financial", scope="NIKE, Inc.", unit=USD_M, kind=KIND_GAAP,
        vi="Tổng chi phí bán hàng và quản lý (SG&A)", en="Total selling and administrative expense",
        line="Total selling and administrative expense",
-       definition="Tổng chi phí tạo nhu cầu và chi phí vận hành chung. NIKE không phân bổ khoản này theo kênh phân phối.",
+       definition="Tổng chi phí tạo nhu cầu và chi phí vận hành chung. NIKE không công bố khoản này theo kênh phân phối.",
        xbrl=_xbrl(["SellingGeneralAndAdministrativeExpense"], row=r"Total selling and administrative expense")),
     _m(id="interest_expense_net", sheet="financial", scope="NIKE, Inc.", unit=USD_M, kind=KIND_GAAP,
        vi="Chi phí (thu nhập) lãi thuần", en="Interest expense (income), net", line="Interest expense (income), net",
@@ -111,7 +117,7 @@ REPORTED = [
     _m(id="other_expense_net", sheet="financial", scope="NIKE, Inc.", unit=USD_M, kind=KIND_GAAP,
        vi="Chi phí (thu nhập) khác thuần", en="Other (income) expense, net", line="Other (income) expense, net",
        definition="Số dương là chi phí khác thuần, số âm là thu nhập khác thuần, giữ đúng cách ghi dấu của NIKE. "
-                  "Báo cáo quý của FY2019 ghi dòng này là “Other expense (income), net”.",
+                  "10-Q quý 1 FY2019 ghi dòng này là “Other expense (income), net”.",
        xbrl=_xbrl(["OtherNonoperatingIncomeExpense"], sign=-1, row=r"Other (\(income\) expense|expense \(income\)), net")),
     _m(id="income_before_taxes", sheet="financial", scope="NIKE, Inc.", unit=USD_M, kind=KIND_GAAP,
        vi="Lợi nhuận trước thuế", en="Income before income taxes", line="Income before income taxes",
@@ -135,40 +141,41 @@ REPORTED = [
     _m(id="ebit_reported", sheet="financial", scope="NIKE, Inc.", unit=USD_M, kind=KIND_NONGAAP,
        vi="EBIT do NIKE công bố", en="Total NIKE, Inc. Earnings Before Interest and Taxes (EBIT)",
        line="TOTAL NIKE, INC. EARNINGS BEFORE INTEREST AND TAXES",
-       definition="Lợi nhuận sau thuế cộng chi phí (thu nhập) lãi thuần và chi phí thuế. NIKE ghi rõ đây là chỉ tiêu "
-                  "non-GAAP. Dùng để đối chiếu với EBIT tự tính.",
+       definition="Lợi nhuận sau thuế cộng chi phí (thu nhập) lãi thuần và chi phí thuế. Từ FY2020, NIKE ghi rõ đây là "
+                  "chỉ tiêu non-GAAP. Dùng để đối chiếu với EBIT tự tính.",
        mdna="ebit"),
     _m(id="revenues_pct_change_reported", sheet="financial", scope="NIKE, Inc.", unit=PCT, kind=KIND_MDNA_GAAP,
        vi="% thay đổi doanh thu (NIKE công bố, đã làm tròn)", en="TOTAL NIKE, INC. REVENUES – % change",
        line="TOTAL NIKE, INC. REVENUES, cột “% CHANGE”",
-       definition="Tỷ lệ tăng trưởng so với cùng kỳ năm trước theo báo cáo, NIKE làm tròn đến số nguyên. Dùng để đối chiếu.",
+       definition="Tăng trưởng so với cùng kỳ năm trước, tính theo USD; NIKE làm tròn đến số nguyên. Dùng để đối chiếu.",
        mdna="revenue_table:TOTAL NIKE, INC. REVENUES:pct"),
     _m(id="revenues_pct_change_cn", sheet="financial", scope="NIKE, Inc.", unit=PCT, kind=KIND_NONGAAP,
        vi="% thay đổi doanh thu loại trừ tỷ giá", en="TOTAL NIKE, INC. REVENUES – % change excluding currency changes",
        line="TOTAL NIKE, INC. REVENUES, cột “% CHANGE EXCLUDING CURRENCY CHANGES”",
-       definition="Tăng trưởng loại trừ tỷ giá (NIKE gọi là currency-neutral), chỉ tiêu non-GAAP do NIKE tính theo tỷ giá "
-                  "cùng kỳ năm trước. Không tự tính lại được từ BCTC.",
+       definition="Tăng trưởng loại trừ tỷ giá (NIKE gọi là currency-neutral): chỉ tiêu non-GAAP, NIKE tính lại theo tỷ "
+                  "giá của cùng kỳ năm trước để bỏ phần chênh lệch do quy đổi ngoại tệ. Không tự tính lại được từ báo cáo "
+                  "tài chính.",
        mdna="revenue_table:TOTAL NIKE, INC. REVENUES:pct_cn"),
 
     # ---- Distribution channels, NIKE Brand ----
     _m(id="nike_direct_revenue", sheet="channels", scope="NIKE Brand", channel="NIKE Direct", unit=USD_M, kind=KIND_GAAP,
        vi="Doanh thu NIKE Direct", en="Sales through Direct to Consumer (NIKE Brand)",
        line="Sales through Direct to Consumer, cột Total NIKE Brand",
-       definition="Doanh thu NIKE Brand bán trực tiếp cho người tiêu dùng qua cửa hàng do NIKE sở hữu và nền tảng số "
-                  "(NIKE Brand Digital). Không gồm kênh trực tiếp của Converse. Thuyết minh gọi dòng này là “Sales through "
+       definition="Doanh thu NIKE Brand bán trực tiếp cho người tiêu dùng, qua cửa hàng do NIKE sở hữu và Digital (ứng "
+                  "dụng, website của NIKE). Không gồm kênh trực tiếp của Converse. Thuyết minh gọi dòng này là “Sales through "
                   "Direct to Consumer”, MD&A gọi là “Sales through NIKE Direct”.",
        xbrl=_xbrl(REVENUE_CONCEPTS, dims={**_NB, _CH: _DTC}, section=NOTE_REVENUES,
                   row=r"Sales through Direct to Consumer")),
     _m(id="nike_brand_wholesale_revenue", sheet="channels", scope="NIKE Brand", channel="Bán buôn (Wholesale)", unit=USD_M,
        kind=KIND_GAAP, vi="Doanh thu bán buôn NIKE Brand", en="Sales to Wholesale Customers (NIKE Brand)",
        line="Sales to Wholesale Customers, cột Total NIKE Brand",
-       definition="Doanh thu NIKE Brand bán cho khách hàng bán buôn (nhà bán lẻ, nhà phân phối, đối tác). Không gồm Converse.",
+       definition="Doanh thu NIKE Brand bán sản phẩm cho nhà bán lẻ và nhà phân phối. Không gồm Converse.",
        xbrl=_xbrl(REVENUE_CONCEPTS, dims={**_NB, _CH: _WHS}, section=NOTE_REVENUES, row=r"Sales to Wholesale Customers")),
     _m(id="global_brand_divisions_revenue", sheet="channels", scope="NIKE Brand", channel="Global Brand Divisions",
        unit=USD_M, kind=KIND_GAAP, vi="Doanh thu Global Brand Divisions", en="Other / Global Brand Divisions (NIKE Brand)",
        line="Other, cột Total NIKE Brand",
-       definition="Doanh thu cấp phép thương hiệu NIKE và các khoản nhỏ khác, không thuộc khu vực địa lý nào, cũng không "
-                  "thuộc kênh Direct hay bán buôn.",
+       definition="Doanh thu từ cấp phép thương hiệu NIKE (licensing) và các khoản nhỏ khác, không thuộc khu vực địa lý "
+                  "nào, cũng không thuộc NIKE Direct hay bán buôn.",
        xbrl=_xbrl(REVENUE_CONCEPTS, dims={**_NB, _CH: _OTH}, section=NOTE_REVENUES, row=r"Other")),
     _m(id="nike_brand_revenue", sheet="channels", scope="NIKE Brand", channel="Tổng NIKE Brand", unit=USD_M, kind=KIND_GAAP,
        vi="Tổng doanh thu NIKE Brand", en="Total NIKE Brand revenues", line="TOTAL REVENUES, cột Total NIKE Brand",
@@ -177,8 +184,8 @@ REPORTED = [
                   row=r"TOTAL REVENUES|Total NIKE Brand")),
     _m(id="converse_revenue", sheet="channels", scope="Converse", unit=USD_M, kind=KIND_GAAP,
        vi="Doanh thu Converse", en="Converse revenues", line="TOTAL REVENUES, cột Converse",
-       definition="Doanh thu thương hiệu Converse (gồm cả kênh trực tiếp và bán buôn của Converse). Dùng để đối chiếu "
-                  "NIKE Brand với NIKE, Inc.",
+       definition="Doanh thu thương hiệu Converse (gồm bán trực tiếp, bán buôn và doanh thu cấp phép của Converse). Dùng "
+                  "để đối chiếu NIKE Brand với NIKE, Inc.",
        xbrl=_xbrl(REVENUE_CONCEPTS, dims={**_SEG, "StatementBusinessSegmentsAxis": "ConverseSegmentMember"},
                   section=NOTE_REVENUES + "|" + NOTE_SEGMENTS, row=r"TOTAL REVENUES|Converse")),
     _m(id="corporate_revenue", sheet="channels", scope="Corporate", unit=USD_M, kind=KIND_GAAP,
@@ -188,10 +195,10 @@ REPORTED = [
                   section=NOTE_REVENUES + "|" + NOTE_SEGMENTS, row=r"TOTAL REVENUES|Corporate")),
     _m(id="nike_brand_digital_sales", sheet="channels", scope="NIKE Brand", channel="NIKE Direct – Digital", unit=USD_B,
        kind=KIND_MDNA, vi="Doanh số NIKE Brand Digital", en="Digital commerce sales (Q2–Q3 FY2021: “Digital sales”)",
-       line="câu “Digital commerce sales were …”",
+       line="câu “Digital commerce sales were …” (quý 2–3 FY2021: “Digital sales were …”)",
        definition="Doanh số qua ứng dụng và website của NIKE, là một phần của NIKE Direct. NIKE chỉ nêu số này trong MD&A: "
-                  "các quý của FY2019 tính bằng triệu USD, từ FY2020 làm tròn đến 0,1 tỷ USD. Quý 4 không có 10-Q, nên số "
-                  "quý 4 là ước tính (cả năm trừ 9 tháng, đều là số đã làm tròn).",
+                  "quý 1–3 FY2019 tính đến triệu USD; số cả năm và các quý từ FY2020 làm tròn đến 0,1 tỷ USD. Quý 4 không "
+                  "có 10-Q, nên số quý 4 là ước tính: cả năm trừ 9 tháng đầu.",
        mdna="digital"),
     _m(id="nike_direct_share_stated", sheet="channels", scope="NIKE Brand", channel="NIKE Direct", unit=PCT, kind=KIND_MDNA,
        vi="Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)", en="NIKE Direct as approx. % of total NIKE Brand revenues (as stated)",
@@ -201,41 +208,47 @@ REPORTED = [
     _m(id="nike_direct_pct_change_reported", sheet="channels", scope="NIKE Brand", channel="NIKE Direct", unit=PCT,
        kind=KIND_MDNA_GAAP, vi="% thay đổi NIKE Direct (NIKE công bố, đã làm tròn)", en="Sales through NIKE Direct – % change",
        line="Sales through NIKE Direct, cột “% CHANGE”",
-       definition="Tăng trưởng so với cùng kỳ năm trước theo báo cáo, NIKE làm tròn đến số nguyên. Dùng để đối chiếu.",
+       definition="Tăng trưởng so với cùng kỳ năm trước, tính theo USD; NIKE làm tròn đến số nguyên. Dùng để đối chiếu.",
        mdna="revenue_table:SALES THROUGH NIKE DIRECT:pct"),
     _m(id="nike_direct_pct_change_cn", sheet="channels", scope="NIKE Brand", channel="NIKE Direct", unit=PCT,
        kind=KIND_NONGAAP, vi="% thay đổi NIKE Direct loại trừ tỷ giá",
        en="Sales through NIKE Direct – % change excluding currency changes",
        line="Sales through NIKE Direct, cột “% CHANGE EXCLUDING CURRENCY CHANGES”",
-       definition="Tăng trưởng loại trừ tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
+       definition="Tăng trưởng loại trừ tỷ giá (non-GAAP). Không tự tính lại được từ báo cáo tài chính.",
        mdna="revenue_table:SALES THROUGH NIKE DIRECT:pct_cn"),
     _m(id="nike_brand_wholesale_pct_change_reported", sheet="channels", scope="NIKE Brand", channel="Bán buôn (Wholesale)",
        unit=PCT, kind=KIND_MDNA_GAAP, vi="% thay đổi bán buôn (NIKE công bố, đã làm tròn)",
        en="Sales to Wholesale Customers – % change", line="Sales to Wholesale Customers, cột “% CHANGE”",
-       definition="Tăng trưởng so với cùng kỳ năm trước theo báo cáo, NIKE làm tròn đến số nguyên. Dùng để đối chiếu.",
+       definition="Tăng trưởng so với cùng kỳ năm trước, tính theo USD; NIKE làm tròn đến số nguyên. Dùng để đối chiếu.",
        mdna="revenue_table:SALES TO WHOLESALE CUSTOMERS:pct"),
     _m(id="nike_brand_wholesale_pct_change_cn", sheet="channels", scope="NIKE Brand", channel="Bán buôn (Wholesale)",
        unit=PCT, kind=KIND_NONGAAP, vi="% thay đổi bán buôn loại trừ tỷ giá",
        en="Sales to Wholesale Customers – % change excluding currency changes",
        line="Sales to Wholesale Customers, cột “% CHANGE EXCLUDING CURRENCY CHANGES”",
-       definition="Tăng trưởng loại trừ tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
+       definition="Tăng trưởng loại trừ tỷ giá (non-GAAP). Không tự tính lại được từ báo cáo tài chính.",
        mdna="revenue_table:SALES TO WHOLESALE CUSTOMERS:pct_cn"),
     _m(id="nike_brand_pct_change_reported", sheet="channels", scope="NIKE Brand", channel="Tổng NIKE Brand", unit=PCT,
        kind=KIND_MDNA_GAAP, vi="% thay đổi doanh thu NIKE Brand (NIKE công bố, đã làm tròn)",
        en="TOTAL NIKE BRAND REVENUES – % change", line="TOTAL NIKE BRAND REVENUES, cột “% CHANGE”",
-       definition="Tăng trưởng so với cùng kỳ năm trước theo báo cáo, NIKE làm tròn đến số nguyên. Dùng để đối chiếu.",
+       definition="Tăng trưởng so với cùng kỳ năm trước, tính theo USD; NIKE làm tròn đến số nguyên. Dùng để đối chiếu.",
        mdna="revenue_table:TOTAL NIKE BRAND REVENUES:pct"),
     _m(id="nike_brand_pct_change_cn", sheet="channels", scope="NIKE Brand", channel="Tổng NIKE Brand", unit=PCT,
        kind=KIND_NONGAAP, vi="% thay đổi NIKE Brand loại trừ tỷ giá",
        en="TOTAL NIKE BRAND REVENUES – % change excluding currency changes",
        line="TOTAL NIKE BRAND REVENUES, cột “% CHANGE EXCLUDING CURRENCY CHANGES”",
-       definition="Tăng trưởng loại trừ tỷ giá (non-GAAP). Không tự tính lại được từ BCTC.",
+       definition="Tăng trưởng loại trừ tỷ giá (non-GAAP). Không tự tính lại được từ báo cáo tài chính.",
        mdna="revenue_table:TOTAL NIKE BRAND REVENUES:pct_cn"),
 ]
+
+def mid_sentence(name):
+    """A region's name inside a sentence: 'Châu Âu, …' becomes 'châu Âu, …'."""
+    return name[0].lower() + name[1:] if name.startswith("Châu") else name
+
 
 # ---- Geographic operating segments of NIKE Brand ----
 for rid, vi, short, en, member in REGIONS:
     dims = {**_NB, "SubsegmentsAxis": member}
+    vi = mid_sentence(vi)
     REPORTED += [
         _m(id=f"{rid}_revenue", sheet="regions", scope="NIKE Brand", region=rid, channel="Tổng khu vực", unit=USD_M,
            kind=KIND_GAAP, vi=f"Doanh thu {short}", en=f"{en} revenues", line=f"TOTAL REVENUES, cột {en}",
@@ -258,8 +271,9 @@ for rid, vi, short, en, member in REGIONS:
         _m(id=f"{rid}_ebit", sheet="regions", scope="NIKE Brand", region=rid, channel="Tổng khu vực", unit=USD_M,
            kind=KIND_GAAP, freq={A}, vi=f"EBIT {short}", en=f"{en} – Earnings before interest and taxes",
            line=f"EARNINGS BEFORE INTEREST AND TAXES, dòng {en}",
-           definition=f"Lợi nhuận trước lãi vay và thuế của khu vực {vi}, theo thuyết minh bộ phận. Chi phí chung toàn cầu "
-                      f"(Global Brand Divisions, Corporate) không phân bổ vào khu vực.",
+           definition=f"Lợi nhuận trước lãi vay và thuế của khu vực {vi}, theo thuyết minh bộ phận. Chưa trừ chi phí NIKE "
+                      f"Brand quản lý tập trung (Global Brand Divisions, gồm cả vận hành Digital toàn cầu) và chi phí "
+                      f"Corporate, vì NIKE không chia các khoản này về khu vực.",
            xbrl=_xbrl(["EarningsBeforeInterestAndTaxes"], dims=dims, section=NOTE_SEGMENTS, row=en,
                       alt_dims=[{**dims, "ProductOrServiceAxis": "NIKEBrandMember"}])),
     ]
@@ -299,63 +313,66 @@ KPIS = [
     # Distribution strategy – NIKE Brand scope
     _k(id="direct_share", group="channels", unit=PCT, vi="Tỷ trọng NIKE Direct trong doanh thu NIKE Brand",
        expr="nike_direct_revenue / nike_brand_revenue",
-       note="Mẫu số là tổng doanh thu NIKE Brand (cùng cơ sở NIKE dùng khi nêu tỷ trọng), không phải NIKE, Inc."),
+       note="Mẫu số là tổng doanh thu NIKE Brand, không phải NIKE, Inc.; NIKE cũng chia cho số này khi nêu tỷ trọng."),
     _k(id="wholesale_share", group="channels", unit=PCT, vi="Tỷ trọng bán buôn trong doanh thu NIKE Brand",
        expr="nike_brand_wholesale_revenue / nike_brand_revenue",
-       note="Direct + bán buôn + Global Brand Divisions = 100% doanh thu NIKE Brand."),
+       note="NIKE Direct + bán buôn + Global Brand Divisions = 100% doanh thu NIKE Brand."),
     _k(id="gbd_share", group="channels", unit=PCT, vi="Tỷ trọng Global Brand Divisions trong doanh thu NIKE Brand",
        expr="global_brand_divisions_revenue / nike_brand_revenue", note="Phần còn lại, dưới 0,2%."),
-    _k(id="direct_growth", group="channels", unit=PCT, vi="Tăng trưởng doanh thu NIKE Direct (theo báo cáo)",
+    _k(id="direct_growth", group="channels", unit=PCT, vi="Tăng trưởng doanh thu NIKE Direct (theo USD)",
        expr="nike_direct_revenue / nike_direct_revenue__prior - 1",
-       note="So với cùng kỳ năm trước, số in trong cùng báo cáo. Không loại trừ tỷ giá."),
-    _k(id="wholesale_growth", group="channels", unit=PCT, vi="Tăng trưởng doanh thu bán buôn NIKE Brand (theo báo cáo)",
+       note="So với cùng kỳ năm trước (số năm trước in ngay trong báo cáo đó). Chưa loại trừ ảnh hưởng tỷ giá."),
+    _k(id="wholesale_growth", group="channels", unit=PCT, vi="Tăng trưởng doanh thu bán buôn NIKE Brand (theo USD)",
        expr="nike_brand_wholesale_revenue / nike_brand_wholesale_revenue__prior - 1",
-       note="So với cùng kỳ năm trước, số in trong cùng báo cáo. Không loại trừ tỷ giá."),
-    _k(id="nike_brand_growth", group="channels", unit=PCT, vi="Tăng trưởng doanh thu NIKE Brand (theo báo cáo)",
-       expr="nike_brand_revenue / nike_brand_revenue__prior - 1", note="So với cùng kỳ năm trước, số in trong cùng báo cáo."),
+       note="So với cùng kỳ năm trước (số năm trước in ngay trong báo cáo đó). Chưa loại trừ ảnh hưởng tỷ giá."),
+    _k(id="nike_brand_growth", group="channels", unit=PCT, vi="Tăng trưởng doanh thu NIKE Brand (theo USD)",
+       expr="nike_brand_revenue / nike_brand_revenue__prior - 1", note="So với cùng kỳ năm trước (số năm trước in ngay trong báo cáo đó)."),
+    # The two contributions are shares of the year-earlier NIKE Brand revenue; the workbook shows them in points.
     _k(id="direct_contribution", group="channels", unit=PCT, vi="Đóng góp của NIKE Direct vào tăng trưởng NIKE Brand",
+       unit_label="điểm %", scale=100, num_format="+0.0;−0.0;0.0",
        expr="(nike_direct_revenue - nike_direct_revenue__prior) / nike_brand_revenue__prior",
-       note="Phần thay đổi doanh thu NIKE Direct chia cho doanh thu NIKE Brand cùng kỳ năm trước. Ba phần đóng góp (Direct, "
-            "bán buôn, Global Brand Divisions) cộng lại bằng tăng trưởng NIKE Brand."),
+       note="Phần thay đổi doanh thu NIKE Direct chia cho doanh thu NIKE Brand cùng kỳ năm trước. Ba phần đóng góp (NIKE "
+            "Direct, bán buôn, Global Brand Divisions) cộng lại bằng tăng trưởng NIKE Brand."),
     _k(id="wholesale_contribution", group="channels", unit=PCT, vi="Đóng góp của bán buôn vào tăng trưởng NIKE Brand",
+       unit_label="điểm %", scale=100, num_format="+0.0;−0.0;0.0",
        expr="(nike_brand_wholesale_revenue - nike_brand_wholesale_revenue__prior) / nike_brand_revenue__prior",
        note="Phần thay đổi doanh thu bán buôn chia cho doanh thu NIKE Brand cùng kỳ năm trước."),
     _k(id="digital_share_of_direct", group="channels", unit=PCT, vi="Tỷ trọng Digital trong NIKE Direct (xấp xỉ)",
        num_format="0%", expr="nike_brand_digital_sales * 1000 / nike_direct_revenue",
-       note="Xấp xỉ: doanh số Digital là số NIKE đã làm tròn. Nhân 1.000 để đổi tỷ USD sang triệu USD."),
+       note="Xấp xỉ khi số Digital đã làm tròn (số cả năm và các quý từ FY2020). Nhân 1.000 để đổi tỷ USD sang triệu USD."),
     _k(id="direct_ex_digital", group="channels", unit=USD_M, vi="NIKE Direct ngoài Digital (ước tính, chủ yếu là cửa hàng)",
        num_format="#,##0", expr="nike_direct_revenue - nike_brand_digital_sales * 1000",
-       note="NIKE Direct trừ doanh số Digital, gần với doanh thu cửa hàng do NIKE sở hữu. Sai số theo độ làm tròn của số "
-            "Digital: khoảng ±50 triệu USD (năm FY2019) đến ±100 triệu USD (số quý 4 ước tính)."),
-    _k(id="digital_growth", group="channels", unit=PCT, vi="Tăng trưởng doanh số Digital (xấp xỉ)", num_format="0%",
-       expr="nike_brand_digital_sales / nike_brand_digital_sales__prior - 1",
-       note="Từ số Digital đã làm tròn của năm nay và cùng kỳ năm trước trong cùng báo cáo."),
+       note="NIKE Direct trừ doanh số Digital, gần với doanh thu cửa hàng do NIKE sở hữu. Sai số do làm tròn số Digital: "
+            "không có ở quý 1–3 FY2019 (NIKE nêu đến triệu USD); tới ±50 triệu USD ở các kỳ khác và quý 4 FY2019; tới "
+            "±100 triệu USD ở quý 4 FY2020 và FY2021."),
     # Financial performance – NIKE, Inc. scope
-    _k(id="revenue_growth", group="financial", unit=PCT, vi="Tăng trưởng doanh thu NIKE, Inc. (theo báo cáo)",
-       expr="revenues / revenues__prior - 1", note="So với cùng kỳ năm trước, số in trong cùng báo cáo."),
+    _k(id="revenue_growth", group="financial", unit=PCT, vi="Tăng trưởng doanh thu NIKE, Inc. (theo USD)",
+       expr="revenues / revenues__prior - 1", note="So với cùng kỳ năm trước (số năm trước in ngay trong báo cáo đó)."),
     _k(id="gross_margin", group="financial", unit=PCT, vi="Biên lợi nhuận gộp",
-       expr="gross_profit / revenues", note="Lợi nhuận gộp / Doanh thu, cùng phạm vi NIKE, Inc."),
+       expr="gross_profit / revenues", note="Lợi nhuận gộp / doanh thu, đều của NIKE, Inc."),
     _k(id="sga_ratio", group="financial", unit=PCT, vi="Tỷ lệ chi phí bán hàng và quản lý / doanh thu",
-       expr="total_selling_admin_expense / revenues", note="Chi phí chung của cả công ty, không phân bổ được theo kênh."),
+       expr="total_selling_admin_expense / revenues", note="NIKE không công bố khoản chi phí này theo kênh."),
     _k(id="demand_creation_ratio", group="financial", unit=PCT, vi="Tỷ lệ chi phí tạo nhu cầu / doanh thu",
-       expr="demand_creation_expense / revenues", note="Phần chi cho marketing trong SG&A."),
+       expr="demand_creation_expense / revenues", note="Chi phí quảng cáo và quảng bá (một phần của SG&A) so với doanh thu."),
     _k(id="operating_overhead_ratio", group="financial", unit=PCT, vi="Tỷ lệ chi phí vận hành chung / doanh thu",
-       expr="operating_overhead_expense / revenues", note="Phần chi phí vận hành trong SG&A."),
+       expr="operating_overhead_expense / revenues",
+       note="Lương, thuê mặt bằng và chi phí hành chính khác (phần còn lại của SG&A) so với doanh thu."),
     _k(id="other_expense_ratio", group="financial", unit=PCT, vi="Tỷ lệ chi phí (thu nhập) khác thuần / doanh thu",
        expr="other_expense_net / revenues",
-       note="Biên EBIT = biên gộp − tạo nhu cầu − vận hành chung − khoản này (tất cả tính trên doanh thu)."),
+       note="Biên EBIT = biên lợi nhuận gộp − chi phí tạo nhu cầu − chi phí vận hành chung − khoản này (đều tính theo % "
+            "doanh thu)."),
     _k(id="ebit", group="financial", unit=USD_M, vi="EBIT (tự tính theo định nghĩa của NIKE)",
        expr="net_income + income_tax_expense + interest_expense_net",
        note="Chỉ tiêu non-GAAP. NIKE không trình bày dòng “Operating income” mà dùng EBIT. Số tự tính được đối chiếu với "
             "EBIT do NIKE công bố."),
     _k(id="ebit_margin", group="financial", unit=PCT, vi="Biên EBIT",
-       expr="ebit / revenues", note="Non-GAAP. EBIT / Doanh thu NIKE, Inc."),
+       expr="ebit / revenues", note="Chỉ tiêu non-GAAP: EBIT / doanh thu NIKE, Inc."),
     _k(id="net_income_margin", group="financial", unit=PCT, vi="Biên lợi nhuận sau thuế",
-       expr="net_income / revenues", note="GAAP."),
+       expr="net_income / revenues", note="Theo chuẩn mực kế toán Mỹ (GAAP)."),
     _k(id="inventory_growth", group="financial", unit=PCT, vi="Hàng tồn kho so với cùng thời điểm năm trước",
        expr="inventories / inventories__prior - 1",
-       note="Năm: số dư 31/5 so với 31/5 năm trước (cùng 10-K). Quý: số dư cuối quý so với cuối cùng quý năm trước "
-            "(lấy từ báo cáo của quý đó)."),
+       note="Năm: số dư 31/5 so với 31/5 năm trước (cùng 10-K). Quý: số dư cuối quý so với cuối cùng quý năm trước, lấy "
+            "từ 10-Q cùng quý năm trước, vì 10-Q chỉ in kèm số dư ngày 31/5."),
     _k(id="average_inventory", group="financial", unit=USD_M, vi="Hàng tồn kho bình quân",
        expr="(inventories + inventories__begin) / 2", note="Bình quân số dư đầu kỳ và cuối kỳ."),
     _k(id="days_inventory", group="financial", unit="ngày", vi="Số ngày tồn kho bình quân",
@@ -366,14 +383,16 @@ KPIS = [
 for rid, vi, short, en, member in REGIONS:
     KPIS += [
         _k(id=f"{rid}_direct_share", group="regions", unit=PCT, vi=f"Tỷ trọng NIKE Direct – {short}",
-           expr=f"{rid}_direct_revenue / {rid}_revenue", note=f"NIKE Direct / doanh thu khu vực {vi}."),
-        _k(id=f"{rid}_growth", group="regions", unit=PCT, vi=f"Tăng trưởng doanh thu – {short} (theo báo cáo)",
-           expr=f"{rid}_revenue / {rid}_revenue__prior - 1", note="So với cùng kỳ năm trước, số in trong cùng báo cáo."),
-        _k(id=f"{rid}_direct_growth", group="regions", unit=PCT, vi=f"Tăng trưởng NIKE Direct – {short} (theo báo cáo)",
+           expr=f"{rid}_direct_revenue / {rid}_revenue", note=f"NIKE Direct / doanh thu khu vực {mid_sentence(vi)}."),
+        _k(id=f"{rid}_growth", group="regions", unit=PCT, vi=f"Tăng trưởng doanh thu – {short} (theo USD)",
+           expr=f"{rid}_revenue / {rid}_revenue__prior - 1", note="So với cùng kỳ năm trước (số năm trước in ngay trong báo cáo đó)."),
+        _k(id=f"{rid}_direct_growth", group="regions", unit=PCT, vi=f"Tăng trưởng NIKE Direct – {short} (theo USD)",
            expr=f"{rid}_direct_revenue / {rid}_direct_revenue__prior - 1",
            note="So với cùng kỳ năm trước. Số năm trước của FY2019 lấy từ bảng khu vực trong MD&A."),
         _k(id=f"{rid}_ebit_margin", group="regions", unit=PCT, freq={A}, vi=f"Biên EBIT – {short}",
-           expr=f"{rid}_ebit / {rid}_revenue", note="EBIT khu vực / doanh thu khu vực. Không gồm chi phí chung toàn cầu."),
+           expr=f"{rid}_ebit / {rid}_revenue",
+           note="EBIT khu vực / doanh thu khu vực. Chưa trừ chi phí Global Brand Divisions và Corporate, vì NIKE không chia "
+                "các khoản này về khu vực."),
     ]
 KPIS_BY_ID = {k["id"]: k for k in KPIS}
 
@@ -381,25 +400,25 @@ KPIS_BY_ID = {k["id"]: k for k in KPIS}
 CHECKS = [
     dict(id="chk_gross_profit", vi="Doanh thu − Giá vốn − Lợi nhuận gộp", tol=1,
          expr="revenues - cost_of_sales - gross_profit"),
-    dict(id="chk_sga", vi="Tạo nhu cầu + Vận hành chung − Tổng SG&A", tol=1,
+    dict(id="chk_sga", vi="Chi phí tạo nhu cầu + chi phí vận hành chung − tổng SG&A", tol=1,
          expr="demand_creation_expense + operating_overhead_expense - total_selling_admin_expense"),
-    dict(id="chk_pretax", vi="Lợi nhuận gộp − SG&A − Lãi thuần − Khác thuần − LNTT", tol=2,
+    dict(id="chk_pretax", vi="Lợi nhuận gộp − SG&A − lãi thuần − chi phí khác thuần − lợi nhuận trước thuế", tol=2,
          expr="gross_profit - total_selling_admin_expense - interest_expense_net - other_expense_net - income_before_taxes"),
-    dict(id="chk_net_income", vi="LNTT − Thuế − LNST", tol=1,
+    dict(id="chk_net_income", vi="Lợi nhuận trước thuế − thuế − lợi nhuận sau thuế", tol=1,
          expr="income_before_taxes - income_tax_expense - net_income"),
-    dict(id="chk_channels", vi="Direct + Bán buôn + GBD − Tổng NIKE Brand", tol=1,
+    dict(id="chk_channels", vi="NIKE Direct + bán buôn + Global Brand Divisions − tổng NIKE Brand", tol=1,
          expr="nike_direct_revenue + nike_brand_wholesale_revenue + global_brand_divisions_revenue - nike_brand_revenue"),
-    dict(id="chk_segments", vi="NIKE Brand + Converse + Corporate − Doanh thu NIKE, Inc.", tol=1,
+    dict(id="chk_segments", vi="NIKE Brand + Converse + Corporate − doanh thu NIKE, Inc.", tol=1,
          expr="nike_brand_revenue + converse_revenue + corporate_revenue - revenues"),
     dict(id="chk_ebit", vi="EBIT tự tính − EBIT NIKE công bố", tol=1, expr="ebit - ebit_reported"),
-    dict(id="chk_regions", vi="Bốn khu vực + GBD − Tổng NIKE Brand", tol=2,
+    dict(id="chk_regions", vi="Bốn khu vực + Global Brand Divisions − tổng NIKE Brand", tol=2,
          expr="na_revenue + emea_revenue + gc_revenue + apla_revenue + global_brand_divisions_revenue - nike_brand_revenue"),
     dict(id="chk_regions_direct", vi="NIKE Direct bốn khu vực − NIKE Direct toàn NIKE Brand", tol=2,
          expr="na_direct_revenue + emea_direct_revenue + gc_direct_revenue + apla_direct_revenue - nike_direct_revenue"),
-    dict(id="chk_regions_wholesale", vi="Bán buôn bốn khu vực − Bán buôn toàn NIKE Brand", tol=2,
+    dict(id="chk_regions_wholesale", vi="Bán buôn bốn khu vực − bán buôn toàn NIKE Brand", tol=2,
          expr="na_wholesale_revenue + emea_wholesale_revenue + gc_wholesale_revenue + apla_wholesale_revenue"
               " - nike_brand_wholesale_revenue"),
-] + [dict(id=f"chk_{rid}_channels", vi=f"Direct + Bán buôn − Doanh thu {short}", tol=1,
+] + [dict(id=f"chk_{rid}_channels", vi=f"NIKE Direct + bán buôn − doanh thu {short}", tol=1,
           expr=f"{rid}_direct_revenue + {rid}_wholesale_revenue - {rid}_revenue") for rid, _, short, _, _ in REGIONS]
 
 # Calculated ratios compared with NIKE's own rounded figures (difference as a fraction;

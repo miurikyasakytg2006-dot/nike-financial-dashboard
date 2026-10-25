@@ -5,7 +5,7 @@
     "x": 40,
     "y": 1062,
     "z": 11000,
-    "height": 480,
+    "height": 560,
     "width": 1200,
     "tabOrder": 11000
   },
@@ -68,11 +68,11 @@
                       "Entity": "BaoCao"
                     }
                   },
-                  "Property": "Số accession"
+                  "Property": "Số hồ sơ SEC"
                 }
               },
-              "queryRef": "BaoCao.Số accession",
-              "nativeQueryRef": "Số accession",
+              "queryRef": "BaoCao.Số hồ sơ SEC",
+              "nativeQueryRef": "Số hồ sơ SEC",
               "active": true
             },
             {

@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Số ngày tồn kho theo quý",
+                    "value": "Chi phí là số của cả tập đoàn",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -33,7 +33,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "91,25 ngày (365/4) × tồn kho bình quân đầu và cuối quý / giá vốn hàng bán của quý. Năm tính 365 ngày.",
+                    "value": "NIKE không công bố chi phí hay lợi nhuận riêng của NIKE Direct và bán buôn, nên dashboard không so sánh khả năng sinh lời giữa các kênh.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10pt",

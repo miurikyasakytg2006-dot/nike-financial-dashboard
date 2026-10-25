@@ -492,7 +492,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'% doanh thu khu vực, FY2019 và FY2021. Không gồm chi phí chung toàn cầu.'"
+                  "Value": "'% doanh thu khu vực, FY2019 và FY2021. Chưa trừ chi phí NIKE Brand quản lý tập trung (Global Brand Divisions) và chi phí chung của tập đoàn (Corporate), vì NIKE không chia các khoản này về khu vực. EMEA: châu Âu, Trung Đông và châu Phi. APLA: châu Á – Thái Bình Dương và Mỹ Latinh.'"
                 }
               }
             },

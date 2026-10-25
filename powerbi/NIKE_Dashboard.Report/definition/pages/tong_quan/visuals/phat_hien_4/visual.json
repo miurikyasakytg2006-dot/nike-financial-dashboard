@@ -3,7 +3,7 @@
   "name": "phat_hien_4",
   "position": {
     "x": 40,
-    "y": 444,
+    "y": 488,
     "z": 8000,
     "height": 220,
     "width": 380,
@@ -73,7 +73,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Tự tính: 10‑K FY2020 trừ 10‑Q quý 3 FY2020 (9 tháng).",
+                    "value": "Quý 4 tự tính: cả năm (10‑K FY2020) trừ 9 tháng đầu (10‑Q quý 3 FY2020).",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "8.5pt",

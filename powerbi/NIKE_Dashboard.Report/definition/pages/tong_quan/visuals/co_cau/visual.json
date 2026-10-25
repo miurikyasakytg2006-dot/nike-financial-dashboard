@@ -3,7 +3,7 @@
   "name": "co_cau",
   "position": {
     "x": 40,
-    "y": 756,
+    "y": 800,
     "z": 12000,
     "height": 300,
     "width": 580,
@@ -588,7 +588,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Tỷ trọng trong tổng doanh thu NIKE Brand (%), nhóm tự tính từ số liệu 10‑K.'"
+                  "Value": "'% doanh thu NIKE Brand của từng kênh, nhóm tự tính từ báo cáo năm (10‑K).'"
                 }
               }
             },

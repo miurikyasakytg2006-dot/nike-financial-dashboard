@@ -56,6 +56,7 @@ GRID_W = 13.57
 # (about 936 pt with the margin columns) fits A4 and Letter landscape; the breaks keep chart rows whole.
 PRINT_SCALE = 79
 PAGE_ROWS_PT = (595.3 - 2 * 0.4 * 72) * 100 / PRINT_SCALE   # row height that fits on an A4-landscape page
+PAGE_FOOTER = "&C&8Trang &P/&N"
 
 
 def glue(text):
@@ -64,13 +65,22 @@ def glue(text):
     A report stays with its period ("10-K FY2020", "10-Q Q3 FY2020", "Q4 FY2020"), a figure with its unit, and the two
     ends of a period range ("FY2019 → FY2021")."""
     text = (text.replace("10-K", "10" + NB_HYPHEN + "K").replace("10-Q", "10" + NB_HYPHEN + "Q")
-            .replace("non-GAAP", "non" + NB_HYPHEN + "GAAP"))
+            .replace("8-K", "8" + NB_HYPHEN + "K").replace("non-GAAP", "non" + NB_HYPHEN + "GAAP")
+            .replace("COVID-19", "COVID" + NB_HYPHEN + "19"))
     text = re.sub(r"(10" + NB_HYPHEN + "[KQ]) (?=Q[1-4]|FY)", "\\1" + NBSP, text)
     text = re.sub(r"\b(Q[1-4]) (FY\d{4})", "\\1" + NBSP + "\\2", text)
     text = re.sub(r"(FY\d{4}) → (FY\d{4})", "\\1" + NBSP + "→" + NBSP + "\\2", text)
     text = re.sub(r"(\d) (tỷ|triệu) USD", "\\1" + NBSP + "\\2" + NBSP + "USD", text)
     text = re.sub(r"(\d) ngày", "\\1" + NBSP + "ngày", text)
     return re.sub(r"(\d) điểm %", "\\1" + NBSP + "điểm" + NBSP + "%", text)
+
+
+def wrapped_height(text, width_px, size=10, min_height=0):
+    """Row height (points) that shows `text` wrapped in a merged cell `width_px` wide. Arial in this mix of Vietnamese
+    text averages about 0.62 em per character; a line takes about 1.28 em."""
+    per_line = max(1, int(width_px / (size * 0.62)))
+    lines = max(1, math.ceil(len(text) / per_line))
+    return max(min_height, math.ceil(lines * size * 1.28) + 3)
 
 
 # ------------------------------------------------------------------ number formatting (vi-VN, as in app.js)
@@ -127,11 +137,11 @@ CHANNEL_ROWS = [
     ("g", "Cơ cấu và tăng trưởng"),
     ("kpi", "direct_share", "Tỷ trọng NIKE Direct", "%", pct, False),
     ("obs", "nike_direct_share_stated", "Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)", "%", lambda v: pct(v, 0), False),
-    ("kpi", "direct_growth", "Tăng trưởng NIKE Direct, theo báo cáo", "%", signed_pct, False),
+    ("kpi", "direct_growth", "Tăng trưởng NIKE Direct, theo USD", "%", signed_pct, False),
     ("obs", "nike_direct_pct_change_cn", "Tăng trưởng NIKE Direct, loại trừ tỷ giá (non-GAAP)", "%", lambda v: signed_pct(v, 0), False),
-    ("kpi", "wholesale_growth", "Tăng trưởng bán buôn, theo báo cáo", "%", signed_pct, False),
+    ("kpi", "wholesale_growth", "Tăng trưởng bán buôn, theo USD", "%", signed_pct, False),
     ("obs", "nike_brand_wholesale_pct_change_cn", "Tăng trưởng bán buôn, loại trừ tỷ giá (non-GAAP)", "%", lambda v: signed_pct(v, 0), False),
-    ("kpi", "nike_brand_growth", "Tăng trưởng NIKE Brand, theo báo cáo", "%", signed_pct, False),
+    ("kpi", "nike_brand_growth", "Tăng trưởng NIKE Brand, theo USD", "%", signed_pct, False),
     ("kpi", "direct_contribution", "Trong đó: đóng góp của NIKE Direct", "điểm %", lambda v: signed(v * 100, 1), False),
     ("kpi", "wholesale_contribution", "Trong đó: đóng góp của bán buôn", "điểm %", lambda v: signed(v * 100, 1), False),
     ("g", "NIKE Brand Digital (một phần của NIKE Direct)"),
@@ -153,7 +163,7 @@ FINANCE_ROWS = [
     ("obs", "income_tax_expense", "Chi phí thuế thu nhập", "triệu USD", amount, False),
     ("obs", "net_income", "Lợi nhuận sau thuế", "triệu USD", amount, True),
     ("g", "Tỷ lệ trên doanh thu và tăng trưởng"),
-    ("kpi", "revenue_growth", "Tăng trưởng doanh thu, theo báo cáo", "%", signed_pct, False),
+    ("kpi", "revenue_growth", "Tăng trưởng doanh thu, theo USD", "%", signed_pct, False),
     ("obs", "revenues_pct_change_cn", "Tăng trưởng doanh thu, loại trừ tỷ giá (non-GAAP)", "%", lambda v: signed_pct(v, 0), False),
     ("kpi", "gross_margin", "Biên lợi nhuận gộp", "%", pct, False),
     ("kpi", "demand_creation_ratio", "Chi phí tạo nhu cầu / doanh thu", "%", pct, False),
@@ -178,7 +188,7 @@ def region_rows(regions):
                  ("obs", f"{rid}_direct_revenue", "NIKE Direct", "triệu USD", amount, False),
                  ("obs", f"{rid}_wholesale_revenue", "Bán buôn", "triệu USD", amount, False),
                  ("kpi", f"{rid}_direct_share", "Tỷ trọng NIKE Direct", "%", pct, False),
-                 ("kpi", f"{rid}_growth", "Tăng trưởng doanh thu, theo báo cáo", "%", signed_pct, False),
+                 ("kpi", f"{rid}_growth", "Tăng trưởng doanh thu, theo USD", "%", signed_pct, False),
                  ("obs", f"{rid}_ebit", "EBIT", "triệu USD", amount, False),
                  ("kpi", f"{rid}_ebit_margin", "Biên EBIT", "%", pct, False)]
     return rows
@@ -186,10 +196,23 @@ def region_rows(regions):
 
 # ------------------------------------------------------------------ texts from the web page
 def for_excel(text):
-    """Web wording that does not hold in the workbook: the grey band of the quarterly charts, and where the list of
-    reports is."""
+    """Web wording that does not hold in the workbook: the grey band of the quarterly charts, the totals printed at the
+    end of the web's Digital bars, and where the list of reports is."""
     text = re.sub(r" ?Vùng tô xám là quý 4 FY2020[^.]*\.", "", text)
+    text = text.replace(" Nhãn cuối thanh là tổng NIKE Direct.", "")
     return text.replace("(danh sách ở cuối trang)", f"(danh sách ở sheet “{SHEET_SRC}”)")
+
+
+def bold_parts(el):
+    """A paragraph as [(bold, text)], the <b> terms bold, spacing kept as it reads."""
+    flat = lambda s: re.sub(r"\s+", " ", s or "")
+    parts = [(False, flat(el.text))] + [p for child in el for p in ((child.tag == "b", flat(child.text_content())),
+                                                                     (False, flat(child.tail)))]
+    parts = [(bold, glue(text)) for bold, text in parts if text]
+    if parts:
+        parts[0] = (parts[0][0], parts[0][1].lstrip())
+        parts[-1] = (parts[-1][0], parts[-1][1].rstrip())
+    return parts
 
 
 def page_texts():
@@ -211,6 +234,7 @@ def page_texts():
     return dict(
         title=t("//header[@class='masthead']//h1"), subtitle=t("//p[@class='masthead-sub']"),
         findings_title=t("//section[@id='phat-hien']//h2"), findings_note=t("//section[@id='phat-hien']//p[@class='block-note']"),
+        terms=t("//p[@id='terms']"), terms_parts=bold_parts(root.xpath("//p[@id='terms']")[0]),
         sections={sid: section(sid) for sid in ("kenh", "quy", "digital", "khu-vuc", "loi-nhuan", "nike-giai-thich")},
         quotes_note=t("//section[@id='nike-giai-thich']//p[@class='block-note']"),
         figs={k: fig(v) for k, v in dict(share="fig-share", change="fig-change", shareQ="fig-share-q", channelQ="fig-channel-q",
@@ -250,7 +274,8 @@ class Book:
         # 20 px rows the layout is designed in, leaving Excel to draw them at 17 px).
         self.wb = xlsxwriter.Workbook(str(path), {"default_row_height": 17})
         self.wb.set_properties({"title": "NIKE FY2019–FY2021: bán trực tiếp và kết quả tài chính",
-                                "comments": "Phiên bản Excel của dashboard. Nguồn: NIKE, Inc. Form 10-K và 10-Q FY2019–FY2021 (SEC EDGAR)."})
+                                "comments": "Phiên bản Excel của dashboard. Nguồn: NIKE, Inc. Form 10-K, 10-Q và thông cáo kết quả "
+                                            "quý 4 (Form 8-K), FY2019–FY2021 (SEC EDGAR)."})
         self.wb.formats[0].set_font_name(FONT)
         self.wb.formats[0].set_font_size(10)
         self.cache = {}
@@ -363,6 +388,14 @@ def bars(name, values, color, cats, **extra):
     return {"name": name, "values": values, "categories": cats, "fill": {"color": color}, "border": {"none": True}, **extra}
 
 
+def label_only(ch, name, values, cats, cells, index, position, legend_index):
+    """An invisible copy of a series that carries the label of one point only, placed where the visible series' label
+    would collide with a line (Excel positions labels per series, not per point). It is left out of the legend."""
+    ch.add_series({"name": name, "values": values, "categories": cats, "line": {"none": True}, "marker": {"type": "none"},
+                   "data_labels": text_labels(cells, {index}, position=position)})
+    ch.set_legend({"position": "top", "font": {"name": FONT, "size": 9, "color": C["ink2"]}, "delete_series": [legend_index]})
+
+
 def build_charts(b, d):
     A, Q = b.A, b.Q
     k, v = b.kpi, b.val
@@ -390,7 +423,7 @@ def build_charts(b, d):
     # 1. change by channel, FY2019 -> FY2021
     a, z = A[0], A[-1]
     items = [("NIKE Direct", "nike_direct_revenue", C["direct"]), ("Bán buôn", "nike_brand_wholesale_revenue", C["wholesale"]),
-             ("Global Brand Divisions", "global_brand_divisions_revenue", C["gbd"]), ("Tổng NIKE Brand", "nike_brand_revenue", C["total"])]
+             ("Global Brand Divisions", "global_brand_divisions_revenue", C["gbd"]), ("Toàn NIKE Brand", "nike_brand_revenue", C["total"])]
     deltas = [(v(mid, z) - v(mid, a)) / 1000 for _, mid, _ in items]
     r = d.block("Thay đổi theo kênh", [n for n, _, _ in items], {"Thay đổi (tỷ USD)": deltas,
                                                                   "nhãn": [bn_delta(x) for x in deltas]})
@@ -398,7 +431,11 @@ def build_charts(b, d):
     ch.add_series(bars("Thay đổi", r["Thay đổi (tỷ USD)"], C["total"], r["cats"], gap=60,
                        points=[{"fill": {"color": c}, "border": {"none": True}} for _, _, c in items],
                        data_labels=text_labels(r["nhãn@cells"], set(range(4)), C["ink2"], "outside_end", 9)))
-    ch.set_x_axis(value_axis("0"))
+    # Every bar carries its figure, so the value axis is hidden; it starts just short of the lowest bar, as on the web
+    # (a decline of 0,02 should not stretch it to −1).
+    lo, hi = min(deltas + [0]), max(deltas + [0])
+    ch.set_x_axis({"visible": False, "major_gridlines": {"visible": False}, "min": lo - (hi - lo) * 0.04 if lo < 0 else 0,
+                   "max": hi})
     ch.set_y_axis(category_axis(reverse=True, crossing="max", num_font=axis_font(10, C["ink2"]), label_position="low"))
     charts["change"] = ch
 
@@ -423,7 +460,10 @@ def build_charts(b, d):
     ch.add_series(line("NIKE Direct", r["NIKE Direct"], C["direct"], r["cats"],
                        data_labels=text_labels(r["nhãn Direct@cells"], keep, position="below")))
     ch.add_series(line("Bán buôn (Wholesale)", r["Bán buôn"], C["wholesale"], r["cats"],
-                       data_labels=text_labels(r["nhãn bán buôn@cells"], keep, position="above")))
+                       data_labels=text_labels(r["nhãn bán buôn@cells"], keep - {covid}, position="above")))
+    # In Q4 FY2020 the wholesale line dips into a V close above the NIKE Direct point: its label goes to the left of the
+    # point, under the descending segment and clear of both lines (as on the web).
+    label_only(ch, "Bán buôn – nhãn quý 4 FY2020", r["Bán buôn"], r["cats"], r["nhãn bán buôn@cells"], covid, "left", 2)
     ch.set_y_axis(value_axis("0", min=0))
     ch.set_x_axis(category_axis())
     charts["channelQ"] = ch
@@ -431,14 +471,14 @@ def build_charts(b, d):
     # 3. digital inside NIKE Direct (annual)
     dig = [v("nike_brand_digital_sales", p) for p in A]
     rest = [k("direct_ex_digital", p) / 1000 for p in A]
-    r = d.block("Digital và phần còn lại", A, {"Digital": dig, "Phần còn lại": rest,
-                                               "nhãn Digital": [num(x, 1) for x in dig], "nhãn còn lại": [num(x, 1) for x in rest]})
+    r = d.block("Digital và phần ngoài Digital", A, {"Digital": dig, "Ngoài Digital": rest,
+                                                     "nhãn Digital": [num(x, 1) for x in dig], "nhãn ngoài Digital": [num(x, 1) for x in rest]})
     ch = base_chart(b, "bar", "stacked")
     ch.add_series(bars("NIKE Brand Digital", r["Digital"], C["digital"], r["cats"], gap=60, border={"color": "#FFFFFF", "width": 1},
                        data_labels=text_labels(r["nhãn Digital@cells"], set(range(3)), "#FFFFFF", "center", 9, True)))
-    ch.add_series(bars("Phần còn lại, chủ yếu là cửa hàng (ước tính)", r["Phần còn lại"], C["direct_light"], r["cats"],
+    ch.add_series(bars("NIKE Direct ngoài Digital (ước tính)", r["Ngoài Digital"], C["direct_light"], r["cats"],
                        border={"color": "#FFFFFF", "width": 1},
-                       data_labels=text_labels(r["nhãn còn lại@cells"], set(range(3)), C["ink"], "center", 9, True)))
+                       data_labels=text_labels(r["nhãn ngoài Digital@cells"], set(range(3)), C["ink"], "center", 9, True)))
     ch.set_x_axis(value_axis("0", min=0))
     ch.set_y_axis(category_axis(reverse=True, crossing="max", num_font=axis_font(10)))
     charts["digital"] = ch
@@ -508,10 +548,11 @@ def build_charts(b, d):
     ch = base_chart(b, "column", "stacked", legend=False)
     ch.add_series({"name": "Nền", "values": r["Nền"], "categories": r["cats"], "fill": {"none": True}, "border": {"none": True},
                    "gap": 80})
-    # Labels inside the bar ends: white on the two dark totals, dark ink on the steps.
-    labels = text_labels(r["nhãn@cells"], set(range(len(cats))), C["ink2"], "inside_end", 9)
+    # Labels inside the bar ends, bold: white on the dark totals and on red, near-black on green (each at least 4.5:1).
+    # A step under one point is too thin to hold its label, which then sits on the white plot: near-black there too.
+    labels = text_labels(r["nhãn@cells"], set(range(len(cats))), C["ink"], "inside_end", 9, True)
     for i, lab in enumerate(labels["custom"]):
-        if i in (0, len(cats) - 1):
+        if i in (0, len(cats) - 1) or (colors[i] == C["down"] and height[i] >= 0.01):
             lab["font"] = {"name": FONT, "size": 9, "color": "#FFFFFF", "bold": True}
     ch.add_series(bars("Biên EBIT", r["Cột"], C["total"], r["cats"],
                        points=[{"fill": {"color": c}, "border": {"none": True}} for c in colors], data_labels=labels))
@@ -528,7 +569,9 @@ def build_charts(b, d):
     ch.add_series(line("Biên lợi nhuận gộp", r["Biên gộp"], C["total"], r["cats"],
                        data_labels=text_labels(r["nhãn gộp@cells"], keep, position="above")))
     ch.add_series(line("Biên EBIT (non-GAAP)", r["Biên EBIT"], C["margin"], r["cats"],
-                       data_labels=text_labels(r["nhãn EBIT@cells"], keep, position="below")))
+                       data_labels=text_labels(r["nhãn EBIT@cells"], keep - {covid}, position="below")))
+    # The Q4 FY2020 low (−11,9%) is near the bottom of the plot: its label goes beside the point, not under it.
+    label_only(ch, "Biên EBIT – nhãn quý 4 FY2020", r["Biên EBIT"], r["cats"], r["nhãn EBIT@cells"], covid, "right", 2)
     ch.set_y_axis(value_axis(f"0%;{MINUS}0%;0%", min=-0.2, max=0.6, major_unit=0.2))
     ch.set_x_axis(category_axis(label_position="low"))
     charts["marginsQ"] = ch
@@ -574,6 +617,7 @@ class Page:
         ws.set_paper(9)
         ws.set_print_scale(PRINT_SCALE)
         ws.set_margins(0.3, 0.3, 0.4, 0.4)
+        ws.set_footer(PAGE_FOOTER)
         self.starts = [0]
 
     def paginate(self, end):
@@ -599,16 +643,17 @@ class Page:
     def header(self):
         b, ws, t = self.b, self.ws, self.b.texts
         ws.set_row(0, 9)
-        ws.merge_range(1, 1, 2, 9, t["title"], b.f(font_name=SERIF, font_size=20, bold=True, font_color=C["ink"], text_wrap=True,
-                                                    valign="bottom"))
-        ws.set_row(1, 27)
-        ws.set_row(2, 27)
-        ws.merge_range(3, 1, 4, 9, t["subtitle"], b.f(font_size=10.5, font_color=C["ink2"], text_wrap=True))
-        ws.set_row(3, 17)
-        ws.set_row(4, 17)
-        link = b.f(font_color=C["link"], underline=1, align="right")
+        # The title runs over ten columns so it stays on one line; rows 1–4 share one height, so the three links on the
+        # right (rows 2–4) are evenly spaced.
+        ws.merge_range(1, 1, 2, 10, t["title"], b.f(font_name=SERIF, font_size=20, bold=True, font_color=C["ink"], text_wrap=True,
+                                                     valign="bottom"))
+        ws.merge_range(3, 1, 4, 9, t["subtitle"], b.f(font_size=10.5, font_color=C["ink2"], text_wrap=True, valign="vcenter"))
+        row = max(22, wrapped_height(t["subtitle"], 890, 10.5) / 2)
+        for r in (1, 2, 3, 4):
+            ws.set_row(r, row)
+        link = b.f(font_color=C["link"], underline=1, align="right", valign="vcenter")
         ws.write_url(2, 12, DASHBOARD_URL + b.d["meta"]["workbook"], link, "Tải bộ dữ liệu Excel")
-        ws.write_url(3, 12, f"internal:'{SHEET_SRC}'!A1", link, "Nguồn và phương pháp")
+        ws.write_url(3, 12, f"internal:'{SHEET_SRC}'!A1", link, SHEET_SRC)
         ws.write_url(4, 12, DASHBOARD_URL, link, "Mở dashboard web")
         ws.set_row(5, 9)
         # Sheet links in one band, like the section links of the web page.
@@ -652,16 +697,22 @@ class Page:
     def figure(self, r, c1, c2, key, chart, height, sub=None, source=None, legend_row=False):
         b, ws = self.b, self.ws
         title, fig_sub = b.texts["figs"][key]
-        self.text(r, c1, c2, title, b.f(bold=True, font_size=11.5, font_color=C["ink"]), 19)
-        ws.merge_range(r + 1, c1, r + 1, c2, sub or fig_sub, b.f(font_size=9, font_color=C["muted"], text_wrap=True))
-        ws.set_row(r + 1, 26)
+        # The right-hand figure's texts are indented, so they never run on from the left-hand figure's.
+        gap = {"indent": 1, "align": "left"} if c1 > 1 else {}
+        self.text(r, c1, c2, title, b.f(bold=True, font_size=11.5, font_color=C["ink"], **gap), 19)
+        ws.merge_range(r + 1, c1, r + 1, c2, sub or fig_sub, b.f(font_size=9, font_color=C["muted"], text_wrap=True, **gap))
+        # Two figures share a row: it takes the height of the longer subtitle.
+        need = wrapped_height(sub or fig_sub, 100 * (c2 - c1 + 1) - 20, 9, 26)
+        ws.set_row(r + 1, max(need, ws.row_sizes.get(r + 1, [0])[0] * 0.75 if c1 > 1 else 0))
         rows = math.ceil(height / 20)
         for k in range(rows):
             ws.set_row(r + 2 + k, 15)
         place(ws, r + 2, c1, chart, 100 * (c2 - c1 + 1) - 10, height)
         src = r + 2 + math.ceil(height / 20)
-        ws.merge_range(src, c1, src, c2, source or b.sources[key], b.f(font_size=8, font_color=C["muted"], text_wrap=True))
-        ws.set_row(src, 34 if c2 - c1 < 6 else 24)
+        text = source or b.sources[key]
+        ws.merge_range(src, c1, src, c2, text, b.f(font_size=8, font_color=C["muted"], text_wrap=True, **gap))
+        need = wrapped_height(text, 100 * (c2 - c1 + 1) - 20, 8, 24)
+        ws.set_row(src, max(need, ws.row_sizes.get(src, [0])[0] * 0.75 if c1 > 1 else 0))
         return src + 2
 
 
@@ -669,7 +720,14 @@ def write_findings(p, r):
     b, ws = p.b, p.ws
     p.text(r, 1, 12, b.texts["findings_title"], b.f(font_name=SERIF, font_size=16, bold=True, font_color=C["ink"]), 26)
     p.text(r + 1, 1, 12, b.texts["findings_note"], b.f(font_size=10, font_color=C["ink2"]), 18)
-    r += 2
+    # The terms the findings use, the names in bold as on the web page.
+    box = b.f(font_size=9.5, font_color=C["ink2"], text_wrap=True)
+    ws.merge_range(r + 2, 1, r + 2, 12, "", box)
+    runs = [x for bold, text in b.texts["terms_parts"]
+            for x in (b.f(font_size=9.5, font_color=C["ink"] if bold else C["ink2"], bold=bold), text)]
+    ws.write_rich_string(r + 2, 1, *runs, box)
+    ws.set_row(r + 2, wrapped_height(b.texts["terms"], 1190, 9.5) + 4)
+    r += 3
     findings = b.d["findings"]
     for row in range(2):
         p.starts.append(r)
@@ -677,11 +735,13 @@ def write_findings(p, r):
             f = findings[row * 3 + col]
             c1 = 1 + col * 4
             c2 = c1 + 3
+            gap = {"indent": 1, "align": "left"} if col else {}   # the cards' texts never run on from one to the next
             ws.merge_range(r, c1, r, c2 - 0, glue(f["label"]),
-                           b.f(bold=True, font_size=9.5, font_color=C["muted"], top=1, top_color=C["rule"], valign="bottom"))
-            ws.merge_range(r + 1, c1, r + 1, c2, glue(f["value"]), b.f(bold=True, font_size=22, font_color=C["ink"], valign="vcenter"))
-            ws.merge_range(r + 2, c1, r + 5, c2, glue(f["text"]), b.f(font_size=10, font_color=C["ink2"], text_wrap=True))
-            ws.merge_range(r + 6, c1, r + 6, c2, glue(f["source"]), b.f(font_size=8, font_color=C["muted"], text_wrap=True))
+                           b.f(bold=True, font_size=9.5, font_color=C["muted"], top=1, top_color=C["rule"], valign="bottom", **gap))
+            ws.merge_range(r + 1, c1, r + 1, c2, glue(f["value"]), b.f(bold=True, font_size=22, font_color=C["ink"], valign="vcenter",
+                                                                     **gap))
+            ws.merge_range(r + 2, c1, r + 5, c2, glue(f["text"]), b.f(font_size=10, font_color=C["ink2"], text_wrap=True, **gap))
+            ws.merge_range(r + 6, c1, r + 6, c2, glue(f["source"]), b.f(font_size=8, font_color=C["muted"], text_wrap=True, **gap))
         ws.set_row(r, 22)
         ws.set_row(r + 1, 34)
         for k in range(2, 6):
@@ -736,7 +796,10 @@ def build_profit(b, ws, charts):
     r = r_next
     p.starts.append(r)
     r = p.section(r, "loi-nhuan")
-    r_next = p.figure(r, 1, 6, "bridge", charts["bridge"], 280, sub=b.subs["bridge-sub"](a, z), source=b.sources["bridge"] + two)
+    # The Excel chart has no legend: the subtitle names the colours, as in the Power BI version.
+    r_next = p.figure(r, 1, 6, "bridge", charts["bridge"], 280,
+                      sub=b.subs["bridge-sub"](a, z) + " Cột xám là biên EBIT, xanh lá làm biên tăng, đỏ làm biên giảm.",
+                      source=b.sources["bridge"] + two)
     p.figure(r, 7, 12, "marginsQ", charts["marginsQ"], 280)
     r = r_next
     p.starts.append(r)
@@ -755,12 +818,13 @@ def build_profit(b, ws, charts):
         row, col = divmod(i, 3)
         c1 = 1 + 4 * col
         top = r + 1 + row * 6
-        ws.merge_range(top, c1, top + 5, c1 + 3, "", b.f(text_wrap=True))
-        ws.write_rich_string(top, c1, b.f(bold=True, font_color=C["ink"]), dt + "\n", b.f(font_color=C["ink2"]), dd,
-                             b.f(text_wrap=True))
-    for k in range(1, 13):
+        box = b.f(text_wrap=True, **({"indent": 1, "align": "left"} if col else {}))
+        ws.merge_range(top, c1, top + 5, c1 + 3, "", box)
+        ws.write_rich_string(top, c1, b.f(bold=True, font_color=C["ink"]), dt + "\n", b.f(font_color=C["ink2"]), dd, box)
+    rows = 6 * math.ceil(len(items) / 3)
+    for k in range(1, rows + 1):
         ws.set_row(r + k, 17)
-    end = r + 13
+    end = r + rows + 1
     p.paginate(end)
     return p
 
@@ -808,7 +872,7 @@ def write_table(p, r, title, periods, rows, two_level=False, breaks=None, break_
         weight = {"bold": True} if total else {}
         ws.write(r, 1, glue(label), b.f(font_color=C["ink"], valign="vcenter", text_wrap=True, **border, **weight))
         ws.write(r, 2, unit, b.f(font_color=C["muted"], valign="vcenter", **border))
-        pages = []
+        pages, any_missing = [], False
         for j, per in enumerate(periods):
             italic, text, page, link = True, "—", "", ""
             if kind == "kpi":
@@ -823,15 +887,19 @@ def write_table(p, r, title, periods, rows, two_level=False, breaks=None, break_
                 else:
                     italic, text = False, fmt(o["value"])
                     mark = "† " if o.get("status") == STATUS_PENDING else ""
-                    page = mark + (f"tr. {o['page']}" if o.get("page") else "")
-                    link = b.d["filings"][o["source"]]["url"] if o.get("page") else ""
+                    # A fourth-quarter earnings release has no page numbers: its cell names the document instead.
+                    release = b.d["filings"][o["source"]]["form"] == "8-K"
+                    page = mark + ("8-K" if release else f"tr. {o['page']}" if o.get("page") else "")
+                    link = b.d["filings"][o["source"]]["url"] if o.get("page") or release else ""
             missing = text == "Không công bố"
+            any_missing |= missing
+            # "Không công bố" on two short lines, set in from the edge, so it never touches the figure beside it.
             cell = b.f(italic=italic and not missing, align="right", valign="vcenter", **border, **weight,
                        font_color=C["muted"] if missing else C["ink"] if not italic else C["ink2"],
-                       font_size=8.5 if missing else 10)
+                       font_size=8.5 if missing else 10, **({"text_wrap": True, "indent": 1} if missing else {}))
             ws.write(r, 3 + j, text, cell)
             pages.append((page, link))
-        ws.set_row(r, 30 if len(label) > 34 else 20)
+        ws.set_row(r, 26 if any_missing else 20)
         r += 1
         if not reported:
             continue
@@ -852,7 +920,7 @@ def write_table(p, r, title, periods, rows, two_level=False, breaks=None, break_
 def build_tables(b, ws):
     ws.hide_gridlines(2)
     ws.set_column(0, 0, 2.71)
-    ws.set_column(1, 1, 44)
+    ws.set_column(1, 1, 54)      # the longest label on one line, so every figure row has the same height
     ws.set_column(2, 2, 10)
     ws.set_column(3, 14, 10.5)
     ws.set_landscape()
@@ -860,11 +928,14 @@ def build_tables(b, ws):
     # A fixed scale (Excel ignores manual page breaks under fit-to-page): the twelve quarter columns fit A4 landscape.
     ws.set_print_scale(66)
     ws.set_margins(0.3, 0.3, 0.4, 0.4)
+    ws.set_footer(PAGE_FOOTER)
     ws.write(1, 1, SHEET_TABLES, b.f(font_name=SERIF, font_size=18, bold=True, font_color=C["ink"]))
     ws.set_row(1, 28)
-    ws.write(2, 1, glue("Số NIKE công bố có số trang ở dòng nhỏ ngay dưới (bấm để mở báo cáo trên SEC). Số in nghiêng là số "
-                        "nhóm tự tính, gồm cả số quý 4 (cả năm trừ 9 tháng). ≈ là ước tính từ số đã làm tròn. Số âm để trong "
-                        "ngoặc đơn."), b.f(font_size=9, font_color=C["muted"]))
+    key = glue("Số NIKE công bố có số trang ở dòng nhỏ ngay dưới (bấm để mở báo cáo trên SEC). Số in nghiêng là số nhóm tự tính. "
+               "Quý 4: không có 10-Q, nên nhóm lấy cả năm trừ 9 tháng; ≈ là ước tính từ số NIKE đã làm tròn. Tỷ lệ % quý 4 lấy từ "
+               "thông cáo kết quả quý 4 (ghi “8-K”). Số tiền âm để trong ngoặc đơn, ví dụ (790); tỷ lệ âm có dấu trừ.")
+    ws.merge_range(2, 1, 2, 9, key, b.f(font_size=9, font_color=C["muted"], text_wrap=True))
+    ws.set_row(2, wrapped_height(key, (54 + 10 + 7 * 10.5) * 7, 9))   # columns B–J, about 7 px per width unit
     p = Page.__new__(Page)
     p.b, p.ws = b, ws
     # Each table starts on a new printed page and takes two: channels, then the income statement and ratios; two regions
@@ -890,14 +961,17 @@ def build_sources(b, ws):
     ws.set_column(3, 3, 62)
     ws.set_landscape()
     ws.set_paper(9)
-    ws.fit_to_pages(1, 0)
+    ws.set_print_scale(PRINT_SCALE)     # the same type size on paper as the other sheets
+    ws.set_margins(0.3, 0.3, 0.4, 0.4)
+    ws.set_footer(PAGE_FOOTER)
     t = b.texts
     ws.write(1, 1, SHEET_SRC, b.f(font_name=SERIF, font_size=20, bold=True, font_color=C["ink"]))
     ws.set_row(1, 32)
     h = b.f(bold=True, font_size=11, font_color=C["ink"], bottom=1, bottom_color=C["rule"])
     kicker, question = t["sections"]["nike-giai-thich"]
     ws.write(3, 1, question, h)
-    ws.merge_range(4, 1, 4, 3, t["quotes_note"], b.f(font_size=9.5, font_color=C["muted"]))
+    ws.merge_range(4, 1, 4, 3, t["quotes_note"], b.f(font_size=9.5, font_color=C["muted"], valign="vcenter"))
+    ws.set_row(4, 22)
     r = 5
     link = b.f(font_color=C["link"], underline=1)
     quotes = b.d["quotes"]
@@ -915,10 +989,11 @@ def build_sources(b, ws):
         ws.set_row(r, height)
         r += 1
     r += 1
-    ws.write(r, 1, glue("Báo cáo nộp SEC (Form 10-K và 10-Q)"), h)
+    ws.write(r, 1, "Báo cáo nộp SEC", h)
     groups = [("Báo cáo năm (10-K)", lambda f: f["form"] == "10-K" and f["role"] == "scope"),
               ("Báo cáo quý (10-Q)", lambda f: f["form"] == "10-Q" and f["role"] == "scope"),
-              ("Chỉ dùng để xem số có bị trình bày lại không", lambda f: f["role"] == "check")]
+              ("Thông cáo kết quả quý 4 (8-K)", lambda f: f["role"] == "q4release"),
+              ("Báo cáo các năm sau (chỉ để kiểm tra NIKE có in lại số cũ khác đi không)", lambda f: f["role"] == "check")]
     rr = r + 1
     for title, keep in groups:
         ws.write(rr, 1, glue(title), b.f(bold=True, font_size=9.5, font_color=C["ink2"]))
@@ -926,32 +1001,38 @@ def build_sources(b, ws):
         for fid, f in b.d["filings"].items():
             if keep(f):
                 dd, mm, yy = f["filed"][8:10], f["filed"][5:7], f["filed"][:4]
-                ws.write_url(rr, 1, f["url"], link, glue(f"{fid}, nộp ngày {dd}/{mm}/{yy}, số {f['accession']}"))
+                ws.write_url(rr, 1, f["url"], link, glue(f"{fid}, nộp ngày {dd}/{mm}/{yy}, số hồ sơ SEC {f['accession']}"))
                 rr += 1
+    # Each method item spans as many plain rows as its text needs, so the list of reports beside it keeps even rows.
     ws.write(r, 3, "Phương pháp", h)
-    for i, item in enumerate(t["method"]):
-        ws.write(r + 1 + i, 3, "–  " + item, b.f(text_wrap=True))
-        ws.set_row(r + 1 + i, max(30, 15 * math.ceil(len(item) / 70) + 3))
-    r = max(rr, r + 1 + len(t["method"])) + 1
+    mr = r + 1
+    for item in t["method"]:
+        lines = math.ceil(len("– " + item) / 76)        # about 76 characters of Arial 10 to a line of the 62-wide column
+        n = max(2, math.ceil(lines * 12.5 / 12.75) + 1)  # rows of 17 px, plus one row of space after the item
+        ws.merge_range(mr, 3, mr + n - 1, 3, "– " + item, b.f(text_wrap=True))
+        mr += n
+    r = max(rr, mr) + 1
     ws.write(r, 1, "Tình trạng dữ liệu", h)
     c = b.d["meta"]["status_counts"]
     total = sum(c.values())
     missing = [p for m in b.d["observations"].values() for p, o in m.items() if o["value"] is None]
     all_q4 = missing and all(p.endswith("Q4") for p in missing)
-    parts = [(c.get("Khớp nguồn chính thức", 0), " khớp nguồn chính thức"), (c.get("Đã xác minh (người)", 0), " đã được nhóm kiểm tra trên báo cáo"),
-             (c.get(STATUS_PENDING, 0), " chưa được kiểm tra (†)"),
-             (c.get("Thiếu / không công bố", 0), " là các tỷ lệ % NIKE không nêu cho riêng quý 4" if all_q4 else " NIKE không công bố")]
+    parts = [(c.get("Khớp nguồn chính thức", 0), " số đã được kiểm tra lại và khớp"),
+             (c.get("Đã xác minh (người)", 0), " số đã được nhóm kiểm tra trên báo cáo"), (c.get(STATUS_PENDING, 0), " số chưa được kiểm tra (†)"),
+             (c.get("Thiếu / không công bố", 0), " ô là tỷ lệ % NIKE không nêu cho riêng quý 4" if all_q4 else " ô NIKE không công bố")]
     extracted = b.d["meta"]["extracted_on"]
-    status = (f"{total} số liệu báo cáo: " + ", ".join(f"{n}{label}" for n, label in parts if n) +
-              f". Dữ liệu trích xuất ngày {extracted[8:10]}/{extracted[5:7]}/{extracted[:4]}.")
+    status = (f"{total} số liệu: " + ", ".join(f"{n}{label}" for n, label in parts if n) +
+              f". Dữ liệu lấy ngày {extracted[8:10]}/{extracted[5:7]}/{extracted[:4]}.")
     ws.merge_range(r + 1, 1, r + 2, 1, glue(status), b.f(text_wrap=True))
+    for k in (1, 2):    # the merged cell shows the whole sentence
+        ws.set_row(r + k, max(12.75, wrapped_height(status, 434, 10) / 2))
     ws.write(r + 3, 1, t["fine"], b.f(font_size=9, font_color=C["muted"]))
     ws.write(r, 3, "Liên kết", h)
     ws.write_url(r + 1, 3, DASHBOARD_URL, link, "Dashboard web")
     ws.write_url(r + 2, 3, DASHBOARD_URL + b.d["meta"]["workbook"], link, "Bộ dữ liệu Excel (đầy đủ nguồn từng số)")
     pages = b.d["meta"]["evidence"]
     n = re.search(r"(\d+)-so", pages).group(1)
-    ws.write_url(r + 3, 3, DASHBOARD_URL + pages, link, glue(f"Đối chiếu {n} số trên trang 10-Q (ảnh chụp)"))
+    ws.write_url(r + 3, 3, DASHBOARD_URL + pages, link, f"Đối chiếu {n} số")
 
 
 def build(path=OUT, save_with_excel=True):

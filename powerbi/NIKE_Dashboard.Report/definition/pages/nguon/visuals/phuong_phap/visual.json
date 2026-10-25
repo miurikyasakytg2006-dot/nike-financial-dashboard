@@ -3,9 +3,9 @@
   "name": "phuong_phap",
   "position": {
     "x": 40,
-    "y": 1570,
+    "y": 1650,
     "z": 12000,
-    "height": 300,
+    "height": 440,
     "width": 740,
     "tabOrder": 12000
   },
@@ -33,7 +33,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Số của mỗi kỳ lấy từ báo cáo của chính kỳ đó: năm từ 10‑K, quý 1–3 từ 10‑Q. Quý 4 bằng số cả năm trừ số 9 tháng. Tăng trưởng tính với số cùng kỳ năm trước in trong cùng báo cáo, giống cách NIKE tự tính.",
+                    "value": "– Số của năm lấy từ báo cáo năm (10‑K), số của quý 1–3 lấy từ báo cáo quý (10‑Q). Không có 10‑Q cho quý 4, nên số quý 4 = cả năm trừ 9 tháng đầu (in trong báo cáo quý 3).",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -46,7 +46,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Số trên báo cáo tài chính lấy từ dữ liệu XBRL đi kèm mỗi báo cáo (FY2019 dùng tệp XBRL riêng, nên từng số được tìm lại trên trang in). Sau đó đối chiếu với bảng trong MD&A, số lũy kế 6 và 9 tháng, bảng số liệu quý của 10‑K FY2019 và FY2020, và số in lại ở báo cáo năm sau.",
+                    "value": "– Tỷ lệ % của quý 4 lấy từ thông cáo kết quả quý 4 của NIKE (Form 8‑K). Số quý 4 nào có trong thông cáo này đều khớp với số tự tính; thông cáo không có NIKE Direct, bán buôn và Digital.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -59,7 +59,33 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Tỷ lệ tăng trưởng loại trừ tỷ giá của từng quý chỉ có trong MD&A và không được in lại ở báo cáo sau, nên được đọc lại thêm một lần ngay trên trang 10‑Q. Ảnh chụp từng chỗ có ở trang “Đối chiếu 36 số”.",
+                    "value": "– Mỗi báo cáo in kèm số của cùng kỳ năm trước để so sánh, và tăng trưởng được tính với số này, giống cách NIKE tự tính. Riêng tồn kho cuối quý 1–3: 10‑Q chỉ in kèm số ngày 31/5, nên số cùng kỳ lấy từ 10‑Q của năm trước.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10.5pt",
+                      "color": "#3b4350"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "– Mỗi số đều được kiểm tra thêm ít nhất một lần. Cách kiểm tra: so với chỗ khác NIKE in cùng số (bảng trong MD&A, bảng số liệu quý của 10‑K FY2019 và FY2020, thông cáo quý 4, báo cáo năm sau); cộng các quý rồi so với số 6 tháng, 9 tháng NIKE in sẵn; hoặc tính lại từ báo cáo tài chính.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10.5pt",
+                      "color": "#3b4350"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "– Tỷ lệ tăng trưởng loại trừ tỷ giá của bán buôn chỉ được in một lần trong mỗi 10‑Q. Vì vậy cả 36 tỷ lệ loại trừ tỷ giá của quý 1–3 đều được đọc lại ngay trên trang báo cáo quý, có ảnh chụp từng chỗ ở trang “Đối chiếu 36 số”.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",

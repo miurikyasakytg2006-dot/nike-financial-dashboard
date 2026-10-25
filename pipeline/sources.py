@@ -1,4 +1,5 @@
-"""Registry of the official NIKE, Inc. filings used as primary sources (Form 10-K and Form 10-Q).
+"""Registry of the official NIKE, Inc. filings used as primary sources (Form 10-K, Form 10-Q and the fourth-quarter
+earnings releases furnished on Form 8-K).
 
 Each filing is identified by its SEC accession number. The SEC EDGAR URLs are the canonical
 citations. The documents and XBRL packages are downloaded from NIKE's investor-relations
@@ -6,8 +7,11 @@ mirror of the same EDGAR filings (www.sec.gov requires a contact e-mail in the U
 for automated access).
 
 Scope: fiscal 2019 to fiscal 2021 (1 June 2018 – 31 May 2021), by year and by quarter.
-The reports for fiscal 2022 and fiscal 2023 are read only to see whether NIKE later
-presented the fiscal 2019–2021 figures differently.
+There is no 10-Q for a fourth quarter; NIKE's fourth-quarter earnings release (Form 8-K,
+Exhibit 99.1) states the quarter's percentages and its three-month figures, which confirm
+the fourth quarter computed as the year minus nine months. The reports for fiscal 2022 and
+fiscal 2023 are read only to see whether NIKE later presented the fiscal 2019–2021 figures
+differently.
 """
 
 CIK = "320187"
@@ -19,7 +23,8 @@ QUARTERS = [(fy, q) for fy in SCOPE_YEARS for q in (1, 2, 3, 4)]
 
 FILINGS = [
     # id, form, fiscal year, quarter, accession, primary document, XBRL instance (filings before inline XBRL), filed,
-    # period end, role ("scope": source of the figures; "check": read only for later presentations of them)
+    # period end, role ("scope": source of the figures; "q4release": fourth-quarter earnings release; "check": read
+    # only for later presentations of them)
     ("10-K FY2019", "10-K", 2019, None, "0000320187-19-000051", "nke-531201910k.htm", "nke-20190531.xml", "2019-07-23", "2019-05-31", "scope"),
     ("10-Q Q1 FY2019", "10-Q", 2019, 1, "0000320187-18-000213", "nke-08312018x10q.htm", "nke-20180831.xml", "2018-10-05", "2018-08-31", "scope"),
     ("10-Q Q2 FY2019", "10-Q", 2019, 2, "0000320187-19-000007", "nke-11302018x10q.htm", "nke-20181130.xml", "2019-01-08", "2018-11-30", "scope"),
@@ -32,6 +37,9 @@ FILINGS = [
     ("10-Q Q1 FY2021", "10-Q", 2021, 1, "0000320187-20-000061", "nke-20200831.htm", None, "2020-10-08", "2020-08-31", "scope"),
     ("10-Q Q2 FY2021", "10-Q", 2021, 2, "0000320187-21-000003", "nke-20201130.htm", None, "2021-01-05", "2020-11-30", "scope"),
     ("10-Q Q3 FY2021", "10-Q", 2021, 3, "0000320187-21-000012", "nke-20210228.htm", None, "2021-04-02", "2021-02-28", "scope"),
+    ("8-K Q4 FY2019", "8-K", 2019, 4, "0000320187-19-000044", "q4fy19exhibit991er.htm", None, "2019-06-27", "2019-05-31", "q4release"),
+    ("8-K Q4 FY2020", "8-K", 2020, 4, "0000320187-20-000033", "q4fy20exhibit991er.htm", None, "2020-06-25", "2020-05-31", "q4release"),
+    ("8-K Q4 FY2021", "8-K", 2021, 4, "0000320187-21-000025", "q4fy21exhibit991er.htm", None, "2021-06-24", "2021-05-31", "q4release"),
     ("10-Q Q1 FY2022", "10-Q", 2022, 1, "0000320187-21-000045", "nke-20210831.htm", None, "2021-10-05", "2021-08-31", "check"),
     ("10-Q Q2 FY2022", "10-Q", 2022, 2, "0000320187-22-000004", "nke-20211130.htm", None, "2022-01-06", "2021-11-30", "check"),
     ("10-Q Q3 FY2022", "10-Q", 2022, 3, "0000320187-22-000017", "nke-20220228.htm", None, "2022-04-05", "2022-02-28", "check"),
@@ -59,6 +67,14 @@ def annual_filing(fy):
 
 def quarterly_filing(fy, q):
     return filing(f"10-Q Q{q} FY{fy}")
+
+
+def release_filing(fy):
+    """The fourth-quarter earnings release of a fiscal year (Form 8-K, Exhibit 99.1), or None outside the scope."""
+    try:
+        return filing(f"8-K Q4 FY{fy}")
+    except KeyError:
+        return None
 
 
 def source_filing(period):
@@ -95,6 +111,8 @@ def ir_document_url(f):
 def document_title(f):
     if f["form"] == "10-K":
         return f"NIKE, Inc. Form 10-K for the fiscal year ended May 31, {f['fy']}"
+    if f["form"] == "8-K":
+        return f"NIKE, Inc. fiscal {f['fy']} fourth quarter and full year results (press release, Form 8-K Exhibit 99.1)"
     d = f["period_end"]
     month = {"08": "August", "11": "November", "02": "February"}[d[5:7]]
     return f"NIKE, Inc. Form 10-Q for the quarterly period ended {month} {int(d[8:])}, {d[:4]}"
