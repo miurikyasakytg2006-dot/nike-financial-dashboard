@@ -11,8 +11,8 @@ workbook) and the wording of site/index.html and site/assets/app.js, and writes:
 
 Power BI Desktop turns the project into the .pbix handed to the team: open the .pbip,
 Refresh, then File > Save as > Power BI file. Figures come from the JSON unchanged; the
-only derived values are USD million to billion and "rest of NIKE Direct" (NIKE Direct
-minus Digital), which draws Digital inside NIKE Direct as a stacked column.
+key findings and notes are the strings the pipeline wrote there, so the web, Excel and
+Power BI versions say the same thing.
 """
 import glob
 import json
@@ -41,80 +41,46 @@ VC_SCHEMA = SCHEMA + "item/report/definition/visualContainer/2.4.0/schema.json"
 PAGE_SCHEMA = SCHEMA + "item/report/definition/page/2.0.0/schema.json"
 STATUS_PENDING = "Chờ người kiểm tra"
 MINUS = "\u2212"
+COVID = "FY2020Q4"
+DASHBOARD_URL = "https://miurikyasakytg2006-dot.github.io/nike-financial-dashboard/"
+SRC_PAGE = "Nguồn và giải thích"
 
 # Palette and type, as in site/assets/app.js and styles.css
 C = dict(direct="#2a78d6", wholesale="#eb6834", gbd="#a3a9b2", directLight="#86b6ef", digital="#1c5cab",
-         total="#475467", overhead="#6250d6", demand="#1baf7a",
+         total="#475467", margin="#6250d6", up="#1baf7a", down="#c8453b", past="#98a2b3",
          ink="#15191e", ink2="#3b4350", muted="#5b6472", faint="#6f7784", grid="#e6e9ee", axis="#c3c9d1", rule="#dde1e6")
 SANS, SERIF = "Segoe UI", "Cambria"
 PAGE_W, MARGIN = 1280, 40
-NBSP, NB_HYPHEN = " ", "‑"
+L, R, CW = MARGIN, 660, 580          # the two chart columns
+NBSP, NB_HYPHEN, WJ = "\u00a0", "\u2011", "\u2060"   # escapes, so that no editor turns them into plain characters
 
 
 def glue(text):
-    """Keep together what reads badly when a text box, the summary card or a table label splits it (the same rule as
-    in build_excel_dashboard.py): "10-K" and "non-GAAP" take a non-breaking hyphen, "10-K" stays with the "FY" after
-    it and a figure with its unit, also where DAX joins them ('" tỷ USD')."""
-    text = text.replace("10-K", "10" + NB_HYPHEN + "K").replace("non-GAAP", "non" + NB_HYPHEN + "GAAP")
-    text = text.replace("10" + NB_HYPHEN + "K FY", "10" + NB_HYPHEN + "K" + NBSP + "FY")
+    """Keep together what reads badly when a text box or a table label splits it (the same rule as in
+    build_excel_dashboard.py): "10-K", "10-Q" and "non-GAAP" take a non-breaking hyphen, a report stays with its
+    period, a figure with its unit, and the two ends of a period range."""
+    text = (text.replace("10-K", "10" + NB_HYPHEN + "K").replace("10-Q", "10" + NB_HYPHEN + "Q")
+            .replace("non-GAAP", "non" + NB_HYPHEN + "GAAP"))
+    text = re.sub(r"(10" + NB_HYPHEN + "[KQ]) (?=Q[1-4]|FY)", "\\1" + NBSP, text)
+    text = re.sub(r"\b(Q[1-4]) (FY\d{4})", "\\1" + NBSP + "\\2", text)
+    text = re.sub(r"(FY\d{4}) → (FY\d{4})", "\\1" + NBSP + "→" + NBSP + "\\2", text)
+    # A word joiner on each side of the en dash keeps a period range such as "FY2019–FY2021" on one line.
+    text = re.sub(r"(FY\d{4})–(FY\d{4})", "\\1" + WJ + "–" + WJ + "\\2", text)
     text = re.sub(r"(\d) (tỷ|triệu) USD", "\\1" + NBSP + "\\2" + NBSP + "USD", text)
-    return text.replace('" tỷ USD', '"' + NBSP + "tỷ" + NBSP + "USD")
+    text = re.sub(r"(\d) ngày", "\\1" + NBSP + "ngày", text)
+    return re.sub(r"(\d) điểm %", "\\1" + NBSP + "điểm" + NBSP + "%", text)
 
 
-# Table rows mirror TABLES in site/assets/app.js: (kind, id, label, unit, format).
-TABLES = {
-    "kenh": [
-        ("g", "Doanh thu NIKE Brand"),
-        ("obs", "nike_direct_revenue", "NIKE Direct", "triệu USD", "amount"),
-        ("obs", "nike_brand_wholesale_revenue", "Bán buôn (Wholesale)", "triệu USD", "amount"),
-        ("obs", "global_brand_divisions_revenue", "Global Brand Divisions", "triệu USD", "amount"),
-        ("obs", "nike_brand_revenue", "Tổng doanh thu NIKE Brand", "triệu USD", "amount"),
-        ("g", "Cơ cấu theo kênh"),
-        ("kpi", "direct_share", "Tỷ trọng NIKE Direct", "%", "pct1"),
-        ("kpi", "wholesale_share", "Tỷ trọng bán buôn", "%", "pct1"),
-        ("obs", "nike_direct_share_stated", "Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)", "%", "pct0"),
-        ("g", "Tăng trưởng so với năm trước"),
-        ("kpi", "direct_growth", "NIKE Direct, theo báo cáo", "%", "spct1"),
-        ("obs", "nike_direct_pct_change_cn", "NIKE Direct, loại trừ tỷ giá (non-GAAP)", "%", "spct0"),
-        ("kpi", "wholesale_growth", "Bán buôn, theo báo cáo", "%", "spct1"),
-        ("obs", "nike_brand_wholesale_pct_change_cn", "Bán buôn, loại trừ tỷ giá (non-GAAP)", "%", "spct0"),
-        ("kpi", "nike_brand_growth", "NIKE Brand, theo báo cáo", "%", "spct1"),
-        ("g", "NIKE Brand Digital (một phần của NIKE Direct)"),
-        ("obs", "nike_brand_digital_sales", "Doanh số Digital", "tỷ USD", "num1"),
-        ("kpi", "digital_share_of_direct", "Digital trong NIKE Direct (xấp xỉ)", "%", "pct0"),
-    ],
-    "ketqua": [
-        ("g", "Báo cáo kết quả kinh doanh"),
-        ("obs", "revenues", "Doanh thu", "triệu USD", "amount"),
-        ("obs", "cost_of_sales", "Giá vốn hàng bán", "triệu USD", "amount"),
-        ("obs", "gross_profit", "Lợi nhuận gộp", "triệu USD", "amount"),
-        ("obs", "demand_creation_expense", "Chi phí tạo nhu cầu", "triệu USD", "amount"),
-        ("obs", "operating_overhead_expense", "Chi phí vận hành chung", "triệu USD", "amount"),
-        ("obs", "total_selling_admin_expense", "Tổng chi phí bán hàng và quản lý", "triệu USD", "amount"),
-        ("obs", "interest_expense_net", "Chi phí (thu nhập) lãi thuần", "triệu USD", "amount"),
-        ("obs", "other_expense_net", "Chi phí (thu nhập) khác thuần", "triệu USD", "amount"),
-        ("obs", "income_before_taxes", "Lợi nhuận trước thuế", "triệu USD", "amount"),
-        ("obs", "income_tax_expense", "Chi phí thuế thu nhập", "triệu USD", "amount"),
-        ("obs", "net_income", "Lợi nhuận sau thuế", "triệu USD", "amount"),
-        ("g", "Tỷ lệ trên doanh thu và tăng trưởng"),
-        ("kpi", "revenue_growth", "Tăng trưởng doanh thu, theo báo cáo", "%", "spct1"),
-        ("obs", "revenues_pct_change_cn", "Tăng trưởng doanh thu, loại trừ tỷ giá (non-GAAP)", "%", "spct0"),
-        ("kpi", "gross_margin", "Biên lợi nhuận gộp", "%", "pct1"),
-        ("kpi", "sga_ratio", "Chi phí bán hàng và quản lý / doanh thu", "%", "pct1"),
-        ("kpi", "demand_creation_ratio", "Trong đó: tạo nhu cầu / doanh thu", "%", "pct1"),
-        ("kpi", "operating_overhead_ratio", "Trong đó: vận hành chung / doanh thu", "%", "pct1"),
-        ("kpi", "net_income_margin", "Biên lợi nhuận sau thuế", "%", "pct1"),
-        ("g", "EBIT (non-GAAP, định nghĩa của NIKE)"),
-        ("obs", "ebit_reported", "EBIT do NIKE công bố", "triệu USD", "amount"),
-        ("kpi", "ebit_margin", "Biên EBIT", "%", "pct1"),
-        ("g", "Hàng tồn kho"),
-        ("obs", "inventories", "Hàng tồn kho tại 31/5", "triệu USD", "amount"),
-        ("kpi", "inventory_growth", "Thay đổi so với đầu kỳ", "%", "spct1"),
-        ("kpi", "inventory_turnover", "Vòng quay hàng tồn kho", "lần", "num2"),
-        ("kpi", "days_inventory", "Số ngày tồn kho bình quân", "ngày", "num1"),
-    ],
-}
-TABLE_NAMES = {"kenh": "BangKenh", "ketqua": "BangKetQua"}
+def for_pbi(text):
+    """Web wording that does not hold in the report: the grey band of the quarterly charts, where the list of reports
+    is, and the page references of the quarterly table."""
+    text = re.sub(r" ?Vùng tô xám là quý 4 FY2020[^.]*\.", "", text)
+    text = text.replace("Điểm rỗng ở quý 4 là ước tính.", "Số quý 4 là ước tính.")
+    return text.replace("(danh sách ở cuối trang)", f"(danh sách ở trang “{SRC_PAGE}”)")
+
+
+def region_title(r):
+    return r["vi"] if r["vi"] == r["short"] else f"{r['vi']} ({r['short']})"
 
 
 # ------------------------------------------------------------------ vi-VN formatting (as app.js)
@@ -124,38 +90,112 @@ def nf(v, d):
 
 
 def num(v, d=0):
-    return "—" if v is None else (MINUS if v < 0 else "") + nf(v, d)
+    return "—" if v is None else (MINUS if v < 0 and nf(v, d).strip("0,.") else "") + nf(v, d)
+
+
+def signed(v, d=0):
+    s = nf(v, d)
+    return ("" if not s.strip("0,.") else "+" if v > 0 else MINUS) + s
+
+
+def stated(v):
+    s = f"{round(v, 3):.3f}".rstrip("0")
+    return num(v, max(1, len(s.split(".")[1])))
 
 
 FORMATS = {
     "amount": lambda v: "(" + nf(v, 0) + ")" if v < 0 else nf(v, 0),
     "pct1": lambda v: num(v * 100, 1) + "%",
     "pct0": lambda v: num(v * 100, 0) + "%",
-    "spct1": lambda v: ("+" if v > 0 else MINUS if v < 0 else "") + nf(v * 100, 1) + "%",
-    "spct0": lambda v: ("+" if v > 0 else MINUS if v < 0 else "") + nf(v * 100, 0) + "%",
-    "num1": lambda v: num(v, 1),
-    "num2": lambda v: num(v, 2),
+    "spct1": lambda v: signed(v * 100, 1) + "%",
+    "spct0": lambda v: signed(v * 100, 0) + "%",
+    "pts1": lambda v: signed(v * 100, 1),
+    "stated": stated,
+    "num0": lambda v: num(v, 0),
 }
 
+# Table rows mirror the row lists in site/assets/app.js: (kind, id, label, unit, format).
+CHANNEL_ROWS = [
+    ("g", "Doanh thu NIKE Brand theo kênh"),
+    ("obs", "nike_direct_revenue", "NIKE Direct", "triệu USD", "amount"),
+    ("obs", "nike_brand_wholesale_revenue", "Bán buôn (Wholesale)", "triệu USD", "amount"),
+    ("obs", "global_brand_divisions_revenue", "Global Brand Divisions", "triệu USD", "amount"),
+    ("obs", "nike_brand_revenue", "Tổng doanh thu NIKE Brand", "triệu USD", "amount"),
+    ("g", "Cơ cấu và tăng trưởng"),
+    ("kpi", "direct_share", "Tỷ trọng NIKE Direct", "%", "pct1"),
+    ("obs", "nike_direct_share_stated", "Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)", "%", "pct0"),
+    ("kpi", "direct_growth", "Tăng trưởng NIKE Direct, theo báo cáo", "%", "spct1"),
+    ("obs", "nike_direct_pct_change_cn", "Tăng trưởng NIKE Direct, loại trừ tỷ giá (non-GAAP)", "%", "spct0"),
+    ("kpi", "wholesale_growth", "Tăng trưởng bán buôn, theo báo cáo", "%", "spct1"),
+    ("obs", "nike_brand_wholesale_pct_change_cn", "Tăng trưởng bán buôn, loại trừ tỷ giá (non-GAAP)", "%", "spct0"),
+    ("kpi", "nike_brand_growth", "Tăng trưởng NIKE Brand, theo báo cáo", "%", "spct1"),
+    ("kpi", "direct_contribution", "Trong đó: đóng góp của NIKE Direct", "điểm %", "pts1"),
+    ("kpi", "wholesale_contribution", "Trong đó: đóng góp của bán buôn", "điểm %", "pts1"),
+    ("g", "NIKE Brand Digital (một phần của NIKE Direct)"),
+    ("obs", "nike_brand_digital_sales", "Doanh số Digital", "tỷ USD", "stated"),
+    ("kpi", "digital_share_of_direct", "Digital trong NIKE Direct (xấp xỉ)", "%", "pct0"),
+    ("kpi", "direct_ex_digital", "NIKE Direct ngoài Digital (ước tính)", "triệu USD", "amount"),
+]
+FINANCE_ROWS = [
+    ("g", "Báo cáo kết quả kinh doanh (NIKE, Inc.)"),
+    ("obs", "revenues", "Doanh thu", "triệu USD", "amount"),
+    ("obs", "cost_of_sales", "Giá vốn hàng bán", "triệu USD", "amount"),
+    ("obs", "gross_profit", "Lợi nhuận gộp", "triệu USD", "amount"),
+    ("obs", "demand_creation_expense", "Chi phí tạo nhu cầu", "triệu USD", "amount"),
+    ("obs", "operating_overhead_expense", "Chi phí vận hành chung", "triệu USD", "amount"),
+    ("obs", "total_selling_admin_expense", "Tổng chi phí bán hàng và quản lý", "triệu USD", "amount"),
+    ("obs", "interest_expense_net", "Chi phí (thu nhập) lãi thuần", "triệu USD", "amount"),
+    ("obs", "other_expense_net", "Chi phí (thu nhập) khác thuần", "triệu USD", "amount"),
+    ("obs", "income_before_taxes", "Lợi nhuận trước thuế", "triệu USD", "amount"),
+    ("obs", "income_tax_expense", "Chi phí thuế thu nhập", "triệu USD", "amount"),
+    ("obs", "net_income", "Lợi nhuận sau thuế", "triệu USD", "amount"),
+    ("g", "Tỷ lệ trên doanh thu và tăng trưởng"),
+    ("kpi", "revenue_growth", "Tăng trưởng doanh thu, theo báo cáo", "%", "spct1"),
+    ("obs", "revenues_pct_change_cn", "Tăng trưởng doanh thu, loại trừ tỷ giá (non-GAAP)", "%", "spct0"),
+    ("kpi", "gross_margin", "Biên lợi nhuận gộp", "%", "pct1"),
+    ("kpi", "demand_creation_ratio", "Chi phí tạo nhu cầu / doanh thu", "%", "pct1"),
+    ("kpi", "operating_overhead_ratio", "Chi phí vận hành chung / doanh thu", "%", "pct1"),
+    ("kpi", "net_income_margin", "Biên lợi nhuận sau thuế", "%", "pct1"),
+    ("g", "EBIT (non-GAAP, định nghĩa của NIKE)"),
+    ("obs", "ebit_reported", "EBIT do NIKE công bố", "triệu USD", "amount"),
+    ("kpi", "ebit_margin", "Biên EBIT", "%", "pct1"),
+    ("g", "Hàng tồn kho"),
+    ("obs", "inventories", "Hàng tồn kho cuối kỳ", "triệu USD", "amount"),
+    ("kpi", "inventory_growth", "So với cùng thời điểm năm trước", "%", "spct1"),
+    ("kpi", "days_inventory", "Số ngày tồn kho bình quân", "ngày", "num0"),
+]
 
-def vn_date(iso):
-    y, m, d = iso.split("-")
-    return f"{d}/{m}/{y}"
+
+def region_rows(regions):
+    rows = []
+    for r in regions:
+        rid = r["id"]
+        rows += [("g", region_title(r)),
+                 ("obs", f"{rid}_revenue", "Doanh thu", "triệu USD", "amount"),
+                 ("obs", f"{rid}_direct_revenue", "NIKE Direct", "triệu USD", "amount"),
+                 ("obs", f"{rid}_wholesale_revenue", "Bán buôn", "triệu USD", "amount"),
+                 ("kpi", f"{rid}_direct_share", "Tỷ trọng NIKE Direct", "%", "pct1"),
+                 ("kpi", f"{rid}_growth", "Tăng trưởng doanh thu, theo báo cáo", "%", "spct1"),
+                 ("obs", f"{rid}_ebit", "EBIT", "triệu USD", "amount"),
+                 ("kpi", f"{rid}_ebit_margin", "Biên EBIT", "%", "pct1")]
+    return rows
 
 
-def table_cells(row, y, obs, kpis, filings):
-    """Figure, page reference and 10-K link of one table cell, as renderTable() in app.js shows them."""
+def table_cell(row, p, d):
+    """Figure, page reference and report link of one table cell, as renderTable() in app.js shows them."""
     kind, mid, _, _, fmt = row
     if kind == "kpi":
-        v = kpis[mid]["values"][str(y)]
+        v = d["kpis"][mid]["values"][p]
         return ("—" if v is None else FORMATS[fmt](v)), "", None
-    o = obs[mid].get(str(y))
+    o = d["observations"][mid].get(p)
     if not o or o["value"] is None:
         return "Không công bố", "", None
+    if o["method"] == "q4_derived":
+        return ("≈" + num(o["value"], 1)) if o["approx"] else FORMATS[fmt](o["value"]), "", None
     mark = "†" if o["status"] == STATUS_PENDING else ""
     if not o.get("page"):
         return FORMATS[fmt](o["value"]), mark, None
-    return FORMATS[fmt](o["value"]), " ".join(filter(None, [mark, f"tr. {o['page']}"])), filings[str(y)]["url"]
+    return FORMATS[fmt](o["value"]), " ".join(filter(None, [mark, f"tr. {o['page']}"])), d["filings"][o["source"]]["url"]
 
 
 # ------------------------------------------------------------------ wording from the web dashboard
@@ -175,52 +215,43 @@ class Wording:
 
         self.title = text("//h1")
         self.subtitle = text("//p[@class='masthead-sub']")
-        self.tab = {v: text(f"//button[@id='tab-{v}']") for v in ("channels", "performance")}
-        self.question = {v: text(f"//section[@id='view-{v}']//h2") for v in ("channels", "performance")}
-        self.summary_label = text("//p[@class='summary-label']")
+        self.findings_title = text("//section[@id='phat-hien']//h2")
+        self.findings_note = text("//section[@id='phat-hien']//p[@class='block-note']")
+        self.sections = {s: (text(f"//section[@id='{s}']//p[@class='block-kicker']"), text(f"//section[@id='{s}']//h2"))
+                         for s in ("kenh", "quy", "digital", "khu-vuc", "loi-nhuan", "nike-giai-thich")}
+        self.quotes_note = text("//section[@id='nike-giai-thich']//p[@class='block-note']")
         self.fig = {}
         for f in doc.xpath("//figure[@id]"):
             sub = f.xpath(".//p[contains(@class,'figure-sub')]")
             self.fig[f.get("id")] = (" ".join(f.xpath(".//h3")[0].text_content().split()),
-                                     " ".join(sub[0].text_content().split()) if sub else "")
-        self.notes = {}
-        for v in ("channels", "performance"):
-            aside = one(f"//section[@id='view-{v}']//aside")
-            self.notes[v] = (" ".join(aside.xpath(".//h3")[0].text_content().split()),
-                             [(" ".join(dt.text_content().split()), " ".join(dd.text_content().split()))
-                              for dt, dd in zip(aside.xpath(".//dt"), aside.xpath(".//dd"))])
-        self.table_title, self.table_key, self.pending_key = {}, {}, ""
-        for v in ("channels", "performance"):
-            self.table_title[v] = text(f"//h3[@id='table-{v}-title']")
-            key = one(f"//section[@id='view-{v}']//p[@class='table-key']")
-            pending = key.xpath(".//span[@class='pending-key']")
-            if pending:
-                self.pending_key = " ".join(pending[0].text_content().split())
-                pending[0].drop_tree()
-            self.table_key[v] = " ".join(key.text_content().split())
+                                     for_pbi(" ".join(sub[0].text_content().split())) if sub else "")
+        aside = one("//aside[@aria-labelledby='notes-title']")
+        self.notes = (" ".join(aside.xpath(".//h3")[0].text_content().split()),
+                      [(" ".join(dt.text_content().split()), " ".join(dd.text_content().split()))
+                       for dt, dd in zip(aside.xpath(".//dt"), aside.xpath(".//dd"))])
         self.footer_title = text("//footer//h2")
         self.footer_heads = [" ".join(h.text_content().split()) for h in doc.xpath("//footer//h3")]
         self.method = [" ".join(li.text_content().split()) for li in doc.xpath("//footer//ul[@class='plain-list']/li")]
         self.fine = text("//footer//p[@class='fine']")
-
-        self.sources = dict(re.findall(r"sourceLine\('(\w+)', '([^']*)'", js))
-        m = re.search(r"sourceLine\('growth', cn \? '([^']*)'\s*:\s*'([^']*)'", js)
-        if not m:
-            raise SystemExit("app.js: growth source line not found")
-        self.sources["growth_cn"], self.sources["growth"] = m.group(1), m.group(2)
-        self.legends = {k: re.findall(r"name: '([^']*)', label: '([^']*)'", body)
-                        for k, body in re.findall(r"(\w+): function \(\) \{\s*return \[(.*?)\];", js, re.S)}
-        self.legends["growth"] = self.legends["channelRevenue"]
-        m = re.search(r"getElementById\('growth-sub'\)\.textContent = cn\s*\?\s*'([^']*)'\s*:\s*'([^']*)'", js)
-        if not m:
-            raise SystemExit("app.js: growth subtitle not found")
-        self.growth_sub_cn, self.growth_sub = m.group(1), m.group(2)
-        for k in ("share", "channelRevenue", "digital", "revenue", "grossMargin", "sga", "ebit", "inventory", "days"):
+        self.sources = {}
+        tail = re.search(r"function quarterSources\(text\) \{\s*return text \+ '([^']*)'", js).group(1)
+        for cid, body in re.findall(r"sourceLine\('(\w+)', (.+?)\);\n", js, flags=re.S):
+            m = re.match(r"(quarterSources\()?'([^']*)'", body)
+            self.sources[cid] = for_pbi(m.group(2) + (tail if m.group(1) else ""))
+        self.subs = {}
+        for cid in ("change-sub", "bridge-sub"):
+            m = re.search(rf"getElementById\('{cid}'\)\.textContent = '([^']*)' \+ a \+ '([^']*)' \+ b \+\s*'([^']*)'", js)
+            if not m:
+                raise SystemExit(f"app.js: subtitle {cid} not found")
+            self.subs[cid] = m.groups()
+        for k in ("share", "change", "shareQ", "channelQ", "digital", "digitalQ", "regions", "regionsEbit", "bridge", "marginsQ",
+                  "inventoryQ", "daysQ"):
             if k not in self.sources:
                 raise SystemExit(f"app.js: source line for {k} not found")
 
-    def legend(self, chart, name):
-        return dict(self.legends[chart])[name]
+    def sub(self, cid, a, b):
+        p = self.subs[cid]
+        return p[0] + a + p[1] + b + p[2]
 
 
 # ------------------------------------------------------------------ semantic model (TMDL)
@@ -255,8 +286,6 @@ def tmdl_table(name, columns, rows, measures=(), hidden=False):
             out += ["\t\t\t" + line for line in expr]
         if m.get("format"):
             out.append(f"\t\tformatString: {m['format']}")
-        if m.get("folder"):
-            out.append(f"\t\tdisplayFolder: {m['folder']}")
         out.append("")
     for c in columns:
         out += [f"\tcolumn {tmdl_name(c['name'])}", f"\t\tdataType: {c['type']}"]
@@ -280,159 +309,149 @@ def col(name, kind, **kw):
     return dict(name=name, type=kind, m=m_types[kind], **kw)
 
 
-def dax_summary_channels():
-    return """
-VAR a = MIN ( Nam[FY] )
-VAR b = MAX ( Nam[FY] )
-VAR shA = CALCULATE ( SUM ( Nam[direct_share] ), Nam[FY] = a )
-VAR shB = CALCULATE ( SUM ( Nam[direct_share] ), Nam[FY] = b )
-VAR hi = MINX ( TOPN ( 1, VALUES ( Nam[FY] ), CALCULATE ( SUM ( Nam[direct_share] ) ), DESC ), Nam[FY] )
-VAR lo = MINX ( TOPN ( 1, VALUES ( Nam[FY] ), CALCULATE ( SUM ( Nam[direct_share] ) ), ASC ), Nam[FY] )
-VAR shHi = CALCULATE ( SUM ( Nam[direct_share] ), Nam[FY] = hi )
-VAR shLo = CALCULATE ( SUM ( Nam[direct_share] ), Nam[FY] = lo )
-VAR wsA = CALCULATE ( SUM ( Nam[wholesale_share] ), Nam[FY] = a )
-VAR dA = CALCULATE ( SUM ( Nam[nike_direct_revenue] ), Nam[FY] = a ) / 1000
-VAR dB = CALCULATE ( SUM ( Nam[nike_direct_revenue] ), Nam[FY] = b ) / 1000
-VAR wA = CALCULATE ( SUM ( Nam[nike_brand_wholesale_revenue] ), Nam[FY] = a ) / 1000
-VAR wB = CALCULATE ( SUM ( Nam[nike_brand_wholesale_revenue] ), Nam[FY] = b ) / 1000
-RETURN
-    IF (
-        a = b,
-        "Trong FY" & a & ", NIKE Direct chiếm " & FORMAT ( shA, "0.0%", "vi-VN" ) & " doanh thu NIKE Brand ("
-            & FORMAT ( dA, "#,0.0", "vi-VN" ) & " tỷ USD), còn bán buôn chiếm " & FORMAT ( wsA, "0.0%", "vi-VN" ) & " ("
-            & FORMAT ( wA, "#,0.0", "vi-VN" ) & " tỷ USD).",
-        "Tỷ trọng NIKE Direct trong doanh thu NIKE Brand là " & FORMAT ( shA, "0.0%", "vi-VN" ) & " ở FY" & a & " và "
-            & FORMAT ( shB, "0.0%", "vi-VN" ) & " ở FY" & b
-            & IF ( hi <> a && hi <> b, ", cao nhất " & FORMAT ( shHi, "0.0%", "vi-VN" ) & " (FY" & hi & ")" )
-            & IF ( lo <> a && lo <> b, IF ( hi <> a && hi <> b, " và thấp nhất ", ", thấp nhất " )
-                & FORMAT ( shLo, "0.0%", "vi-VN" ) & " (FY" & lo & ")" )
-            & ". Doanh thu NIKE Direct đi từ " & FORMAT ( dA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( dB, "#,0.0", "vi-VN" )
-            & " tỷ USD, còn bán buôn từ " & FORMAT ( wA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( wB, "#,0.0", "vi-VN" ) & " tỷ USD."
-    )
-"""
-
-
-def dax_summary_performance():
-    return """
-VAR a = MIN ( Nam[FY] )
-VAR b = MAX ( Nam[FY] )
-VAR rA = CALCULATE ( SUM ( Nam[revenues] ), Nam[FY] = a ) / 1000
-VAR rB = CALCULATE ( SUM ( Nam[revenues] ), Nam[FY] = b ) / 1000
-VAR gA = CALCULATE ( SUM ( Nam[gross_margin] ), Nam[FY] = a )
-VAR gB = CALCULATE ( SUM ( Nam[gross_margin] ), Nam[FY] = b )
-VAR eA = CALCULATE ( SUM ( Nam[ebit_margin] ), Nam[FY] = a )
-VAR eB = CALCULATE ( SUM ( Nam[ebit_margin] ), Nam[FY] = b )
-VAR yHi = MINX ( TOPN ( 1, VALUES ( Nam[FY] ), CALCULATE ( SUM ( Nam[ebit_margin] ) ), DESC ), Nam[FY] )
-VAR eHi = CALCULATE ( SUM ( Nam[ebit_margin] ), Nam[FY] = yHi )
-VAR iA = CALCULATE ( SUM ( Nam[inventories] ), Nam[FY] = a ) / 1000
-VAR iB = CALCULATE ( SUM ( Nam[inventories] ), Nam[FY] = b ) / 1000
-RETURN
-    IF (
-        a = b,
-        "Trong FY" & a & ", doanh thu NIKE, Inc. là " & FORMAT ( rA, "#,0.0", "vi-VN" ) & " tỷ USD, biên lợi nhuận gộp "
-            & FORMAT ( gA, "0.0%", "vi-VN" ) & ", biên EBIT (non-GAAP) " & FORMAT ( eA, "0.0%", "vi-VN" )
-            & ", hàng tồn kho cuối kỳ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " tỷ USD.",
-        "Doanh thu NIKE, Inc. đi từ " & FORMAT ( rA, "#,0.0", "vi-VN" ) & " (FY" & a & ") đến " & FORMAT ( rB, "#,0.0", "vi-VN" )
-            & " tỷ USD (FY" & b & "). Biên lợi nhuận gộp là " & FORMAT ( gA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
-            & FORMAT ( gB, "0.0%", "vi-VN" ) & " (FY" & b & "), còn biên EBIT (non-GAAP) là " & FORMAT ( eA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
-            & FORMAT ( eB, "0.0%", "vi-VN" ) & " (FY" & b & ")"
-            & IF ( yHi <> a && yHi <> b, ", cao nhất " & FORMAT ( eHi, "0.0%", "vi-VN" ) & " (FY" & yHi & ")" )
-            & ". Hàng tồn kho cuối kỳ đi từ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( iB, "#,0.0", "vi-VN" ) & " tỷ USD."
-    )
-"""
-
-
 SIGNED = "+0.0%;−0.0%;0.0%"
 SIGNED0 = "+0%;−0%;0%"
-CN = 'IF ( [Cơ sở đang chọn] = "Loại trừ tỷ giá", SUM ( Nam[{cn}] ), SUM ( Nam[{rep}] ) )'
-MEASURES = [
-    # Distribution strategy (NIKE Brand)
-    dict(name="Tỷ trọng NIKE Direct", expr="SUM ( Nam[direct_share] )", format="0.0%"),
-    dict(name="Tỷ trọng bán buôn", expr="SUM ( Nam[wholesale_share] )", format="0.0%"),
-    dict(name="Tỷ trọng Global Brand Divisions", expr="SUM ( Nam[gbd_share] )", format="0.00%"),
-    dict(name="NIKE Direct (tỷ USD)", expr="DIVIDE ( SUM ( Nam[nike_direct_revenue] ), 1000 )", format="#,0.0"),
-    dict(name="Bán buôn (tỷ USD)", expr="DIVIDE ( SUM ( Nam[nike_brand_wholesale_revenue] ), 1000 )", format="#,0.0"),
-    dict(name="NIKE Brand (tỷ USD)", expr="DIVIDE ( SUM ( Nam[nike_brand_revenue] ), 1000 )", format="#,0.0"),
-    dict(name="Cơ sở đang chọn", expr='SELECTEDVALUE ( CoSo[Cơ sở], "Theo báo cáo" )'),
-    dict(name="Tăng trưởng NIKE Direct", expr=CN.format(cn="nike_direct_pct_change_cn", rep="direct_growth"), format=SIGNED),
-    dict(name="Tăng trưởng bán buôn", expr=CN.format(cn="nike_brand_wholesale_pct_change_cn", rep="wholesale_growth"), format=SIGNED),
-    dict(name="NIKE Direct theo báo cáo", expr="SUM ( Nam[direct_growth] )", format=SIGNED),
-    dict(name="NIKE Direct loại trừ tỷ giá", expr="SUM ( Nam[nike_direct_pct_change_cn] )", format=SIGNED0),
-    dict(name="Bán buôn theo báo cáo", expr="SUM ( Nam[wholesale_growth] )", format=SIGNED),
-    dict(name="Bán buôn loại trừ tỷ giá", expr="SUM ( Nam[nike_brand_wholesale_pct_change_cn] )", format=SIGNED0),
-    dict(name="Digital (tỷ USD)", expr="SUM ( Nam[nike_brand_digital_sales] )", format="#,0.0"),
-    dict(name="Phần còn lại của NIKE Direct (tỷ USD)", expr="[NIKE Direct (tỷ USD)] - [Digital (tỷ USD)]", format="#,0.0"),
-    dict(name="Digital trong NIKE Direct", expr="SUM ( Nam[digital_share_of_direct] )", format="0%"),
-    # Financial performance (NIKE, Inc.)
-    dict(name="Doanh thu (tỷ USD)", expr="DIVIDE ( SUM ( Nam[revenues] ), 1000 )", format="#,0.0"),
-    dict(name="Tăng trưởng doanh thu", expr="SUM ( Nam[revenue_growth] )", format=SIGNED),
-    dict(name="Tăng trưởng doanh thu loại trừ tỷ giá", expr="SUM ( Nam[revenues_pct_change_cn] )", format=SIGNED0),
-    dict(name="Biên lợi nhuận gộp", expr="SUM ( Nam[gross_margin] )", format="0.0%"),
-    dict(name="Lợi nhuận gộp (tỷ USD)", expr="DIVIDE ( SUM ( Nam[gross_profit] ), 1000 )", format="#,0.0"),
-    dict(name="SG&A / doanh thu", expr="SUM ( Nam[sga_ratio] )", format="0.0%"),
-    dict(name="Vận hành chung / doanh thu", expr="SUM ( Nam[operating_overhead_ratio] )", format="0.0%"),
-    dict(name="Tạo nhu cầu / doanh thu", expr="SUM ( Nam[demand_creation_ratio] )", format="0.0%"),
-    dict(name="SG&A (tỷ USD)", expr="DIVIDE ( SUM ( Nam[total_selling_admin_expense] ), 1000 )", format="#,0.0"),
-    dict(name="Biên EBIT", expr="SUM ( Nam[ebit_margin] )", format="0.0%"),
-    dict(name="EBIT do NIKE công bố (tỷ USD)", expr="DIVIDE ( SUM ( Nam[ebit_reported] ), 1000 )", format="#,0.00"),
-    dict(name="Biên lợi nhuận sau thuế", expr="SUM ( Nam[net_income_margin] )", format="0.0%"),
-    dict(name="Hàng tồn kho (tỷ USD)", expr="DIVIDE ( SUM ( Nam[inventories] ), 1000 )", format="#,0.0"),
-    dict(name="Thay đổi hàng tồn kho", expr="SUM ( Nam[inventory_growth] )", format=SIGNED),
-    dict(name="Vòng quay hàng tồn kho", expr="SUM ( Nam[inventory_turnover] )", format="0.00"),
-    dict(name="Số ngày tồn kho", expr="SUM ( Nam[days_inventory] )", format="0.0"),
-    dict(name="Tồn kho bình quân (tỷ USD)", expr="DIVIDE ( SUM ( Nam[average_inventory] ), 1000 )", format="#,0.00"),
-    dict(name="Giá vốn hàng bán (tỷ USD)", expr="DIVIDE ( SUM ( Nam[cost_of_sales] ), 1000 )", format="#,0.0"),
-    # Text
-    dict(name="Tóm tắt kênh", expr=glue(dax_summary_channels())),
-    dict(name="Tóm tắt kết quả", expr=glue(dax_summary_performance())),
-]
+
+
+QSUFFIX = " (quý)"   # measure names are unique across the whole model; visuals show their own display names
+
+
+def measure_name(m, entity):
+    return m + QSUFFIX if entity == "Quy" else m
+
+
+def measures_for(table):
+    s = lambda c: f"SUM ( {table}[{c}] )"
+    bn = lambda c: f"DIVIDE ( SUM ( {table}[{c}] ), 1000 )"
+    return [dict(m, name=measure_name(m["name"], table)) for m in [
+        dict(name="Tỷ trọng NIKE Direct", expr=s("direct_share"), format="0.0%"),
+        dict(name="Tỷ trọng bán buôn", expr=s("wholesale_share"), format="0.0%"),
+        dict(name="Tỷ trọng Global Brand Divisions", expr=s("gbd_share"), format="0.00%"),
+        dict(name="NIKE Direct (tỷ USD)", expr=bn("nike_direct_revenue"), format="#,0.0"),
+        dict(name="Bán buôn (tỷ USD)", expr=bn("nike_brand_wholesale_revenue"), format="#,0.0"),
+        dict(name="NIKE Brand (tỷ USD)", expr=bn("nike_brand_revenue"), format="#,0.0"),
+        dict(name="Tăng trưởng NIKE Direct", expr=s("direct_growth"), format=SIGNED),
+        dict(name="Tăng trưởng bán buôn", expr=s("wholesale_growth"), format=SIGNED),
+        dict(name="Digital (tỷ USD)", expr=s("nike_brand_digital_sales"), format="#,0.0"),
+        dict(name="Phần còn lại của NIKE Direct (tỷ USD)", expr=bn("direct_ex_digital"), format="#,0.0"),
+        dict(name="Digital trong NIKE Direct", expr=s("digital_share_of_direct"), format="0%"),
+        dict(name="Doanh thu (tỷ USD)", expr=bn("revenues"), format="#,0.0"),
+        dict(name="Biên lợi nhuận gộp", expr=s("gross_margin"), format="0.0%"),
+        dict(name="Biên EBIT", expr=s("ebit_margin"), format="0.0%"),
+        dict(name="Hàng tồn kho (tỷ USD)", expr=bn("inventories"), format="#,0.0"),
+        dict(name="So với cùng thời điểm năm trước", expr=s("inventory_growth"), format=SIGNED),
+        dict(name="Số ngày tồn kho", expr=s("days_inventory"), format="0"),
+        dict(name="Giá vốn hàng bán (tỷ USD)", expr=bn("cost_of_sales"), format="#,0.00"),
+    ]]
 
 
 def semantic_model(d, w, out):
-    years = d["years"]
-    obs, kpis, filings = d["observations"], d["kpis"], d["filings"]
-    nam_cols = [col("FY", "int64", format=r"\F\Y0"), col("Năm", "string", sort_by="FY"), col("Năm (ngắn)", "string", sort_by="FY"),
-                col("Báo cáo", "string", sort_by="FY"), col("Kỳ báo cáo", "string"), col("Ngày nộp SEC", "string"),
-                col("Số accession", "string"), col("Liên kết SEC EDGAR", "string", category="WebUrl")]
-    nam_cols += [col(k, "double", hidden=True) for k in list(obs) + list(kpis)]
-    nam_rows = []
-    for y in years:
-        f = filings[str(y)]
-        r = {"FY": y, "Năm": f"FY{y}", "Năm (ngắn)": f"FY{str(y)[2:]}", "Báo cáo": f"Form 10-K FY{y}", "Kỳ báo cáo": f"01/06/{y - 1} – 31/05/{y}",
-             "Ngày nộp SEC": vn_date(f["filed"]), "Số accession": f["accession"], "Liên kết SEC EDGAR": f["url"]}
-        r.update({k: (obs[k].get(str(y)) or {}).get("value") for k in obs})
-        r.update({k: kpis[k]["values"][str(y)] for k in kpis})
-        nam_rows.append(r)
+    obs, kpis = d["observations"], d["kpis"]
+    A, Q = d["periods"]["A"], d["periods"]["Q"]
+    values = list(obs) + list(kpis)
 
-    tables = {"Nam": tmdl_table("Nam", nam_cols, nam_rows, MEASURES)}
-    for view, spec in TABLES.items():
-        name = TABLE_NAMES[view]
+    def period_rows(periods):
         rows = []
-        for order, row in enumerate(spec, 1):
-            if row[0] == "g":
-                label = glue(row[1]).upper()
-            else:
-                # Percentages carry their own sign; other units go into the row label (one row level only).
-                label = glue(row[2] if row[3] == "%" else f"{row[2]}, {row[3]}")
-            for i, y in enumerate(years):
-                figure, page, link = ("", "", None) if row[0] == "g" else table_cells(row, y, obs, kpis, filings)
-                # Each year is two matrix columns: the figure under "FY2020", then its page reference under a
-                # blank header (non-breaking spaces, a different count per year so the headers stay distinct).
-                cell = {"Thứ tự": order, "Chỉ tiêu": label, "FY": y}
-                rows.append({**cell, "Cột": f"FY{y}", "Thứ tự cột": 2 * i, "Loại": "Số", "Hiển thị": figure, "Liên kết": None})
-                rows.append({**cell, "Cột": " " * (i + 1), "Thứ tự cột": 2 * i + 1, "Loại": "Trang", "Hiển thị": page,
-                             "Liên kết": link})
-        cols = [col("Thứ tự", "int64", hidden=True), col("Chỉ tiêu", "string", sort_by="Thứ tự"),
-                col("FY", "int64", hidden=True, format="0"), col("Cột", "string", sort_by="Thứ tự cột"),
-                col("Thứ tự cột", "int64", hidden=True), col("Loại", "string", hidden=True), col("Hiển thị", "string"),
-                col("Liên kết", "string", category="WebUrl")]
-        # Blank (not "") for years outside the slicer range, so the matrix drops those columns.
-        measures = [dict(name=f"Giá trị {name}", expr=f'IF ( NOT ISEMPTY ( {name} ), COALESCE ( SELECTEDVALUE ( {name}[Hiển thị] ), "" ) )'),
-                    dict(name=f"Liên kết {name}", expr=f"SELECTEDVALUE ( {name}[Liên kết] )"),
-                    dict(name=f"Màu chữ {name}", expr=f'IF ( SELECTEDVALUE ( {name}[Loại] ) = "Trang", "{C["faint"]}", "{C["ink"]}" )')]
-        tables[name] = tmdl_table(name, cols, rows, measures)
-    tables["CoSo"] = tmdl_table("CoSo", [col("Cơ sở", "string", sort_by="Thứ tự"), col("Thứ tự", "int64", hidden=True)],
-                                [{"Cơ sở": "Theo báo cáo", "Thứ tự": 1}, {"Cơ sở": "Loại trừ tỷ giá", "Thứ tự": 2}])
+        for i, p in enumerate(periods):
+            r = {"Kỳ": d["labels"][p], "Thứ tự": i, "Năm": p[:6], "Quý": ("Q" + p[7]) if "Q" in p else p,
+                 "Thời gian": d["dates"][p]}
+            r.update({k: (obs[k].get(p) or {}).get("value") for k in obs})
+            r.update({k: kpis[k]["values"][p] for k in kpis})
+            rows.append(r)
+        return rows
+
+    base = [col("Kỳ", "string", sort_by="Thứ tự"), col("Thứ tự", "int64", hidden=True), col("Năm", "string", sort_by="Thứ tự"),
+            col("Quý", "string", sort_by="Thứ tự"), col("Thời gian", "string")]
+    cols = base + [col(k, "double", hidden=True) for k in values]
+    tables = {"Nam": tmdl_table("Nam", cols, period_rows(A), measures_for("Nam")),
+              "Quy": tmdl_table("Quy", cols, period_rows(Q), measures_for("Quy"))}
+
+    # Change of NIKE Brand revenue by channel, FY2019 -> FY2021 (one measure per colour).
+    a, z = A[0], A[-1]
+    items = [("NIKE Direct", "nike_direct_revenue", "Direct"), ("Bán buôn", "nike_brand_wholesale_revenue", "Bán buôn"),
+             ("Global Brand Divisions", "global_brand_divisions_revenue", "GBD"), ("Tổng NIKE Brand", "nike_brand_revenue", "Tổng")]
+    # The figure goes into the row name ("NIKE Direct  +4,6"): labels inside stacked bars would be unreadable or dropped.
+    delta = lambda m: (obs[m][z]["value"] - obs[m][a]["value"]) / 1000
+    ch_rows = [{"Kênh": f"{n}  {signed(delta(m), 2 if abs(delta(m)) < 0.1 else 1)}", "Thứ tự": i, "Nhóm": g, "Thay đổi": delta(m)}
+               for i, (n, m, g) in enumerate(items)]
+    ch_measures = [dict(name=f"Thay đổi – {g}", expr=f'CALCULATE ( SUM ( ThayDoi[Thay đổi] ), ThayDoi[Nhóm] = "{g}" )',
+                        format='+#,0.00;−#,0.00;0.00') for _, _, g in items]
+    tables["ThayDoi"] = tmdl_table("ThayDoi", [col("Kênh", "string", sort_by="Thứ tự"), col("Thứ tự", "int64", hidden=True),
+                                               col("Nhóm", "string", hidden=True), col("Thay đổi", "double", hidden=True)],
+                                   ch_rows, ch_measures)
+
+    # EBIT margin bridge, FY2019 -> FY2021, in percentage points.
+    k = lambda kid, p: kpis[kid]["values"][p]
+    steps = [("Biên gộp", k("gross_margin", z) - k("gross_margin", a)),
+             ("Tạo nhu cầu", -(k("demand_creation_ratio", z) - k("demand_creation_ratio", a))),
+             ("Vận hành chung", -(k("operating_overhead_ratio", z) - k("operating_overhead_ratio", a)))]
+    start, end = k("ebit_margin", a), k("ebit_margin", z)
+    steps.append(("Khác", end - start - sum(s for _, s in steps)))
+    # As for the change chart, each step's figure is part of its name.
+    pct_ = lambda v: num(v * 100, 1) + "%"
+    br = [{"Bước": f"{a} {pct_(start)}", "Thứ tự": 0, "Nền": 0.0, "Tổng": start * 100, "Tăng": None, "Giảm": None}]
+    running = start
+    for i, (n, s) in enumerate(steps, 1):
+        br.append({"Bước": f"{n} {signed(s * 100, 1)}", "Thứ tự": i, "Nền": (running if s >= 0 else running + s) * 100,
+                   "Tổng": None, "Tăng": s * 100 if s >= 0 else None, "Giảm": -s * 100 if s < 0 else None})
+        running += s
+    br.append({"Bước": f"{z} {pct_(end)}", "Thứ tự": len(steps) + 1, "Nền": 0.0, "Tổng": end * 100, "Tăng": None, "Giảm": None})
+    br_measures = [dict(name="Cầu nối – nền", expr="SUM ( CauNoi[Nền] )", format="0.0"),
+                   dict(name="Cầu nối – biên EBIT", expr="SUM ( CauNoi[Tổng] )", format='0.0"%"'),
+                   dict(name="Cầu nối – làm biên tăng", expr="SUM ( CauNoi[Tăng] )", format='"+"0.0'),
+                   dict(name="Cầu nối – làm biên giảm", expr="SUM ( CauNoi[Giảm] )", format='"−"0.0')]
+    tables["CauNoi"] = tmdl_table("CauNoi", [col("Bước", "string", sort_by="Thứ tự"), col("Thứ tự", "int64", hidden=True)]
+                                  + [col(c, "double", hidden=True) for c in ("Nền", "Tổng", "Tăng", "Giảm")], br, br_measures)
+
+    # Regions: FY2019 and FY2021 side by side.
+    regs = [("Toàn NIKE Brand", "direct_share", None)] + [(r["short"], f"{r['id']}_direct_share", f"{r['id']}_ebit_margin")
+                                                          for r in d["regions"]]
+    kv_rows = [{"Khu vực": n, "Thứ tự": i, "Direct " + a: k(sh, a), "Direct " + z: k(sh, z),
+                "EBIT " + a: k(eb, a) if eb else None, "EBIT " + z: k(eb, z) if eb else None}
+               for i, (n, sh, eb) in enumerate(regs)]
+    kv_cols = [col("Khu vực", "string", sort_by="Thứ tự"), col("Thứ tự", "int64", hidden=True)] + [
+        col(c, "double", hidden=True) for c in ("Direct " + a, "Direct " + z, "EBIT " + a, "EBIT " + z)]
+    kv_measures = [dict(name=f"Tỷ trọng Direct {p}", expr=f"SUM ( KhuVuc[Direct {p}] )", format="0.0%") for p in (a, z)] + [
+        dict(name=f"Biên EBIT khu vực {p}", expr=f"SUM ( KhuVuc[EBIT {p}] )", format="0.0%") for p in (a, z)]
+    tables["KhuVuc"] = tmdl_table("KhuVuc", kv_cols, kv_rows, kv_measures)
+
+    # Tables: annual and regional with a page column per year; quarterly without (twelve columns already).
+    def cells(name, periods, rows, with_pages, labels):
+        out_rows = []
+        for order, row in enumerate(rows, 1):
+            label = glue(row[1]).upper() if row[0] == "g" else glue(row[2] if row[3] == "%" else f"{row[2]}, {row[3]}")
+            for i, p in enumerate(periods):
+                figure, page, link = ("", "", None) if row[0] == "g" else table_cell(row, p, d)
+                cell = {"Thứ tự": order, "Chỉ tiêu": label, "Kỳ": p}
+                step = 2 if with_pages else 1
+                out_rows.append({**cell, "Cột": labels(p), "Thứ tự cột": step * i, "Loại": "Số", "Hiển thị": figure, "Liên kết": None})
+                if with_pages:
+                    # Each period is two matrix columns: the figure, then its page reference under a blank header
+                    # (non-breaking spaces, a different count per period so the headers stay distinct).
+                    out_rows.append({**cell, "Cột": NBSP * (i + 1), "Thứ tự cột": 2 * i + 1, "Loại": "Trang", "Hiển thị": page,
+                                     "Liên kết": link})
+        cols_ = [col("Thứ tự", "int64", hidden=True), col("Chỉ tiêu", "string", sort_by="Thứ tự"), col("Kỳ", "string", hidden=True),
+                 col("Cột", "string", sort_by="Thứ tự cột"), col("Thứ tự cột", "int64", hidden=True), col("Loại", "string", hidden=True),
+                 col("Hiển thị", "string"), col("Liên kết", "string", category="WebUrl")]
+        ms = [dict(name=f"Giá trị {name}", expr=f'COALESCE ( SELECTEDVALUE ( {name}[Hiển thị] ), "" )'),
+              dict(name=f"Liên kết {name}", expr=f"SELECTEDVALUE ( {name}[Liên kết] )"),
+              dict(name=f"Màu chữ {name}", expr=f'IF ( SELECTEDVALUE ( {name}[Loại] ) = "Trang", "{C["faint"]}", "{C["ink"]}" )')]
+        return tmdl_table(name, cols_, out_rows, ms)
+
+    tables["BangNam"] = cells("BangNam", A, CHANNEL_ROWS + FINANCE_ROWS, True, lambda p: p)
+    tables["BangQuy"] = cells("BangQuy", Q, CHANNEL_ROWS + FINANCE_ROWS, False, lambda p: d["labels"][p])
+    tables["BangKhuVuc"] = cells("BangKhuVuc", A, region_rows(d["regions"]), True, lambda p: p)
+
+    # Reports list for the sources page.
+    groups = {("10-K", "scope"): (1, "Báo cáo năm (10-K)"), ("10-Q", "scope"): (2, "Báo cáo quý (10-Q)")}
+    bc_rows = []
+    for i, (fid, f) in enumerate(d["filings"].items()):
+        g = groups.get((f["form"], f["role"]), (3, "Chỉ để xem số có bị trình bày lại không"))
+        bc_rows.append({"Báo cáo": glue(fid), "Thứ tự": g[0] * 100 + i, "Nhóm": g[1],
+                        "Ngày nộp SEC": vn_date(f["filed"]), "Số accession": f["accession"], "Liên kết SEC EDGAR": f["url"]})
+    tables["BaoCao"] = tmdl_table("BaoCao", [col("Báo cáo", "string", sort_by="Thứ tự"), col("Thứ tự", "int64", hidden=True),
+                                             col("Nhóm", "string"), col("Ngày nộp SEC", "string"), col("Số accession", "string"),
+                                             col("Liên kết SEC EDGAR", "string", category="WebUrl")], bc_rows)
 
     sm = out / f"{NAME}.SemanticModel"
     (sm / "definition" / "tables").mkdir(parents=True, exist_ok=True)
@@ -445,11 +464,15 @@ def semantic_model(d, w, out):
                "\tdataAccessOptions\n\t\tlegacyRedirects\n\t\treturnErrorValuesAsNull\n\n"
                f"annotation PBI_QueryOrder = {order}\n\nannotation __PBI_TimeIntelligenceEnabled = 0\n\n"
                + "".join(f"ref table {tmdl_name(t)}\n" for t in tables))
-    rel = "".join(f"relationship {uuid.uuid5(uuid.NAMESPACE_URL, 'nike/' + t)}\n\tfromColumn: {t}.FY\n\ttoColumn: Nam.FY\n\n"
-                  for t in TABLE_NAMES.values())
-    write_text(sm / "definition" / "relationships.tmdl", rel)
+    write_text(sm / "definition" / "relationships.tmdl", "")
     for t, body in tables.items():
         write_text(sm / "definition" / "tables" / f"{t}.tmdl", body)
+    return tables
+
+
+def vn_date(iso):
+    y, m, d = iso.split("-")
+    return f"{d}/{m}/{y}"
 
 
 # ------------------------------------------------------------------ report (PBIR)
@@ -477,7 +500,7 @@ def column(entity, prop):
     return {"Column": {"Expression": {"SourceRef": {"Entity": entity}}, "Property": prop}}
 
 
-def measure(prop, entity="Nam"):
+def measure(prop, entity):
     return {"Measure": {"Expression": {"SourceRef": {"Entity": entity}}, "Property": prop}}
 
 
@@ -496,44 +519,42 @@ def proj(field, display=None):
     return p
 
 
-YEAR_AXIS = column("Nam", "Năm")
-SHORT_YEAR_AXIS = column("Nam", "Năm (ngắn)")  # "FY20": every year keeps its label on the narrow charts, as in app.js
-
-
-def container_objects(title=None, subtitle=None, subtitle_measure=None):
+def container_objects(title=None, subtitle=None):
     o = {"border": props(show=False), "dropShadow": props(show=False), "background": props(show=False),
          "padding": props(top=0.0, bottom=0.0, left=0.0, right=0.0)}
     if title:
-        o["title"] = props(show=True, text=title, fontFamily=SANS, fontSize=13.0, bold=True, fontColor=fill(C["ink"]),
+        o["title"] = props(show=True, text=glue(title), fontFamily=SANS, fontSize=13.0, bold=True, fontColor=fill(C["ink"]),
                            alignment="left", titleWrap=True)
     else:
         o["title"] = props(show=False)
-    if subtitle or subtitle_measure:
-        text = {"expr": measure(subtitle_measure)} if subtitle_measure else lit(subtitle)
-        o["subTitle"] = props(show=True, text=text, fontFamily=SANS, fontSize=10.0, fontColor=fill(C["muted"]),
+    if subtitle:
+        o["subTitle"] = props(show=True, text=glue(subtitle), fontFamily=SANS, fontSize=10.0, fontColor=fill(C["muted"]),
                               alignment="left", titleWrap=True)
     return o
 
 
 class Page:
-    def __init__(self, name, display, height):
-        self.name, self.display, self.height, self.visuals, self.z = name, display, height, [], 0
+    def __init__(self, name, display):
+        self.name, self.display, self.height, self.visuals, self.z = name, display, 720, [], 0
 
     def add(self, name, x, y, w, h, visual):
         self.z += 1
         self.visuals.append({"$schema": VC_SCHEMA, "name": name,
                              "position": {"x": x, "y": y, "z": self.z * 1000, "height": h, "width": w, "tabOrder": self.z * 1000},
                              "visual": visual})
+        self.height = max(self.height, y + h + 40)
 
     def text(self, name, x, y, w, h, paragraphs):
         self.add(name, x, y, w, h, {"visualType": "textbox", "objects": {"general": [{"properties": {"paragraphs": paragraphs}}]},
                                     "visualContainerObjects": container_objects(), "drillFilterOtherVisuals": True})
 
 
-def run(text, size=11, color=C["ink2"], bold=False, family=SANS, url=None):
+def run(text, size=11, color=C["ink2"], bold=False, family=SANS, url=None, italic=False):
     style = {"fontFamily": family, "fontSize": f"{size}pt", "color": color}
     if bold:
         style["fontWeight"] = "bold"
+    if italic:
+        style["fontStyle"] = "italic"
     r = {"value": glue(text), "textStyle": style}
     if url:
         r["url"] = url
@@ -544,99 +565,55 @@ def para(*runs):
     return {"textRuns": list(runs), "horizontalTextAlignment": "left"}
 
 
-def cartesian(kind, series, title, subtitle=None, subtitle_measure=None, tooltips=(), labels=True, value_start=None,
-              totals=False, legend=True, axis=YEAR_AXIS):
-    """series: [(measure, display name, colour)]"""
+def cartesian(kind, entity, axis, series, title, subtitle, tooltips=(), labels=True, value_start=None, value_end=None,
+              legend=True, label_density=None, transparent=(), label_off=(), label_colors=()):
+    """series: [(measure, display name, colour)]; label_colors: [(measure, label colour)]"""
+    mref = lambda m: measure(measure_name(m, entity), entity)
+    labels_props = props(show=labels, labelDisplayUnits=1.0, fontFamily=SANS, fontSize=9.0, color=fill(C["ink2"]))[0]["properties"]
+    if label_density is not None:
+        labels_props["labelDensity"] = lit(float(label_density))
     objects = {
-        "categoryAxis": props(showAxisTitle=False, fontFamily=SANS, fontSize=10.0, labelColor=fill(C["muted"])),
+        "categoryAxis": props(showAxisTitle=False, fontFamily=SANS, fontSize=10.0, labelColor=fill(C["muted"]), concatenateLabels=False),
         "valueAxis": props(showAxisTitle=False, fontFamily=SANS, fontSize=10.0, labelColor=fill(C["muted"]),
                            gridlineShow=True, gridlineColor=fill(C["grid"]),
-                           **({"start": value_start} if value_start is not None else {})),
+                           **({"start": lit(float(value_start))} if value_start is not None else {}),
+                           **({"end": lit(float(value_end))} if value_end is not None else {})),
         "legend": props(show=legend, position="Top", showTitle=False, fontFamily=SANS, fontSize=10.0, labelColor=fill(C["ink2"])),
-        "labels": props(show=labels, labelDisplayUnits=1.0, fontFamily=SANS, fontSize=9.0, color=fill(C["ink2"])),
+        "labels": [{"properties": labels_props}] + [{"properties": {"show": lit(False)}, "selector": {"metadata": ref(mref(m))}}
+                                                    for m in label_off]
+                  + [{"properties": {"color": fill(c)}, "selector": {"metadata": ref(mref(m))}} for m, c in label_colors],
         "dataPoint": [{"properties": {"fill": fill(series[0][2])}}]
-                     + [{"properties": {"fill": fill(c)}, "selector": {"metadata": ref(measure(m))}} for m, _, c in series],
+                     + [{"properties": {"fill": fill(c), **({"fillTransparency": lit(100.0)} if m in transparent else {})},
+                         "selector": {"metadata": ref(mref(m))}} for m, _, c in series],
     }
     if kind == "lineChart":
         objects["lineStyles"] = props(lineChartType="linear", showMarker=True, strokeWidth=2)
     if kind == "hundredPercentStackedBarChart":
-        # Thicker bars than the theme's 50% gap, so the share labels fit inside them.
         objects["categoryAxis"][0]["properties"]["innerPadding"] = lit(25.0)
         objects["labels"][0]["properties"].update(color=fill("#FFFFFF"), labelPrecision=lit(1))
-        # Dark ink on the orange wholesale bar would read at about 5.3:1 (white is 3.2:1), but Power BI Desktop
-        # 2.159 draws labels inside 100% stacked bars in white whatever colour is set; the rule is kept because
-        # it is harmless and takes effect if a later build honours it.
-        objects["labels"].append({"properties": {"color": fill(C["ink"])},
-                                  "selector": {"metadata": ref(measure("Tỷ trọng bán buôn"))}})
-    if totals:
-        objects["totals"] = props(show=True, fontFamily=SANS, fontSize=9.0, color=fill(C["ink2"]))
     query = {"Category": {"projections": [proj(axis)]},
-             "Y": {"projections": [proj(measure(m), d) for m, d, _ in series]}}
+             "Y": {"projections": [proj(mref(m), d) for m, d, _ in series]}}
     if tooltips:
-        query["Tooltips"] = {"projections": [proj(measure(m), d) for m, d in tooltips]}
+        query["Tooltips"] = {"projections": [proj(mref(m), d) for m, d in tooltips]}
     sort = {"sort": [{"field": axis, "direction": "Ascending"}], "isDefaultSort": False}
     return {"visualType": kind, "query": {"queryState": query, "sortDefinition": sort}, "objects": objects,
-            "visualContainerObjects": container_objects(title, subtitle, subtitle_measure), "drillFilterOtherVisuals": True}
+            "visualContainerObjects": container_objects(title, subtitle), "drillFilterOtherVisuals": True}
 
 
-def year_slicer():
-    return {"visualType": "slicer",
-            "query": {"queryState": {"Values": {"projections": [proj(column("Nam", "FY"), "Năm tài chính")]}}},
-            "objects": {"data": props(mode="Between"), "header": props(show=False),
-                        "numericInputStyle": props(fontFamily=SANS, fontSize=11.0, fontColor=fill(C["ink"])),
-                        "slider": props(show=True, color=fill(C["ink2"]))},
-            "visualContainerObjects": container_objects("Năm tài chính"),
-            "syncGroup": {"groupName": "NamTaiChinh", "fieldChanges": True, "filterChanges": True},
-            "drillFilterOtherVisuals": True}
-
-
-def basis_slicer():
-    return {"visualType": "slicer",
-            "query": {"queryState": {"Values": {"projections": [proj(column("CoSo", "Cơ sở"), "Cơ sở tính tăng trưởng")]}}},
-            "objects": {"data": props(mode="Basic"), "general": props(orientation=1.0),
-                        "selection": props(singleSelect=True, strictSingleSelect=True, selectAllCheckboxEnabled=False),
-                        "header": props(show=False),
-                        "items": props(fontFamily=SANS, fontSize=10.0, fontColor=fill(C["ink"]))},
-            "visualContainerObjects": container_objects(), "drillFilterOtherVisuals": True}
-
-
-def card(m):
-    """The new card visual. Unlike the old card it left-aligns, wraps like a text box (no-break spaces hold, so
-    "17,7 tỷ USD" stays whole) and draws nothing under the value, unlike a text box with a dynamic value. It shows
-    at most height × 3/4 ÷ line height lines; at 12 pt, 120 units give the four lines of the longest summary."""
-    default = {"id": "default"}
-
-    def off():
-        return [{"properties": {"show": lit(False)}, "selector": default}]
-
-    margins = {k: lit(0.0) for k in ("leftMargin", "rightMargin", "topMargin", "bottomMargin")}
-    return {"visualType": "cardVisual", "query": {"queryState": {"Data": {"projections": [proj(measure(m))]}}},
-            "objects": {"value": [{"properties": {"fontFamily": lit(SANS), "fontSize": lit(12.0), "fontColor": fill(C["ink"]),
-                                                  "horizontalAlignment": lit("left"), "textWrap": lit(True)},
-                                   "selector": default}],
-                        "label": off(), "accentBar": off(), "outline": off(), "shadowCustom": off(), "glowCustom": off(),
-                        "fillCustom": off(), "padding": [{"properties": margins, "selector": default}],
-                        "layout": props(alignment="top")},
-            "visualContainerObjects": container_objects(), "drillFilterOtherVisuals": True}
-
-
-def matrix(table):
+def matrix(table, wide=False):
     value = measure(f"Giá trị {table}", table)
     every_cell = {"data": [{"dataViewWildcard": {"matchingOption": 1}}], "metadata": ref(value)}
-    # Columns alternate figure / page reference per year, all right-aligned: every figure ends under its year
-    # header and the page references sit in their own column after it (no value-name subheader row).
     return {"visualType": "pivotTable",
             "query": {"queryState": {"Rows": {"projections": [proj(column(table, "Chỉ tiêu"))]},
                                      "Columns": {"projections": [proj(column(table, "Cột"))]},
                                      "Values": {"projections": [proj(value, "Giá trị")]}}},
             "objects": {"subTotals": props(rowSubtotals=False, columnSubtotals=False),
-                        "rowHeaders": props(fontFamily=SANS, fontSize=10.0, fontColor=fill(C["ink"]), wordWrap=True),
-                        # Year headers right-aligned over their figures; the corner title ("Chỉ tiêu") left-aligned
-                        # over the row labels.
-                        "columnHeaders": props(fontFamily=SANS, fontSize=10.0, fontColor=fill(C["ink"]), bold=True,
+                        "rowHeaders": props(fontFamily=SANS, fontSize=9.5 if wide else 10.0, fontColor=fill(C["ink"]), wordWrap=True),
+                        "columnHeaders": props(fontFamily=SANS, fontSize=9.5 if wide else 10.0, fontColor=fill(C["ink"]), bold=True,
                                                alignment="Right", titleAlignment="Left", wordWrap=True),
-                        "values": [{"properties": {"fontFamily": lit(SANS), "fontSize": lit(10.0), "fontColor": fill(C["ink"])}},
-                                   # page references: muted, and Ctrl + click opens that year's 10-K
+                        "values": [{"properties": {"fontFamily": lit(SANS), "fontSize": lit(9.5 if wide else 10.0),
+                                                   "fontColor": fill(C["ink"])}},
+                                   # page references: muted, and Ctrl + click opens the report
                                    {"properties": {"fontColor": {"solid": {"color": {"expr": measure(f"Màu chữ {table}", table)}}},
                                                    "webURL": {"expr": measure(f"Liên kết {table}", table)}},
                                     "selector": every_cell}],
@@ -646,189 +623,232 @@ def matrix(table):
             "visualContainerObjects": container_objects(), "drillFilterOtherVisuals": True}
 
 
-def header(page, w, view):
-    page.text("tieu_de", MARGIN, 16, 820, 50, [para(run(w.title, 20, C["ink"], True, SERIF))])
-    page.text("mo_ta", MARGIN, 66, 820, 50, [para(run(w.subtitle, 11, C["ink2"]))])
-    page.add("loc_nam", 900, 16, 340, 110, year_slicer())
-    # Question and summary each take half the row (580 units, the channel page's chart columns): at 460 units the
-    # performance summary needs five lines. The card is 120 units tall for its four lines (see card()); the first
-    # chart row starts at 300.
-    page.text("cau_hoi", MARGIN, 140, 580, 110, [para(run(w.question[view], 17, C["ink"], True, SERIF))])
-    page.text("tom_tat_nhan", 660, 140, 580, 26, [para(run(w.summary_label, 10, C["muted"]))])
-    page.add("tom_tat", 660, 166, 580, 120, card("Tóm tắt kênh" if view == "channels" else "Tóm tắt kết quả"))
+# ------------------------------------------------------------------ pages
+def header(page, w):
+    page.text("tieu_de", MARGIN, 16, 900, 70, [para(run(w.title, 20, C["ink"], True, SERIF))])
+    page.text("mo_ta", MARGIN, 88, 900, 50, [para(run(w.subtitle, 10.5, C["ink2"]))])
+    page.text("lien_ket", 960, 20, 280, 70, [
+        para(run("Mở dashboard web", 10.5, C["direct"], url=DASHBOARD_URL)),
+        para(run("Tải bộ dữ liệu Excel", 10.5, C["direct"], url=DASHBOARD_URL + "downloads/NIKE_Financial_Dataset_FY2019-2021.xlsx"))])
+    return 150
 
 
-def source(page, name, x, y, w, text, h=44):
-    page.text(name, x, y, w, h, [para(run(text, 9, C["muted"]))])
+def section(page, w, key, sid, y, note=None):
+    kicker, question = w.sections[sid]
+    page.text(f"{key}_tieu_de", MARGIN, y, 1200, 64, [para(run(kicker, 10, C["muted"], True)),
+                                                      para(run(question, 16, C["ink"], True, SERIF))])
+    y += 66
+    if note:
+        page.text(f"{key}_ghi_chu", MARGIN, y, 900, 46, [para(run(note, 11, C["ink2"]))])
+        y += 50
+    return y + 6
 
 
-def notes(page, name, x, y, w, h, title, items):
-    paragraphs = [para(run(title, 13, C["ink"], True))]
-    for dt, dd in items:
-        paragraphs += [para(run(" ", 5, C["ink2"])), para(run(dt, 11, C["ink"], True)), para(run(dd, 10.5, C["ink2"]))]
-    page.text(name, x, y, w, h, paragraphs)
+def source(page, name, x, y, w_, text, h=46):
+    page.text(name, x, y, w_, h, [para(run(text, 9, C["muted"]))])
 
 
-PAGE_REF_KEY = "có số trang 10-K ở cột nhỏ bên phải (Ctrl + bấm vào số trang để mở báo cáo trên SEC)"
-
-
-def table_key(text):
-    """The web table key reworded for Power BI: page references sit in their own column and there are no italics."""
-    key = re.sub(r"có kèm số trang 10-K(?: \(bấm để mở báo cáo trên SEC\))?", PAGE_REF_KEY, text)
-    key = key.replace(" Số in nghiêng là số nhóm tự tính.", " Số nhóm tự tính không có số trang.")
-    if PAGE_REF_KEY not in key or "in nghiêng" in key:
-        raise SystemExit(f"index.html: table key wording changed; update table_key() in build_powerbi.py: {text}")
-    return key
-
-
-def table_section(page, w, view, table, y, rows):
-    page.text("bang_tieu_de", MARGIN, y, 1200, 32, [para(run(w.table_title[view], 13, C["ink"], True))])
-    key = table_key(w.table_key[view])
-    if w.pending:
-        key += " " + w.pending_key
-    page.text("bang_chu_thich", MARGIN, y + 32, 1200, 28, [para(run(key, 9.5, C["muted"]))])
-    h = 40 + 25 * rows
-    page.add("bang", MARGIN, y + 62, 1200, h, matrix(table))
-    return y + 62 + h
-
-
-def page_channels(w):
-    L, R, CW = MARGIN, 660, 580
-    p = Page("kenh", w.tab["channels"], 0)
-    header(p, w, "channels")
+def page_overview(w, d):
+    p = Page("tong_quan", "Tổng quan")
+    y = header(p, w)
+    p.text("phat_hien_tieu_de", MARGIN, y, 1200, 56, [para(run(w.findings_title, 16, C["ink"], True, SERIF)),
+                                                      para(run(w.findings_note, 10.5, C["ink2"]))])
+    y += 64
+    for i, f in enumerate(d["findings"]):
+        row, c = divmod(i, 3)
+        x = MARGIN + c * 410
+        top = y + row * 230
+        p.text(f"phat_hien_{i + 1}", x, top, 380, 220, [
+            para(run(f["label"], 10, C["muted"], True)), para(run(f["value"], 24, C["ink"], True)),
+            para(run(f["text"], 10.5, C["ink2"])), para(run(" ", 4)), para(run(f["source"], 8.5, C["muted"]))])
+    y += 470
+    y = section(p, w, "kenh", "kenh", y)
+    a, z = d["periods"]["A"][0], d["periods"]["A"][-1]
     t, s = w.fig["fig-share"]
-    lg = lambda n: w.legend("share", n)
-    p.add("co_cau", L, 300, 1200, 340, cartesian(
-        "hundredPercentStackedBarChart",
-        [("Tỷ trọng NIKE Direct", lg("NIKE Direct"), C["direct"]), ("Tỷ trọng bán buôn", lg("Bán buôn"), C["wholesale"]),
-         ("Tỷ trọng Global Brand Divisions", lg("Global Brand Divisions"), C["gbd"])],
+    p.add("co_cau", L, y, CW, 300, cartesian(
+        "hundredPercentStackedBarChart", "Nam", column("Nam", "Kỳ"),
+        [("Tỷ trọng NIKE Direct", "NIKE Direct", C["direct"]), ("Tỷ trọng bán buôn", "Bán buôn (Wholesale)", C["wholesale"]),
+         ("Tỷ trọng Global Brand Divisions", "Global Brand Divisions (dưới 0,2%)", C["gbd"])],
         t, s, tooltips=[("NIKE Direct (tỷ USD)", "NIKE Direct, tỷ USD"), ("Bán buôn (tỷ USD)", "Bán buôn, tỷ USD"),
                         ("NIKE Brand (tỷ USD)", "Doanh thu NIKE Brand (mẫu số), tỷ USD")]))
-    source(p, "nguon_co_cau", L, 644, 1200, w.sources["share"])
-
-    t, s = w.fig["fig-channel-revenue"]
-    lg = lambda n: w.legend("channelRevenue", n)
-    p.add("doanh_thu_kenh", L, 710, CW, 340, cartesian(
-        "clusteredColumnChart", [("NIKE Direct (tỷ USD)", lg("NIKE Direct"), C["direct"]),
-                                 ("Bán buôn (tỷ USD)", lg("Bán buôn"), C["wholesale"])],
-        t, s, tooltips=[("NIKE Brand (tỷ USD)", "Tổng NIKE Brand, tỷ USD")]))
-    source(p, "nguon_doanh_thu_kenh", L, 1054, CW, w.sources["channelRevenue"])
-
-    t, _ = w.fig["fig-growth"]
-    p.add("tang_truong", R, 710, CW, 340, cartesian(
-        "clusteredColumnChart", [("Tăng trưởng NIKE Direct", lg("NIKE Direct"), C["direct"]),
-                                 ("Tăng trưởng bán buôn", lg("Bán buôn"), C["wholesale"])],
-        t, subtitle_measure="Phụ đề tăng trưởng", labels=False,
-        tooltips=[("NIKE Direct theo báo cáo", "NIKE Direct, theo báo cáo"), ("NIKE Direct loại trừ tỷ giá", "NIKE Direct, loại trừ tỷ giá"),
-                  ("Bán buôn theo báo cáo", "Bán buôn, theo báo cáo"), ("Bán buôn loại trừ tỷ giá", "Bán buôn, loại trừ tỷ giá")]))
-    # In the chart's title row, right of the title: the slicer's header icons (shown while it is hovered or selected)
-    # then float in the gap above the chart instead of covering the subtitle, at any zoom.
-    p.add("co_so_tang_truong", R + 330, 710, CW - 330, 24, basis_slicer())
-    source(p, "nguon_tang_truong", R, 1054, CW,
-           "Theo báo cáo: " + w.sources["growth"].removeprefix("Nguồn: ") + " Loại trừ tỷ giá: "
-           + w.sources["growth_cn"].removeprefix("Nguồn: "), h=58)
-
-    t, s = w.fig["fig-digital"]
-    p.add("digital", L, 1130, CW, 340, cartesian(
-        "columnChart", [("Digital (tỷ USD)", w.legend("digital", "Digital"), C["digital"]),
-                        ("Phần còn lại của NIKE Direct (tỷ USD)", "Phần còn lại của NIKE Direct (nhóm tự tính, xấp xỉ)", C["directLight"])],
-        t, s + " Chiều cao cả cột bằng doanh thu NIKE Direct.", labels=False, totals=True,
-        tooltips=[("NIKE Direct (tỷ USD)", "NIKE Direct (tổng), tỷ USD"), ("Digital trong NIKE Direct", "Digital trong NIKE Direct (≈)")]))
-    source(p, "nguon_digital", L, 1474, CW, w.sources["digital"], h=58)
-    notes(p, "ghi_chu", R, 1130, CW, 420, *w.notes["channels"])
-
-    end = table_section(p, w, "channels", "BangKenh", 1570, len(TABLES["kenh"]))
-    p.height = end + 40
+    source(p, "nguon_co_cau", L, y + 304, CW, w.sources["share"] + " Báo cáo: " + ", ".join(f"10-K {x}" for x in d["periods"]["A"]) + ".")
+    t, _ = w.fig["fig-change"]
+    groups = [("Thay đổi – Direct", "NIKE Direct", C["direct"]), ("Thay đổi – Bán buôn", "Bán buôn", C["wholesale"]),
+              ("Thay đổi – GBD", "Global Brand Divisions", C["gbd"]), ("Thay đổi – Tổng", "Tổng NIKE Brand", C["total"])]
+    # Stacked, not clustered: each row has one non-blank measure (its colour), so its bar sits centred on the row.
+    v = cartesian("barChart", "ThayDoi", column("ThayDoi", "Kênh"), groups, t, w.sub("change-sub", a, z), legend=False,
+                  labels=False)
+    v["objects"]["categoryAxis"][0]["properties"]["innerPadding"] = lit(30.0)
+    p.add("thay_doi", R, y, CW, 300, v)
+    source(p, "nguon_thay_doi", R, y + 304, CW, w.sources["change"] + f" Báo cáo: 10-K {a}, 10-K {z}.")
     return p
 
 
-def page_performance(w):
-    p = Page("ketqua", w.tab["performance"], 0)
-    header(p, w, "performance")
-    cw, xs = 386, [MARGIN, MARGIN + 407, MARGIN + 814]
-    chart = lambda *a, **k: cartesian(*a, axis=SHORT_YEAR_AXIS, **k)
+def page_quarters(w, d):
+    p = Page("theo_quy", "Theo quý")
+    y = header(p, w)
+    y = section(p, w, "quy", "quy", y, d["notes"]["quy"])
+    axis = column("Quy", "Kỳ")
+    t, s = w.fig["fig-share-q"]
+    p.add("ty_trong_quy", L, y, CW, 320, cartesian(
+        "lineChart", "Quy", axis, [("Tỷ trọng NIKE Direct", "Tỷ trọng NIKE Direct", C["direct"])], t, s, legend=False,
+        value_start=0.25, value_end=0.5, label_density=0,
+        tooltips=[("NIKE Direct (tỷ USD)", "NIKE Direct, tỷ USD"), ("NIKE Brand (tỷ USD)", "NIKE Brand, tỷ USD")]))
+    source(p, "nguon_ty_trong_quy", L, y + 324, CW, w.sources["shareQ"])
+    t, s = w.fig["fig-channel-q"]
+    p.add("kenh_quy", R, y, CW, 320, cartesian(
+        "lineChart", "Quy", axis, [("NIKE Direct (tỷ USD)", "NIKE Direct", C["direct"]), ("Bán buôn (tỷ USD)", "Bán buôn (Wholesale)", C["wholesale"])],
+        # Two lines with a label on every point would collide; the values are in the tooltips and on page 4.
+        t, s, value_start=0.0, labels=False,
+        tooltips=[("Tăng trưởng NIKE Direct", "NIKE Direct so với cùng kỳ"), ("Tăng trưởng bán buôn", "Bán buôn so với cùng kỳ")]))
+    source(p, "nguon_kenh_quy", R, y + 324, CW, w.sources["channelQ"])
+    y += 390
+    y = section(p, w, "digital", "digital", y)
+    t, s = w.fig["fig-digital"]
+    v = cartesian("barChart", "Nam", column("Nam", "Kỳ"),
+                  [("Digital (tỷ USD)", "NIKE Brand Digital", C["digital"]),
+                   ("Phần còn lại của NIKE Direct (tỷ USD)", "Phần còn lại, chủ yếu là cửa hàng (ước tính)", C["directLight"])],
+                  t, s, tooltips=[("NIKE Direct (tỷ USD)", "NIKE Direct (tổng), tỷ USD"), ("Digital trong NIKE Direct", "Digital trong NIKE Direct (≈)")],
+                  label_colors=[("Digital (tỷ USD)", "#FFFFFF"), ("Phần còn lại của NIKE Direct (tỷ USD)", C["ink"])])
+    v["objects"]["categoryAxis"][0]["properties"]["innerPadding"] = lit(30.0)
+    p.add("digital", L, y, CW, 300, v)
+    source(p, "nguon_digital", L, y + 304, CW, w.sources["digital"] + " Báo cáo: " + ", ".join(f"10-K {x}" for x in d["periods"]["A"]) + ".")
+    t, s = w.fig["fig-digital-q"]
+    p.add("digital_quy", R, y, CW, 300, cartesian(
+        "lineChart", "Quy", axis, [("Digital trong NIKE Direct", "Digital / NIKE Direct", C["digital"])], t, s, legend=False,
+        value_start=0.0, value_end=0.8, label_density=0,
+        tooltips=[("Digital (tỷ USD)", "Digital, tỷ USD (quý 4: ước tính)"), ("NIKE Direct (tỷ USD)", "NIKE Direct, tỷ USD")]))
+    source(p, "nguon_digital_quy", R, y + 304, CW, w.sources["digitalQ"])
+    return p
 
-    def fig(name, fid, src, x, y, visual):
-        t, s = w.fig[fid]
-        visual["visualContainerObjects"] = container_objects(t, s)
-        p.add(name, x, y, cw, 300, visual)
-        source(p, "nguon_" + name, x, y + 304, cw, w.sources[src], h=60)
 
-    y1, y2 = 300, 690
-    fig("doanh_thu", "fig-revenue", "revenue", xs[0], y1, chart(
-        "clusteredColumnChart", [("Doanh thu (tỷ USD)", "Doanh thu", C["total"])], None, legend=False,
-        tooltips=[("Tăng trưởng doanh thu", "So với năm trước, theo báo cáo"),
-                  ("Tăng trưởng doanh thu loại trừ tỷ giá", "Loại trừ tỷ giá (NIKE, non-GAAP)")]))
-    fig("bien_gop", "fig-gross-margin", "grossMargin", xs[1], y1, chart(
-        "lineChart", [("Biên lợi nhuận gộp", "Biên lợi nhuận gộp", C["total"])], None, legend=False,
-        value_start=lit(nice_min(w.data, "gross_margin", 0.02)),
-        tooltips=[("Lợi nhuận gộp (tỷ USD)", "Lợi nhuận gộp, tỷ USD"), ("Doanh thu (tỷ USD)", "Doanh thu, tỷ USD")]))
-    fig("sga", "fig-sga", "sga", xs[2], y1, chart(
-        "columnChart", [("Vận hành chung / doanh thu", w.legend("sga", "Vận hành chung"), C["overhead"]),
-                        ("Tạo nhu cầu / doanh thu", w.legend("sga", "Tạo nhu cầu"), C["demand"])],
-        None, labels=False, totals=True,
-        tooltips=[("SG&A / doanh thu", "Tổng SG&A / doanh thu"), ("SG&A (tỷ USD)", "Tổng SG&A, tỷ USD")]))
-    fig("ebit", "fig-ebit", "ebit", xs[0], y2, chart(
-        "lineChart", [("Biên EBIT", "Biên EBIT (non-GAAP)", C["total"])], None, legend=False, value_start=lit(0.0),
-        tooltips=[("EBIT do NIKE công bố (tỷ USD)", "EBIT do NIKE công bố, tỷ USD"),
-                  ("Biên lợi nhuận sau thuế", "Biên lợi nhuận sau thuế (GAAP)")]))
-    fig("ton_kho", "fig-inventory", "inventory", xs[1], y2, chart(
-        "clusteredColumnChart", [("Hàng tồn kho (tỷ USD)", "Hàng tồn kho", C["total"])], None, legend=False,
-        tooltips=[("Thay đổi hàng tồn kho", "So với 31/5 năm trước"), ("Vòng quay hàng tồn kho", "Vòng quay hàng tồn kho (lần)")]))
-    fig("so_ngay_ton_kho", "fig-days", "days", xs[2], y2, chart(
-        "lineChart", [("Số ngày tồn kho", "Số ngày tồn kho bình quân", C["total"])], None, legend=False,
-        value_start=lit(nice_min(w.data, "days_inventory", 10)),
-        tooltips=[("Tồn kho bình quân (tỷ USD)", "Tồn kho bình quân đầu và cuối kỳ, tỷ USD"),
-                  ("Giá vốn hàng bán (tỷ USD)", "Giá vốn hàng bán, tỷ USD")]))
-    title, items = w.notes["performance"]
-    notes(p, "ghi_chu", MARGIN, 1080, 1200, 230, title, items)
-    end = table_section(p, w, "performance", "BangKetQua", 1330, len(TABLES["ketqua"]))
-    p.height = end + 40
+def page_profit(w, d):
+    p = Page("khu_vuc_loi_nhuan", "Khu vực và lợi nhuận")
+    y = header(p, w)
+    a, z = d["periods"]["A"][0], d["periods"]["A"][-1]
+    y = section(p, w, "khu_vuc", "khu-vuc", y)
+    axis = column("KhuVuc", "Khu vực")
+    t, s = w.fig["fig-regions"]
+    p.add("khu_vuc", L, y, CW, 340, cartesian(
+        "clusteredBarChart", "KhuVuc", axis, [(f"Tỷ trọng Direct {a}", a, C["past"]), (f"Tỷ trọng Direct {z}", z, C["direct"])], t, s))
+    source(p, "nguon_khu_vuc", L, y + 344, CW, w.sources["regions"] + f" Báo cáo: 10-K {a}, 10-K {z}.")
+    t, s = w.fig["fig-regions-ebit"]
+    v = cartesian("clusteredBarChart", "KhuVuc", axis, [(f"Biên EBIT khu vực {a}", a, C["past"]), (f"Biên EBIT khu vực {z}", z, C["direct"])], t, s)
+    p.add("khu_vuc_ebit", R, y, CW, 340, v)
+    # The NIKE Brand row has no EBIT of its own; a visual-level filter (on the container) keeps the four regions.
+    p.visuals[-1]["filterConfig"] = {"filters": [{
+        "name": "chi_khu_vuc", "field": column("KhuVuc", "Khu vực"), "type": "Categorical",
+        "filter": {"Version": 2, "From": [{"Name": "k", "Entity": "KhuVuc", "Type": 0}],
+                   "Where": [{"Condition": {"Not": {"Expression": {"In": {
+                       "Expressions": [{"Column": {"Expression": {"SourceRef": {"Source": "k"}}, "Property": "Khu vực"}}],
+                       "Values": [[{"Literal": {"Value": "'Toàn NIKE Brand'"}}]]}}}}}]},
+        "howCreated": "User"}]}
+    source(p, "nguon_khu_vuc_ebit", R, y + 344, CW, w.sources["regionsEbit"] + f" Báo cáo: 10-K {a}, 10-K {z}.")
+    y += 410
+    y = section(p, w, "loi_nhuan", "loi-nhuan", y)
+    t, _ = w.fig["fig-ebit-bridge"]
+    # Figures are in the step names and the colours are explained in the subtitle, so neither labels nor a legend
+    # (which would list the invisible base series) are drawn.
+    v = cartesian("columnChart", "CauNoi", column("CauNoi", "Bước"),
+                  [("Cầu nối – nền", "Nền", "#FFFFFF"), ("Cầu nối – biên EBIT", "Biên EBIT", C["total"]),
+                   ("Cầu nối – làm biên tăng", "Làm biên EBIT tăng", C["up"]), ("Cầu nối – làm biên giảm", "Làm biên EBIT giảm", C["down"])],
+                  t, w.sub("bridge-sub", a, z) + " Cột xám là biên EBIT, xanh lá làm biên tăng, đỏ làm biên giảm.",
+                  transparent=("Cầu nối – nền",), labels=False, legend=False, value_start=0.0)
+    v["objects"]["categoryAxis"][0]["properties"]["innerPadding"] = lit(30.0)
+    p.add("cau_noi", L, y, CW, 320, v)
+    source(p, "nguon_cau_noi", L, y + 324, CW, w.sources["bridge"] + f" Báo cáo: 10-K {a}, 10-K {z}.")
+    t, s = w.fig["fig-margins-q"]
+    p.add("bien_quy", R, y, CW, 320, cartesian(
+        "lineChart", "Quy", column("Quy", "Kỳ"), [("Biên lợi nhuận gộp", "Biên lợi nhuận gộp", C["total"]),
+                                                 ("Biên EBIT", "Biên EBIT (non-GAAP)", C["margin"])], t, s, labels=False,
+        value_start=-0.2, value_end=0.6, tooltips=[("Doanh thu (tỷ USD)", "Doanh thu NIKE, Inc., tỷ USD")]))
+    source(p, "nguon_bien_quy", R, y + 324, CW, w.sources["marginsQ"])
+    y += 380
+    t, s = w.fig["fig-inventory-q"]
+    p.add("ton_kho", L, y, CW, 280, cartesian(
+        "clusteredColumnChart", "Quy", column("Quy", "Kỳ"), [("Hàng tồn kho (tỷ USD)", "Hàng tồn kho", C["total"])], t, s, legend=False,
+        label_density=40, tooltips=[("So với cùng thời điểm năm trước", "So với cùng thời điểm năm trước")]))
+    source(p, "nguon_ton_kho", L, y + 284, CW, w.sources["inventoryQ"])
+    t, s = w.fig["fig-days-q"]
+    p.add("so_ngay", R, y, CW, 280, cartesian(
+        "lineChart", "Quy", column("Quy", "Kỳ"), [("Số ngày tồn kho", "Số ngày tồn kho", C["total"])], t, s, legend=False,
+        value_start=60.0, value_end=180.0, label_density=0,
+        tooltips=[("Hàng tồn kho (tỷ USD)", "Hàng tồn kho cuối quý, tỷ USD"), ("Giá vốn hàng bán (tỷ USD)", "Giá vốn hàng bán, tỷ USD")]))
+    source(p, "nguon_so_ngay", R, y + 284, CW, w.sources["daysQ"])
+    y += 340
+    p.text("ton_kho_ghi_chu", MARGIN, y, 1200, 46, [para(run(d["notes"]["ton-kho"], 11, C["ink2"]))])
+    y += 60
+    title, items = w.notes
+    p.text("cach_doc_tieu_de", MARGIN, y, 1200, 28, [para(run(title, 13, C["ink"], True))])
+    for i, (dt, dd) in enumerate(items):
+        row, c = divmod(i, 3)
+        p.text(f"cach_doc_{i + 1}", MARGIN + c * 410, y + 32 + row * 130, 380, 124,
+               [para(run(dt, 10.5, C["ink"], True)), para(run(dd, 10, C["ink2"]))])
+    return p
+
+
+def page_tables(w, d):
+    p = Page("bang_so_lieu", "Bảng số liệu")
+    p.text("tieu_de", MARGIN, 16, 1200, 40, [para(run("Bảng số liệu", 20, C["ink"], True, SERIF))])
+    p.text("chu_thich", MARGIN, 58, 1200, 44, [para(run(
+        "Số NIKE công bố có số trang ở cột nhỏ bên phải (Ctrl + bấm vào số trang để mở báo cáo trên SEC). Bảng theo quý "
+        "không có cột số trang (xem bản web hoặc bộ dữ liệu Excel); quý 4 là cả năm trừ 9 tháng, ≈ là ước tính từ số đã làm tròn.",
+        9.5, C["muted"]))])
+    n = len(CHANNEL_ROWS + FINANCE_ROWS)
+    y = 110
+    for name, title, rows, wide in (("BangNam", "Theo năm, FY2019–FY2021", n, False), ("BangQuy", "Theo quý, Q1 FY2019 – Q4 FY2021", n, True),
+                                    ("BangKhuVuc", "Bốn khu vực của NIKE Brand, FY2019–FY2021", len(region_rows(d["regions"])), False)):
+        p.text(f"{name}_tieu_de", MARGIN, y, 1200, 30, [para(run(title, 13, C["ink"], True))])
+        h = 40 + 25 * rows
+        p.add(name, MARGIN, y + 32, 1200, h, matrix(name, wide))
+        y += 32 + h + 30
     return p
 
 
 def page_sources(w, d):
-    p = Page("nguon", w.footer_title, 760)
-    p.text("tieu_de", MARGIN, 16, 1200, 50, [para(run(w.footer_title, 20, C["ink"], True, SERIF))])
-    p.text("bao_cao_tieu_de", MARGIN, 80, 1200, 30, [para(run(w.footer_heads[0], 13, C["ink"], True))])
-    fields = [column("Nam", c) for c in ("Báo cáo", "Ngày nộp SEC", "Số accession", "Liên kết SEC EDGAR")]
-    p.add("bao_cao", MARGIN, 112, 1200, 250, {
+    p = Page("nguon", SRC_PAGE)
+    p.text("tieu_de", MARGIN, 16, 1200, 40, [para(run(SRC_PAGE, 20, C["ink"], True, SERIF))])
+    kicker, question = w.sections["nike-giai-thich"]
+    p.text("trich_tieu_de", MARGIN, 64, 1200, 50, [para(run(question, 13, C["ink"], True)), para(run(w.quotes_note, 9.5, C["muted"]))])
+    y = 120
+    for i, q in enumerate(d["quotes"]):
+        row, c = divmod(i, 2)
+        p.text(f"trich_{i + 1}", MARGIN + c * 620, y + row * 225, 580, 215, [
+            para(run(q["topic"], 9.5, C["muted"], True)), para(run("“" + q["text"] + "”", 10.5, C["ink"], italic=True)),
+            para(run(q["vi"], 10, C["ink2"])),
+            para(run(f"NIKE, {q['filing']}, tr. {q['page']} · ", 8.5, C["muted"]), run("mở trên SEC", 8.5, C["direct"], url=q["url"]))])
+    y += ((len(d["quotes"]) + 1) // 2) * 225 + 10
+    p.text("bao_cao_tieu_de", MARGIN, y, 1200, 30, [para(run(w.footer_heads[0], 13, C["ink"], True))])
+    fields = [column("BaoCao", c) for c in ("Nhóm", "Báo cáo", "Ngày nộp SEC", "Số accession", "Liên kết SEC EDGAR")]
+    p.add("bao_cao", MARGIN, y + 32, 1200, 480, {
         "visualType": "tableEx",
         "query": {"queryState": {"Values": {"projections": [proj(f) for f in fields]}},
-                  "sortDefinition": {"sort": [{"field": fields[0], "direction": "Ascending"}], "isDefaultSort": False}},
-        "objects": {"values": props(fontFamily=SANS, fontSize=10.5, urlIcon=False),
-                    "columnHeaders": props(fontFamily=SANS, fontSize=10.5, bold=True),
+                  "sortDefinition": {"sort": [{"field": fields[1], "direction": "Ascending"}], "isDefaultSort": False}},
+        "objects": {"values": props(fontFamily=SANS, fontSize=10.0, urlIcon=False),
+                    "columnHeaders": props(fontFamily=SANS, fontSize=10.0, bold=True),
                     "total": props(totals=False)},
         "visualContainerObjects": container_objects(), "drillFilterOtherVisuals": True})
-    p.text("phuong_phap", MARGIN, 390, 740, 250,
+    y += 540
+    p.text("phuong_phap", MARGIN, y, 740, 300,
            [para(run(w.footer_heads[1], 13, C["ink"], True))] + [para(run("– " + li, 10.5, C["ink2"])) for li in w.method])
-    p.text("tinh_trang", 820, 390, 420, 250, [
+    p.text("tinh_trang", 820, y, 420, 300, [
         para(run(w.footer_heads[2], 13, C["ink"], True)), para(run(status_sentence(d), 10.5, C["ink2"])),
-        para(run(w.fine, 9.5, C["muted"]))])
-    p.text("ban_web", MARGIN, 660, 1200, 60, [
-        para(run("Bản web của dashboard: ", 10.5, C["ink2"]),
-             run(DASHBOARD_URL, 10.5, C["direct"], url=DASHBOARD_URL))])
+        para(run(w.fine, 9.5, C["muted"])), para(run(" ", 6)),
+        para(run("Bản web của dashboard: ", 10.5, C["ink2"]), run(DASHBOARD_URL, 10.5, C["direct"], url=DASHBOARD_URL))])
     return p
-
-
-DASHBOARD_URL = "https://miurikyasakytg2006-dot.github.io/nike-financial-dashboard/"
 
 
 def status_sentence(d):
     """Same wording as renderFooter() in app.js: only statuses that occur are listed."""
     c = d["meta"]["status_counts"]
+    missing = [p for m in d["observations"].values() for p, o in m.items() if o["value"] is None]
+    all_q4 = bool(missing) and all(p.endswith("Q4") for p in missing)
     parts = [(c.get("Khớp nguồn chính thức", 0), " khớp nguồn chính thức"),
-             (c.get("Đã xác minh (người)", 0), " đã được nhóm kiểm tra trên 10-K"),
+             (c.get("Đã xác minh (người)", 0), " đã được nhóm kiểm tra trên báo cáo"),
              (c.get(STATUS_PENDING, 0), " chưa được kiểm tra (†)"),
-             (c.get("Thiếu / không công bố", 0), " không được NIKE công bố")]
+             (c.get("Thiếu / không công bố", 0), " là các tỷ lệ % NIKE không nêu cho riêng quý 4" if all_q4 else " NIKE không công bố")]
     shown = ", ".join(f"{n}{t}" for n, t in parts if n)
     return f"{sum(c.values())} số liệu báo cáo: {shown}. Dữ liệu trích xuất ngày {vn_date(d['meta']['extracted_on'])}."
-
-
-def nice_min(d, kpi, step):
-    vals = [v for v in d["kpis"][kpi]["values"].values() if v is not None]
-    m = min(vals)
-    return float(Decimal(str((m - step / 2) // step * step)).quantize(Decimal("0.0001")))
 
 
 def report(d, w, out):
@@ -856,7 +876,7 @@ def report(d, w, out):
                               "items": [{"name": THEME, "path": f"BaseThemes/{THEME}.json", "type": "BaseTheme"}]}],
         "settings": {"locale": "vi-VN", "useStylableVisualContainerHeader": True, "exportDataMode": "AllowSummarized",
                      "defaultDrillFilterOtherVisuals": True, "allowChangeFilterTypes": True}})
-    pages = [page_channels(w), page_performance(w), page_sources(w, d)]
+    pages = [page_overview(w, d), page_quarters(w, d), page_profit(w, d), page_tables(w, d), page_sources(w, d)]
     write_json(df / "pages" / "pages.json", {"$schema": SCHEMA + "item/report/definition/pagesMetadata/1.0.0/schema.json",
                                              "pageOrder": [p.name for p in pages], "activePageName": pages[0].name})
     for p in pages:
@@ -868,6 +888,7 @@ def report(d, w, out):
                         "outspace": props(color=fill("#FFFFFF"), transparency=0.0)}})
         for v in p.visuals:
             write_json(pd / "visuals" / v["name"] / "visual.json", v)
+    return pages
 
 
 # ------------------------------------------------------------------ files
@@ -895,22 +916,23 @@ def main():
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else OUT
     d = json.loads(DATA.read_text(encoding="utf-8"))
     w = Wording()
-    w.data = d
-    w.pending = d["meta"]["status_counts"].get(STATUS_PENDING, 0) > 0
-    MEASURES.append(dict(name="Phụ đề tăng trưởng",
-                         expr=f'IF ( [Cơ sở đang chọn] = "Loại trừ tỷ giá", "{w.growth_sub_cn}", "{w.growth_sub}" )'))
-    stale = [p for p in (out / f"{NAME}.Report" / "definition" / "pages").glob("*/visuals/*")] if out.exists() else []
-    semantic_model(d, w, out)
-    report(d, w, out)
-    written = {v.parent for v in (out / f"{NAME}.Report" / "definition" / "pages").glob("*/visuals/*/visual.json")}
+    stale = sorted({p.parent for p in (out / f"{NAME}.Report" / "definition" / "pages").glob("*/page.json")}) if out.exists() else []
+    stale_tables = sorted((out / f"{NAME}.SemanticModel" / "definition" / "tables").glob("*.tmdl")) if out.exists() else []
+    tables = semantic_model(d, w, out)
+    pages = report(d, w, out)
     write_json(out / f"{NAME}.pbip", {"$schema": SCHEMA + "pbip/pbipProperties/1.0.0/schema.json", "version": "1.0",
                                       "artifacts": [{"report": {"path": f"{NAME}.Report"}}],
                                       "settings": {"enableAutoRecovery": True}})
     write_text(out / ".gitignore", "**/.pbi/localSettings.json\n**/.pbi/cache.abf\n*.pbix\n")
     print(f"Power BI project written: {out / (NAME + '.pbip')}")
-    leftovers = sorted(set(stale) - written)
+    current_pages = {out / f"{NAME}.Report" / "definition" / "pages" / p.name for p in pages}
+    current_visuals = {out / f"{NAME}.Report" / "definition" / "pages" / p.name / "visuals" / v["name"] for p in pages for v in p.visuals}
+    leftovers = [str(s) for s in stale if s not in current_pages]
+    leftovers += [str(v) for p in current_pages for v in (p / "visuals").glob("*") if v not in current_visuals]
+    leftovers += [str(t) for t in stale_tables if t.stem not in tables]
     if leftovers:
-        print("NOTE: visuals from an earlier build are still on disk (remove them):", *leftovers, sep="\n  ")
+        print("NOTE: files from an earlier build are still on disk (Power BI would load them; remove them before opening):",
+              *leftovers, sep="\n  ")
     return 0
 
 

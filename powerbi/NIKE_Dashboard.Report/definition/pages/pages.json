@@ -1,9 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.0.0/schema.json",
   "pageOrder": [
-    "kenh",
-    "ketqua",
+    "tong_quan",
+    "theo_quy",
+    "khu_vuc_loi_nhuan",
+    "bang_so_lieu",
     "nguon"
   ],
-  "activePageName": "kenh"
+  "activePageName": "tong_quan"
 }

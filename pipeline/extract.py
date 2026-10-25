@@ -1,12 +1,10 @@
-"""Download NIKE 10-K XBRL packages and extract every catalogued metric with provenance.
+"""Extract every catalogued metric, with provenance, from NIKE's 10-K and 10-Q filings.
 
 Usage:  python -m pipeline.extract
 
-Outputs (committed, human-readable):
-  data/extracted/facts.csv            one row per value found in a filing (current year and
-                                      comparatives), with page, section and evidence text
-  data/extracted/sec_api_check.csv    consolidated values compared with the SEC's own
-                                      XBRL "company facts" API for the same accession
+Output (committed, human-readable):
+  data/extracted/facts.csv   one row per value found in a filing (the period it reports and the comparative
+                             periods printed beside it), with page, section and the text shown in the document
 
 Downloaded filings are cached in data/cache/ (not committed).
 """
@@ -14,7 +12,6 @@ import csv
 import datetime
 import io
 import json
-import os
 import re
 import sys
 import urllib.request
@@ -22,86 +19,114 @@ import zipfile
 from decimal import Decimal
 from pathlib import Path
 
-from .ixbrl import Document
-from .metrics import REPORTED
-from .sources import CIK, FILINGS, filing, ir_package_url
+from .ixbrl import Document, displayed
+from .metrics import REGIONS, REPORTED
+from .quotes import QUOTES
+from .sources import all_filings, ir_document_url, ir_package_url
 
 ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / "data" / "cache"
 OUT = ROOT / "data" / "extracted"
-USER_AGENT = "NIKE-FY2020-2026 academic dataset (university coursework; non-commercial)"
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) academic dataset (university coursework; non-commercial)"
 MILLION = Decimal(10) ** 6
+FIELDS = ["filing", "accession", "metric_id", "period", "value", "method", "concept", "dims", "page", "section", "evidence"]
 
 
-def _get(url, user_agent=USER_AGENT):
-    req = urllib.request.Request(url, headers={"User-Agent": user_agent})
-    with urllib.request.urlopen(req, timeout=120) as r:
+def _get(url):
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(req, timeout=180) as r:
         return r.read()
 
 
-def filing_document(f):
-    """Path to the cached primary iXBRL document, downloading the package if needed."""
-    target = CACHE / f["accession"] / f["document"]
-    if not target.exists():
-        data = _get(ir_package_url(f))
-        with zipfile.ZipFile(io.BytesIO(data)) as z:
-            if f["document"] not in z.namelist():
-                raise RuntimeError(f"{f['document']} not found in XBRL package {f['accession']}")
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(z.read(f["document"]))
-    return target
+def filing_paths(f):
+    """Cached primary document (and XBRL instance for older filings), downloaded if needed."""
+    folder = CACHE / f["accession"]
+    doc = folder / f["document"]
+    inst = folder / f["instance"] if f["instance"] else None
+    if not doc.exists() or (inst and not inst.exists()):
+        folder.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(io.BytesIO(_get(ir_package_url(f)))) as z:
+            z.extractall(folder)
+        if not doc.exists():   # filings before inline XBRL: the document is not in the XBRL package
+            doc.write_bytes(_get(ir_document_url(f)))
+    return doc, inst
 
 
-def companyfacts():
-    """SEC "company facts" JSON. SEC's fair-access policy asks automated clients to give a contact
-    e-mail in the User-Agent: set SEC_CONTACT_EMAIL, or save the file from a browser to data/cache/."""
-    target = CACHE / "companyfacts.json"
-    if not target.exists():
-        url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{int(CIK):010d}.json"
-        email = os.environ.get("SEC_CONTACT_EMAIL", "").strip()
-        if not email:
-            raise SystemExit(f"Set SEC_CONTACT_EMAIL to a contact e-mail (SEC fair-access policy), "
-                             f"or open {url} in a browser and save it as {target}.")
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(_get(url, user_agent=f"{USER_AGENT} {email}"))
-    return json.loads(target.read_text())
+# ---------------------------------------------------------------- periods
+QUARTER_END = {"08": 1, "11": 2, "02": 3, "05": 4}
 
 
-# ---------------------------------------------------------------- XBRL facts
-def _fiscal_year(fact, period):
-    if period == "instant":
+def _fy(date):
+    return int(date[:4]) + (1 if int(date[5:7]) >= 6 else 0)
+
+
+def period_of(fact, kind):
+    """Period id of a fact: FY2020 (year or 31 May balance), FY2020Q1..Q4 (three months or quarter-end balance),
+    FY2020H1 (six months), FY2020M9 (nine months); None for anything else."""
+    if kind == "instant":
         d = fact["instant"]
-        return int(d[:4]) if d and d[5:] == "05-31" else None
+        if not d or d[5:7] not in QUARTER_END or d[8:] not in ("28", "29", "30", "31"):
+            return None
+        q = QUARTER_END[d[5:7]]
+        return f"FY{_fy(d)}" if q == 4 else f"FY{_fy(d)}Q{q}"
     s, e = fact["start"], fact["end"]
-    if s and e and s[5:] == "06-01" and e[5:] == "05-31" and int(e[:4]) - int(s[:4]) == 1:
-        return int(e[:4])
+    if not s or not e or s[8:] != "01" or e[5:7] not in QUARTER_END:
+        return None
+    months = (int(e[:4]) - int(s[:4])) * 12 + int(e[5:7]) - int(s[5:7]) + 1
+    fy = _fy(e)
+    if months == 3:
+        return f"FY{fy}Q{QUARTER_END[e[5:7]]}"
+    if s[5:7] == "06":
+        return {12: f"FY{fy}", 6: f"FY{fy}H1", 9: f"FY{fy}M9"}.get(months)
     return None
 
 
+def _local(qname):
+    return qname.split(":")[-1]
+
+
+def _dims(dims):
+    return {_local(k): _local(v) for k, v in dims.items()}
+
+
+# ---------------------------------------------------------------- XBRL facts
 def extract_xbrl(doc, f):
     rows, problems = [], []
     for m in REPORTED:
         spec = m.get("xbrl")
         if not spec:
             continue
-        by_fy = {}
+        concepts = set(spec["concepts"])
+        by_period = {}
         for fact in doc.facts:
-            if fact["concept"] not in spec["concepts"] or fact["dims"] != spec["dims"]:
+            if _local(fact["concept"]) not in concepts or _dims(fact["dims"]) not in spec["dims"]:
                 continue
-            fy = _fiscal_year(fact, spec["period"])
-            if fy is not None and fact["value"] is not None:
-                by_fy.setdefault(fy, []).append(fact)
-        for fy, cands in sorted(by_fy.items()):
+            p = period_of(fact, spec["period"])
+            if p is not None and fact["value"] is not None:
+                by_period.setdefault(p, []).append(fact)
+        for p, cands in sorted(by_period.items()):
             values = {c["value"] for c in cands}
             if len(values) > 1:
-                problems.append(f"FY{f['fy']} 10-K: {m['id']} FY{fy} tagged with different values {sorted(values)}")
-            preferred = [c for c in cands if re.search(spec["section"], c["section"])]
+                problems.append(f"{f['id']}: {m['id']} {p} tagged with different values {sorted(values)}")
+            preferred = [c for c in cands if re.search(spec["section"], c["section"], re.IGNORECASE)]
             c = (preferred or cands)[0]
-            rows.append(dict(
-                filing_fy=f["fy"], accession=f["accession"], metric_id=m["id"], period_fy=fy,
-                value=c["value"] * spec["sign"] / MILLION, method="xbrl", concept=c["concept"],
-                dims=json.dumps(c["dims"], sort_keys=True) if c["dims"] else "",
-                page=c["page"], section=c["section"], evidence=c["displayed"]))
+            value = c["value"] * spec["sign"]
+            page, section, evidence = c["page"], c["section"], c["displayed"]
+            if not doc.inline:
+                # Filings before inline XBRL: find the same amount on the printed row the metric belongs to.
+                shown = displayed(value)
+                hit = (doc.find_row(spec["section"], spec["row"], shown)
+                       or (value < 0 and doc.find_row(spec["section"], spec["row"], shown[:-1]))
+                       or (value == 0 and doc.find_row(spec["section"], spec["row"], "—")))
+                if hit:
+                    t, _ = hit
+                    page, section, evidence = t["page"], t["section"], shown
+                else:
+                    problems.append(f"{f['id']}: {m['id']} {p} = {shown} not found on a printed '{spec['row']}' row")
+            rows.append(dict(filing=f["id"], accession=f["accession"], metric_id=m["id"], period=p,
+                             value=value / MILLION, method="xbrl", concept=c["concept"],
+                             dims=json.dumps(c["dims"], sort_keys=True) if c["dims"] else "",
+                             page=page, section=section, evidence=evidence))
     return rows, problems
 
 
@@ -119,6 +144,25 @@ def _label(cell):
     return re.sub(r"(\(\d+\),?)+:?$", "", cell).strip().upper()
 
 
+def _columns(f, n_cells, with_cn=True):
+    """Period of each value cell of an MD&A table row, by report type: ('value'|'pct'|'pct_cn', period) per cell."""
+    fy, q = f["fy"], f["quarter"]
+    if f["form"] == "10-K":
+        cur, prior, prior2 = f"FY{fy}", f"FY{fy - 1}", f"FY{fy - 2}"
+        # The last two columns give the previous year's change again (against the year before it).
+        cols = ([("value", cur), ("value", prior), ("pct", cur), ("pct_cn", cur), ("value", prior2), ("pct", prior), ("pct_cn", prior)]
+                if with_cn else [("value", cur), ("value", prior), ("pct", cur), ("value", prior2), (None, None)])
+    else:
+        cur, prior = f"FY{fy}Q{q}", f"FY{fy - 1}Q{q}"
+        three = [("value", cur), ("value", prior), ("pct", cur)] + ([("pct_cn", cur)] if with_cn else [])
+        cols = three
+        if q in (2, 3):
+            ytd = "H1" if q == 2 else "M9"
+            cols = three + [("value", f"FY{fy}{ytd}"), ("value", f"FY{fy - 1}{ytd}"), ("pct", f"FY{fy}{ytd}")] + \
+                ([("pct_cn", f"FY{fy}{ytd}")] if with_cn else [])
+    return cols if len(cols) == n_cells else None
+
+
 REVENUE_ROWS = {
     "SALES TO WHOLESALE CUSTOMERS": ("nike_brand_wholesale_revenue", "nike_brand_wholesale_pct_change_reported", "nike_brand_wholesale_pct_change_cn"),
     "SALES THROUGH NIKE DIRECT": ("nike_direct_revenue", "nike_direct_pct_change_reported", "nike_direct_pct_change_cn"),
@@ -129,136 +173,266 @@ REVENUE_ROWS = {
     "CONVERSE": ("converse_revenue", None, None),
     "CORPORATE": ("corporate_revenue", None, None),
 }
+MDNA = re.compile(r"^ITEM [27]\.", re.IGNORECASE)
+
+
+def _row_values(f, table, r, ids, with_cn=True):
+    """Facts for one MD&A table row: ids = (value metric, % change metric, currency-neutral % change metric)."""
+    cols = _columns(f, len(r) - 1, with_cn)
+    if cols is None:
+        return None
+    out = []
+    common = dict(filing=f["id"], accession=f["accession"], method="mdna_table", concept="", dims="",
+                  page=table["page"], section=table["section"], evidence=" | ".join(r))
+    for (what, period), cell in zip(cols, r[1:]):
+        mid = {"value": ids[0], "pct": ids[1] if len(ids) > 1 else None, "pct_cn": ids[2] if len(ids) > 2 else None}.get(what)
+        if not mid:
+            continue
+        v = _num(cell)
+        if v is None:
+            if what != "value":     # a dash in a % column: no meaningful change
+                continue
+            v = Decimal(0)          # a dash in an amount column: zero
+        out.append(dict(common, metric_id=mid, period=period, value=v / 100 if what != "value" else v))
+    return out
 
 
 def extract_mdna_tables(doc, f):
     rows, problems = [], []
-    fy = f["fy"]
-    table = next((t for t in doc.tables
+    mdna_tables = [t for t in doc.tables if MDNA.search(t["section"])]
+    table = next((t for t in mdna_tables
                   if {"SALES THROUGH NIKE DIRECT", "TOTAL NIKE, INC. REVENUES"} <= {_label(r[0]) for r in t["rows"]}), None)
     if table is None:
-        return rows, [f"FY{fy} 10-K: MD&A revenue table not found"]
-    header = " ".join(table["rows"][0])
-    if f"FISCAL {fy}" not in header or f"FISCAL {fy - 1}" not in header:
-        problems.append(f"FY{fy} 10-K: unexpected MD&A revenue table header: {header}")
+        return rows, [f"{f['id']}: MD&A revenue table not found"]
+    header = " ".join(" ".join(r) for r in table["rows"][:2]).upper()
+    end_year = f["period_end"][:4]
+    if (f["form"] == "10-K" and f"FISCAL {f['fy']}" not in header) or end_year not in header:
+        problems.append(f"{f['id']}: unexpected MD&A revenue table header: {header}")
     seen = {}
     for r in table["rows"]:
         lab = _label(r[0])
-        if lab not in REVENUE_ROWS or len(r) != 8:
+        if lab == "TOTAL NIKE BRAND":
+            lab = "TOTAL NIKE BRAND REVENUES"
+        if lab not in REVENUE_ROWS:
             continue
-        vals = [_num(c) for c in r[1:]]
+        got = _row_values(f, table, r, REVENUE_ROWS[lab])
+        if got is None:
+            problems.append(f"{f['id']}: MD&A revenue row {lab} has {len(r) - 1} cells")
+            continue
+        vals = [g["value"] for g in got]
         if lab in seen:
             if seen[lab] != vals:
-                problems.append(f"FY{fy} 10-K: MD&A row {lab} appears twice with different values")
+                problems.append(f"{f['id']}: MD&A row {lab} appears twice with different values")
             continue
         seen[lab] = vals
-        value_id, pct_id, cn_id = REVENUE_ROWS[lab]
-        common = dict(filing_fy=fy, accession=f["accession"], method="mdna_table", concept="", dims="",
-                      page=table["page"], section=table["section"], evidence=" | ".join(r))
-        rows.append(dict(common, metric_id=value_id, period_fy=fy, value=vals[0]))
-        rows.append(dict(common, metric_id=value_id, period_fy=fy - 1, value=vals[1]))
-        if pct_id:
-            rows.append(dict(common, metric_id=pct_id, period_fy=fy, value=vals[2] / 100))
-            rows.append(dict(common, metric_id=cn_id, period_fy=fy, value=vals[3] / 100))
+        rows += got
     missing = set(REVENUE_ROWS) - set(seen)
     if missing:
-        problems.append(f"FY{fy} 10-K: MD&A revenue rows not found: {sorted(missing)}")
+        problems.append(f"{f['id']}: MD&A revenue rows not found: {sorted(missing)}")
 
-    ebit = next(((t, r) for t in doc.tables for r in t["rows"]
+    ebit = next(((t, r) for t in mdna_tables for r in t["rows"]
                  if re.match(r"^TOTAL NIKE, INC\. (EARNINGS BEFORE INTEREST AND TAXES|EBIT)$", _label(r[0]))), None)
     if ebit is None:
-        problems.append(f"FY{fy} 10-K: MD&A Total NIKE, Inc. EBIT row not found")
+        problems.append(f"{f['id']}: MD&A Total NIKE, Inc. EBIT row not found")
     else:
-        t, r = ebit
-        vals = [_num(c) for c in r[1:]]
-        common = dict(filing_fy=fy, accession=f["accession"], metric_id="ebit_reported", method="mdna_table",
-                      concept="", dims="", page=t["page"], section=t["section"], evidence=" | ".join(r))
-        rows.append(dict(common, period_fy=fy, value=vals[0]))
-        rows.append(dict(common, period_fy=fy - 1, value=vals[1]))
+        got = _row_values(f, ebit[0], ebit[1], ("ebit_reported",), with_cn=False)
+        if got is None:
+            problems.append(f"{f['id']}: MD&A EBIT row has {len(ebit[1]) - 1} cells")
+        else:
+            rows += got
+
+    # One table per geographic segment, right after the segment's name.
+    names = {en.upper(): rid for rid, _, _, en, _ in REGIONS}
+    found = set()
+    for t in mdna_tables:
+        rid = names.get(t["before"][-1].upper()) if t["before"] else None
+        labs = [_label(r[0]) for r in t["rows"]]
+        if rid is None or "SALES THROUGH NIKE DIRECT" not in labs or rid in found:
+            continue
+        found.add(rid)
+        ids = {"SALES TO WHOLESALE CUSTOMERS": (f"{rid}_wholesale_revenue",), "SALES THROUGH NIKE DIRECT": (f"{rid}_direct_revenue",),
+               "TOTAL REVENUES": (f"{rid}_revenue",), "EARNINGS BEFORE INTEREST AND TAXES": (f"{rid}_ebit",)}
+        squeezed = {k.replace(" ", ""): k for k in ids}   # one report prints "EARNINGS BEFOREINTEREST AND TAXES"
+        done = set()
+        for r in t["rows"]:
+            lab = squeezed.get(_label(r[0]).replace(" ", ""))
+            if lab is None or lab in done:
+                continue
+            done.add(lab)
+            got = _row_values(f, t, r, ids[lab], with_cn=lab != "EARNINGS BEFORE INTEREST AND TAXES")
+            if got is None:
+                problems.append(f"{f['id']}: MD&A {rid} row {lab} has {len(r) - 1} cells")
+            else:
+                rows += got
+        if len(done) != 4:
+            problems.append(f"{f['id']}: MD&A table for {rid} lacks rows {sorted(set(ids) - done)}")
+    if len(found) != 4:
+        problems.append(f"{f['id']}: MD&A regional tables found for {sorted(found)} only")
+    return rows, problems
+
+
+def extract_quarterly_table(doc, f):
+    """'Selected Quarterly Financial Data (Unaudited)' of the 10-K (fiscal 2019 and 2020 reports only)."""
+    rows = []
+    table = next((t for t in doc.tables if "SELECTED QUARTERLY" in t["section"].upper() and len(t["rows"]) > 4), None)
+    if table is None:
+        return rows, []
+    fy = f["fy"]
+    periods = [p for q in (1, 2, 3, 4) for p in (f"FY{fy}Q{q}", f"FY{fy - 1}Q{q}")]
+    wanted = {"REVENUES": "revenues", "GROSS PROFIT": "gross_profit", "NET INCOME (LOSS)": "net_income", "NET INCOME": "net_income"}
+    problems = []
+    for r in table["rows"]:
+        mid = wanted.get(_label(r[0]))
+        if not mid:
+            continue
+        if len(r) != 9:
+            problems.append(f"{f['id']}: quarterly data row {r[0]} has {len(r) - 1} cells")
+            continue
+        for period, cell in zip(periods, r[1:]):
+            rows.append(dict(filing=f["id"], accession=f["accession"], metric_id=mid, period=period, value=_num(cell),
+                             method="quarterly_table", concept="", dims="", page=table["page"], section=table["section"],
+                             evidence=" | ".join(r)))
     return rows, problems
 
 
 # ---------------------------------------------------------------- MD&A narrative
-SHARE_RE = re.compile(r"(?:represented|to be) approximately (\d+)% of (?:our )?total NIKE Brand revenues for fiscal (\d{4})"
-                      r"(?:,? compared to (\d+)% for fiscal (\d{4}))?")
-DIGITAL_RE = re.compile(r"(?:NIKE Brand Digital|Digital commerce) sales were \$(\d+\.\d) billion (?:for|in) fiscal (\d{4}) "
-                        r"compared to \$(\d+\.\d) billion (?:for|in) fiscal (\d{4})")
-DIGITAL_FROM_TO_RE = re.compile(r"NIKE Brand Digital sales of \d+% from \$(\d+\.\d) billion in fiscal (\d{4}) "
-                                r"to \$(\d+\.\d) billion in fiscal (\d{4})")
+PART = {"first quarter": "Q1", "second quarter": "Q2", "third quarter": "Q3", "first six months": "H1",
+        "first nine months": "M9"}
+AMOUNT = re.compile(r"\$([\d,]+(?:\.\d)?) (million|billion)")
+PCT_AMOUNT = re.compile(r"(\d+)%")
 
 
-def _quote(text, m):
-    start = max(text.rfind("•", 0, m.start()), text.rfind(". ", 0, m.start()) + 1, 0)
-    end = text.find(".", m.end())
-    return text[start:end + 1 if end >= 0 else len(text)].strip(" •")
+def _periods(text, fy_default=None):
+    """Periods named in a clause: 'the second quarter and first six months of fiscal 2019' -> [FY2019Q2, FY2019H1];
+    'fiscal 2019' -> [FY2019]; 'both the first quarter of fiscal 2019 and fiscal 2018' -> [FY2019Q1, FY2018Q1]."""
+    m = re.search(r"both the (first|second|third) quarter of fiscal (\d{4}) and fiscal (\d{4})", text)
+    if m:
+        q = PART[f"{m.group(1)} quarter"]
+        return [f"FY{m.group(2)}{q}", f"FY{m.group(3)}{q}"]
+    parts = re.findall(r"(first quarter|second quarter|third quarter|first six months|first nine months)", text)
+    years = re.findall(r"fiscal (\d{4})", text)
+    if parts and years:
+        return [f"FY{years[-1]}{PART[p]}" for p in parts]
+    if years:
+        return [f"FY{y}" for y in years]
+    return []
+
+
+def _amount_b(num, unit):
+    v = Decimal(num.replace(",", ""))
+    return v / 1000 if unit == "million" else v
+
+
+def _sentence(text, start):
+    s = text.rfind(". ", 0, start)
+    s = 0 if s < 0 else s + 2
+    e = text.find(".", start)
+    while e != -1 and e + 1 < len(text) and text[e + 1].isdigit():   # decimal point, not the end of the sentence
+        e = text.find(".", e + 1)
+    return text[s:e + 1 if e >= 0 else len(text)].strip()
+
+
+def parse_pairs(sentence, pattern):
+    """(period, value) pairs from a sentence 'X were A [and B] for <periods>, [respectively,] compared to C [and D]
+    for <periods | the respective prior year periods>'."""
+    if " compared to " in sentence:
+        left, right = sentence.split(" compared to ", 1)
+    else:
+        left, right = sentence, ""
+    cur_periods = _periods(left)
+    cur_vals = pattern(left)
+    out = list(zip(cur_periods, cur_vals))
+    if len(cur_periods) == 2 and len(cur_vals) == 2 and "both" in left:
+        out = [(cur_periods[0], cur_vals[0]), (cur_periods[1], cur_vals[1])]
+    elif len(cur_periods) == 2 and len(cur_vals) == 1 and "both" in left:
+        out = [(cur_periods[0], cur_vals[0]), (cur_periods[1], cur_vals[0])]
+    if right:
+        prior_vals = pattern(right)
+        prior_periods = _periods(right)
+        if not prior_periods and "prior year periods" in right:
+            prior_periods = [p.replace(p[2:6], str(int(p[2:6]) - 1), 1) for p in cur_periods]
+        out += list(zip(prior_periods, prior_vals))
+    return out
 
 
 def extract_narrative(doc, f):
     rows, problems = [], []
-    fy = f["fy"]
+    own = {f"FY{f['fy']}"} if f["form"] == "10-K" else {f"FY{f['fy']}Q{f['quarter']}"}
 
-    def add(metric_id, period, value, line, m):
-        rows.append(dict(filing_fy=fy, accession=f["accession"], metric_id=metric_id, period_fy=period, value=value,
+    def add(metric_id, period, value, line, sentence):
+        rows.append(dict(filing=f["id"], accession=f["accession"], metric_id=metric_id, period=period, value=value,
                          method="mdna_text", concept="", dims="", page=line["page"], section=line["section"],
-                         evidence=_quote(line["text"], m)))
+                         evidence=sentence))
 
-    share_done, digital_done = set(), False
+    done = {"share": set(), "digital": set()}
     for line in doc.lines:
-        for m in SHARE_RE.finditer(line["text"]):
-            if "NIKE Direct" not in line["text"][:m.end()]:
-                continue
-            pairs = [(int(m.group(2)), m.group(1))]
-            if m.group(3):
-                pairs.append((int(m.group(4)), m.group(3)))
-            for period, pct in pairs:
-                if period not in share_done and period in (fy, fy - 1):
-                    share_done.add(period)
-                    add("nike_direct_share_stated", period, Decimal(pct) / 100, line, m)
-        if digital_done:
+        if not MDNA.search(line["section"]):
             continue
-        m = DIGITAL_RE.search(line["text"])
-        if m and int(m.group(2)) == fy:
-            add("nike_brand_digital_sales", fy, Decimal(m.group(1)), line, m)
-            add("nike_brand_digital_sales", int(m.group(4)), Decimal(m.group(3)), line, m)
-            digital_done = True
-            continue
-        m = DIGITAL_FROM_TO_RE.search(line["text"])
-        if m and int(m.group(4)) == fy:
-            add("nike_brand_digital_sales", fy, Decimal(m.group(3)), line, m)
-            add("nike_brand_digital_sales", int(m.group(2)), Decimal(m.group(1)), line, m)
-            digital_done = True
-    if not digital_done:
-        problems.append(f"FY{fy} 10-K: NIKE Brand Digital sales sentence not found")
-    if fy not in share_done:
-        problems.append(f"FY{fy} 10-K: no statement of NIKE Direct share for fiscal {fy} (recorded as not disclosed)")
+        text = line["text"]
+        for m in re.finditer(r"NIKE Direct revenues represented approximately", text):
+            s = _sentence(text, m.start())
+            for period, pct in parse_pairs(s, lambda x: [Decimal(p) / 100 for p in PCT_AMOUNT.findall(x)]):
+                if period not in done["share"]:
+                    done["share"].add(period)
+                    add("nike_direct_share_stated", period, pct, line, s)
+        for m in re.finditer(r"(?:NIKE Brand Digital|Digital commerce|Digital) sales were \$", text):
+            s = _sentence(text, m.start())
+            for period, v in parse_pairs(s, lambda x: [_amount_b(n, u) for n, u in AMOUNT.findall(x)]):
+                if period not in done["digital"]:
+                    done["digital"].add(period)
+                    add("nike_brand_digital_sales", period, v, line, s)
+    for kind in ("share", "digital"):
+        if not own & done[kind] and f["role"] == "scope":
+            problems.append(f"{f['id']}: no {kind} sentence for {sorted(own)}")
     return rows, problems
 
 
-# ---------------------------------------------------------------- SEC API cross-check
-def sec_api_check(rows):
-    cf = companyfacts()["facts"]["us-gaap"]
-    out = []
-    for r in rows:
-        if r["method"] != "xbrl" or r["dims"]:
+INVENTORY_NOTE = re.compile(r"Inventory balances of \$([\d,]+) million and \$([\d,]+) million (?:at|as of) ")
+
+
+def extract_inventory_note(doc, f):
+    """The inventories note repeats the balance sheet amounts in a sentence: a second place to read them."""
+    end = datetime.date.fromisoformat(f["period_end"])
+    when = f"{end:%B} {end.day}, {end.year}"
+    own = f"FY{f['fy']}" if f["form"] == "10-K" else f"FY{f['fy']}Q{f['quarter']}"
+    for line in doc.lines:
+        m = INVENTORY_NOTE.search(line["text"])
+        if not m or not re.match(r"NOTE \d+ ?[—–-] ?INVENTORIES", line["section"], re.IGNORECASE):
             continue
-        spec = next(m for m in REPORTED if m["id"] == r["metric_id"])["xbrl"]
-        end = f"{r['period_fy']}-05-31"
-        start = f"{r['period_fy'] - 1}-06-01"
-        matches = [x for x in cf.get(r["concept"].split(":")[1], {}).get("units", {}).get("USD", [])
-                   if x["accn"] == r["accession"] and x["end"] == end
-                   and (spec["period"] == "instant" or x.get("start") == start)]
-        sec_values = sorted({Decimal(str(x["val"])) * spec["sign"] / MILLION for x in matches})
-        out.append(dict(filing_fy=r["filing_fy"], accession=r["accession"], metric_id=r["metric_id"],
-                        period_fy=r["period_fy"], extracted_value=r["value"],
-                        sec_api_value=";".join(str(v) for v in sec_values),
-                        result="match" if sec_values == [r["value"]] else ("not in API" if not sec_values else "MISMATCH")))
-    return out
+        s = _sentence(line["text"], m.start())
+        if f["form"] == "10-Q" and when not in s or f["form"] == "10-K" and f"May 31, {f['fy']}" not in s:
+            return [], [f"{f['id']}: inventories note does not name {when}: {s}"]
+        common = dict(filing=f["id"], accession=f["accession"], metric_id="inventories", method="note_text", concept="",
+                      dims="", page=line["page"], section=line["section"], evidence=s)
+        return [dict(common, period=own, value=Decimal(m.group(1).replace(",", ""))),
+                dict(common, period=f"FY{f['fy'] - 1}", value=Decimal(m.group(2).replace(",", "")))], []
+    # The 10-Ks for fiscal 2019 and 2020 word this note differently; their balances are confirmed by the next report.
+    return [], [f"{f['id']}: inventories note sentence not found"] if f["form"] == "10-Q" and f["role"] == "scope" else []
 
 
+def extract_quotes(doc, f):
+    """The passages of pipeline.quotes that come from this report, verbatim, with page and section."""
+    rows, problems = [], []
+    for qt in QUOTES:
+        if qt["filing"] != f["id"]:
+            continue
+        line = next((ln for ln in doc.lines if qt["start"] in ln["text"]), None)
+        if line is None:
+            problems.append(f"{f['id']}: quote '{qt['start']}' not found")
+            continue
+        text, pos, parts = line["text"], line["text"].index(qt["start"]), []
+        for _ in range(qt["sentences"]):
+            s = _sentence(text, pos)
+            parts.append(s)
+            pos = text.find(s, pos) + len(s) + 1
+        rows.append(dict(id=qt["id"], filing=f["id"], page=line["page"], section=line["section"], text=" ".join(parts)))
+    return rows, problems
+
+
+# ---------------------------------------------------------------- output
 def _fmt(v):
     if isinstance(v, Decimal):
-        v = v.normalize()
-        return format(v, "f")
+        return format(v.normalize(), "f")
     return "" if v is None else v
 
 
@@ -272,31 +446,26 @@ def write_csv(path, rows, fields):
 
 
 def main():
-    all_rows, problems = [], []
-    for fy, *_ in FILINGS:
-        f = filing(fy)
-        doc = Document(filing_document(f))
-        for extractor in (extract_xbrl, extract_mdna_tables, extract_narrative):
+    all_rows, quotes, problems = [], [], []
+    for f in all_filings():
+        doc = Document(*filing_paths(f))
+        for extractor in (extract_xbrl, extract_mdna_tables, extract_narrative, extract_quarterly_table, extract_inventory_note):
             rows, probs = extractor(doc, f)
             all_rows += rows
             problems += probs
-        print(f"FY{fy}: {f['accession']} parsed, {len(doc.facts)} tagged facts")
-    fields = ["filing_fy", "accession", "metric_id", "period_fy", "value", "method", "concept", "dims",
-              "page", "section", "evidence"]
-    write_csv(OUT / "facts.csv", all_rows, fields)
+        rows, probs = extract_quotes(doc, f)
+        quotes += rows
+        problems += probs
+        print(f"{f['id']}: {f['accession']} parsed, {len(doc.facts)} XBRL facts")
+    write_csv(OUT / "facts.csv", all_rows, FIELDS)
+    order = [q["id"] for q in QUOTES]
+    write_csv(OUT / "quotes.csv", sorted(quotes, key=lambda r: order.index(r["id"])), ["id", "filing", "page", "section", "text"])
     (OUT / "meta.json").write_text(json.dumps({"extracted_on": datetime.date.today().isoformat(),
-                                               "filings": [a for _, a, *_ in FILINGS]}, indent=2) + "\n")
-    check = sec_api_check(all_rows)
-    write_csv(OUT / "sec_api_check.csv", check, list(check[0].keys()))
-    mism = [c for c in check if c["result"] != "match"]
+                                               "filings": [f["accession"] for f in all_filings()]}, indent=2) + "\n")
     print(f"{len(all_rows)} extracted values -> data/extracted/facts.csv")
-    print(f"SEC API cross-check: {len(check) - len(mism)}/{len(check)} match")
-    for c in mism:
-        print("  ", c)
     for p in problems:
         print("NOTE:", p)
-    blocking = [p for p in problems if "recorded as not disclosed" not in p] + [c for c in mism if c["result"] == "MISMATCH"]
-    return 1 if blocking else 0
+    return 1 if problems else 0
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@
     "x": 40,
     "y": 16,
     "z": 1000,
-    "height": 50,
+    "height": 40,
     "width": 1200,
     "tabOrder": 1000
   },
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Nguồn và phương pháp",
+                    "value": "Nguồn và giải thích",
                     "textStyle": {
                       "fontFamily": "Cambria",
                       "fontSize": "20pt",

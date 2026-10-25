@@ -1,0 +1,63 @@
+table KhuVuc
+
+	measure 'Tỷ trọng Direct FY2019' = SUM ( KhuVuc[Direct FY2019] )
+		formatString: 0.0%
+
+	measure 'Tỷ trọng Direct FY2021' = SUM ( KhuVuc[Direct FY2021] )
+		formatString: 0.0%
+
+	measure 'Biên EBIT khu vực FY2019' = SUM ( KhuVuc[EBIT FY2019] )
+		formatString: 0.0%
+
+	measure 'Biên EBIT khu vực FY2021' = SUM ( KhuVuc[EBIT FY2021] )
+		formatString: 0.0%
+
+	column 'Khu vực'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Khu vực
+		sortByColumn: 'Thứ tự'
+
+	column 'Thứ tự'
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: Thứ tự
+
+	column 'Direct FY2019'
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: Direct FY2019
+
+	column 'Direct FY2021'
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: Direct FY2021
+
+	column 'EBIT FY2019'
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: EBIT FY2019
+
+	column 'EBIT FY2021'
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: EBIT FY2021
+
+	partition KhuVuc = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [#"Khu vực" = text, #"Thứ tự" = Int64.Type, #"Direct FY2019" = number, #"Direct FY2021" = number, #"EBIT FY2019" = number, #"EBIT FY2021" = number], {
+				        {"Toàn NIKE Brand", 0, 0.31578805954108224, 0.3870616886955288, null, null},
+				        {"Bắc Mỹ", 1, 0.3161237580178594, 0.40706676756505034, 0.2468242988303358, 0.2962337737935852},
+				        {"EMEA", 2, 0.2788422339991847, 0.31808659217877094, 0.20332246229107215, 0.21255237430167598},
+				        {"Đại Trung Hoa", 3, 0.39980670103092786, 0.45560916767189386, 0.38273195876288657, 0.39119420989143544},
+				        {"APLA", 4, 0.28701941377997714, 0.3660864682762493, 0.2518081461743434, 0.28635597978663674}
+				    })
+				in
+				    Source

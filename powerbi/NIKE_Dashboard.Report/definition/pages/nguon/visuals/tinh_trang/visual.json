@@ -3,11 +3,11 @@
   "name": "tinh_trang",
   "position": {
     "x": 820,
-    "y": 390,
-    "z": 5000,
-    "height": 250,
+    "y": 1570,
+    "z": 13000,
+    "height": 300,
     "width": 420,
-    "tabOrder": 5000
+    "tabOrder": 13000
   },
   "visual": {
     "visualType": "textbox",
@@ -33,7 +33,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "203 số liệu báo cáo: 202 khớp nguồn chính thức, 1 không được NIKE công bố. Dữ liệu trích xuất ngày 23/10/2026.",
+                    "value": "627 số liệu báo cáo: 600 khớp nguồn chính thức, 27 là các tỷ lệ % NIKE không nêu cho riêng quý 4. Dữ liệu trích xuất ngày 25/10/2026.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -52,6 +52,41 @@
                       "fontSize": "9.5pt",
                       "color": "#5b6472"
                     }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "6pt",
+                      "color": "#3b4350"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Bản web của dashboard: ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10.5pt",
+                      "color": "#3b4350"
+                    }
+                  },
+                  {
+                    "value": "https://miurikyasakytg2006-dot.github.io/nike-financial-dashboard/",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10.5pt",
+                      "color": "#2a78d6"
+                    },
+                    "url": "https://miurikyasakytg2006-dot.github.io/nike-financial-dashboard/"
                   }
                 ],
                 "horizontalTextAlignment": "left"

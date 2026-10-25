@@ -6,11 +6,16 @@ model Model
 		legacyRedirects
 		returnErrorValuesAsNull
 
-annotation PBI_QueryOrder = ["Nam","BangKenh","BangKetQua","CoSo"]
+annotation PBI_QueryOrder = ["Nam","Quy","ThayDoi","CauNoi","KhuVuc","BangNam","BangQuy","BangKhuVuc","BaoCao"]
 
 annotation __PBI_TimeIntelligenceEnabled = 0
 
 ref table Nam
-ref table BangKenh
-ref table BangKetQua
-ref table CoSo
+ref table Quy
+ref table ThayDoi
+ref table CauNoi
+ref table KhuVuc
+ref table BangNam
+ref table BangQuy
+ref table BangKhuVuc
+ref table BaoCao

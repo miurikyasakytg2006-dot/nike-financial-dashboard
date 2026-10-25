@@ -1,0 +1,50 @@
+table ThayDoi
+
+	measure 'Thay đổi – Direct' = CALCULATE ( SUM ( ThayDoi[Thay đổi] ), ThayDoi[Nhóm] = "Direct" )
+		formatString: +#,0.00;−#,0.00;0.00
+
+	measure 'Thay đổi – Bán buôn' = CALCULATE ( SUM ( ThayDoi[Thay đổi] ), ThayDoi[Nhóm] = "Bán buôn" )
+		formatString: +#,0.00;−#,0.00;0.00
+
+	measure 'Thay đổi – GBD' = CALCULATE ( SUM ( ThayDoi[Thay đổi] ), ThayDoi[Nhóm] = "GBD" )
+		formatString: +#,0.00;−#,0.00;0.00
+
+	measure 'Thay đổi – Tổng' = CALCULATE ( SUM ( ThayDoi[Thay đổi] ), ThayDoi[Nhóm] = "Tổng" )
+		formatString: +#,0.00;−#,0.00;0.00
+
+	column 'Kênh'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Kênh
+		sortByColumn: 'Thứ tự'
+
+	column 'Thứ tự'
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: Thứ tự
+
+	column 'Nhóm'
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: Nhóm
+
+	column 'Thay đổi'
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: Thay đổi
+
+	partition ThayDoi = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [#"Kênh" = text, #"Thứ tự" = Int64.Type, #"Nhóm" = text, #"Thay đổi" = number], {
+				        {"NIKE Direct  +4,6", 0, "Direct", 4.617},
+				        {"Bán buôn  +0,5", 1, "Bán buôn", 0.475},
+				        {"Global Brand Divisions  −0,02", 2, "GBD", -0.017},
+				        {"Tổng NIKE Brand  +5,1", 3, "Tổng", 5.075}
+				    })
+				in
+				    Source

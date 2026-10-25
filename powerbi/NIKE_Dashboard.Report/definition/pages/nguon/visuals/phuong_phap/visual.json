@@ -3,11 +3,11 @@
   "name": "phuong_phap",
   "position": {
     "x": 40,
-    "y": 390,
-    "z": 4000,
-    "height": 250,
+    "y": 1570,
+    "z": 12000,
+    "height": 300,
     "width": 740,
-    "tabOrder": 4000
+    "tabOrder": 12000
   },
   "visual": {
     "visualType": "textbox",
@@ -33,7 +33,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Số liệu của mỗi năm tài chính được lấy từ báo cáo 10‑K của chính năm đó. Mỗi báo cáo đều in kèm số của năm trước để so sánh, và tăng trưởng được tính với chính số năm trước này, giống cách NIKE tự tính. Ví dụ: tăng trưởng doanh thu FY2026 tính với doanh thu FY2025 in trong 10‑K FY2026.",
+                    "value": "– Số của mỗi kỳ lấy từ báo cáo của chính kỳ đó: năm từ 10‑K, quý 1–3 từ 10‑Q. Quý 4 bằng số cả năm trừ số 9 tháng. Tăng trưởng tính với số cùng kỳ năm trước in trong cùng báo cáo, giống cách NIKE tự tính.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -46,7 +46,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Các số trên báo cáo tài chính được lấy từ dữ liệu XBRL đi kèm mỗi báo cáo 10‑K, sau đó đối chiếu với dữ liệu XBRL do SEC công bố và với các bảng trong phần MD&A.",
+                    "value": "– Số trên báo cáo tài chính lấy từ dữ liệu XBRL đi kèm mỗi báo cáo (FY2019 dùng tệp XBRL riêng, nên từng số được tìm lại trên trang in). Sau đó đối chiếu với bảng trong MD&A, số lũy kế 6 và 9 tháng, bảng số liệu quý của 10‑K FY2019 và FY2020, và số in lại ở báo cáo năm sau.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -59,7 +59,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Các chỉ tiêu chỉ có trong phần MD&A (tăng trưởng loại trừ tỷ giá, doanh số Digital) không có dữ liệu XBRL để đối chiếu, nên được đọc lại thêm một lần ngay trên trang 10‑K. Ảnh chụp từng chỗ có ở trang “Đối chiếu 35 số” trên dashboard web.",
+                    "value": "– Tỷ lệ tăng trưởng loại trừ tỷ giá của từng quý chỉ có trong MD&A và không được in lại ở báo cáo sau, nên được đọc lại thêm một lần ngay trên trang 10‑Q. Ảnh chụp từng chỗ có ở trang “Đối chiếu 36 số”.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -72,7 +72,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Các chỉ số do nhóm tự tính dùng đúng công thức ở sheet 04 của bộ dữ liệu Excel. Mỗi lần cập nhật đều kiểm tra lại các phép cộng trừ, chẳng hạn doanh thu trừ giá vốn phải bằng lợi nhuận gộp.",
+                    "value": "– Các chỉ số do nhóm tự tính dùng đúng công thức ở sheet 05 và 06 của bộ dữ liệu Excel. Mỗi lần cập nhật đều kiểm tra lại các phép cộng trừ, chẳng hạn doanh thu trừ giá vốn phải bằng lợi nhuận gộp.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",

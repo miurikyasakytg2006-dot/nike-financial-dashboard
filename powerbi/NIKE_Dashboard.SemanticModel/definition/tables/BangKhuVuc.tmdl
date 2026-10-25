@@ -1,0 +1,255 @@
+table BangKhuVuc
+
+	measure 'Giá trị BangKhuVuc' = COALESCE ( SELECTEDVALUE ( BangKhuVuc[Hiển thị] ), "" )
+
+	measure 'Liên kết BangKhuVuc' = SELECTEDVALUE ( BangKhuVuc[Liên kết] )
+
+	measure 'Màu chữ BangKhuVuc' = IF ( SELECTEDVALUE ( BangKhuVuc[Loại] ) = "Trang", "#6f7784", "#15191e" )
+
+	column 'Thứ tự'
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: Thứ tự
+
+	column 'Chỉ tiêu'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Chỉ tiêu
+		sortByColumn: 'Thứ tự'
+
+	column 'Kỳ'
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: Kỳ
+
+	column 'Cột'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Cột
+		sortByColumn: 'Thứ tự cột'
+
+	column 'Thứ tự cột'
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: Thứ tự cột
+
+	column 'Loại'
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: Loại
+
+	column 'Hiển thị'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Hiển thị
+
+	column 'Liên kết'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Liên kết
+		dataCategory: WebUrl
+
+	partition BangKhuVuc = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [#"Thứ tự" = Int64.Type, #"Chỉ tiêu" = text, #"Kỳ" = text, #"Cột" = text, #"Thứ tự cột" = Int64.Type, #"Loại" = text, #"Hiển thị" = text, #"Liên kết" = text], {
+				        {1, "BẮC MỸ", "FY2019", "FY2019", 0, "Số", "", null},
+				        {1, "BẮC MỸ", "FY2019", " ", 1, "Trang", "", null},
+				        {1, "BẮC MỸ", "FY2020", "FY2020", 2, "Số", "", null},
+				        {1, "BẮC MỸ", "FY2020", "  ", 3, "Trang", "", null},
+				        {1, "BẮC MỸ", "FY2021", "FY2021", 4, "Số", "", null},
+				        {1, "BẮC MỸ", "FY2021", "   ", 5, "Trang", "", null},
+				        {2, "Doanh thu, triệu USD", "FY2019", "FY2019", 0, "Số", "15.902", null},
+				        {2, "Doanh thu, triệu USD", "FY2019", " ", 1, "Trang", "tr. 80", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {2, "Doanh thu, triệu USD", "FY2020", "FY2020", 2, "Số", "14.484", null},
+				        {2, "Doanh thu, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {2, "Doanh thu, triệu USD", "FY2021", "FY2021", 4, "Số", "17.179", null},
+				        {2, "Doanh thu, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {3, "NIKE Direct, triệu USD", "FY2019", "FY2019", 0, "Số", "5.027", null},
+				        {3, "NIKE Direct, triệu USD", "FY2019", " ", 1, "Trang", "tr. 80", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {3, "NIKE Direct, triệu USD", "FY2020", "FY2020", 2, "Số", "5.113", null},
+				        {3, "NIKE Direct, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {3, "NIKE Direct, triệu USD", "FY2021", "FY2021", 4, "Số", "6.993", null},
+				        {3, "NIKE Direct, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {4, "Bán buôn, triệu USD", "FY2019", "FY2019", 0, "Số", "10.875", null},
+				        {4, "Bán buôn, triệu USD", "FY2019", " ", 1, "Trang", "tr. 80", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {4, "Bán buôn, triệu USD", "FY2020", "FY2020", 2, "Số", "9.371", null},
+				        {4, "Bán buôn, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {4, "Bán buôn, triệu USD", "FY2021", "FY2021", 4, "Số", "10.186", null},
+				        {4, "Bán buôn, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {5, "Tỷ trọng NIKE Direct", "FY2019", "FY2019", 0, "Số", "31,6%", null},
+				        {5, "Tỷ trọng NIKE Direct", "FY2019", " ", 1, "Trang", "", null},
+				        {5, "Tỷ trọng NIKE Direct", "FY2020", "FY2020", 2, "Số", "35,3%", null},
+				        {5, "Tỷ trọng NIKE Direct", "FY2020", "  ", 3, "Trang", "", null},
+				        {5, "Tỷ trọng NIKE Direct", "FY2021", "FY2021", 4, "Số", "40,7%", null},
+				        {5, "Tỷ trọng NIKE Direct", "FY2021", "   ", 5, "Trang", "", null},
+				        {6, "Tăng trưởng doanh thu, theo báo cáo", "FY2019", "FY2019", 0, "Số", "+7,0%", null},
+				        {6, "Tăng trưởng doanh thu, theo báo cáo", "FY2019", " ", 1, "Trang", "", null},
+				        {6, "Tăng trưởng doanh thu, theo báo cáo", "FY2020", "FY2020", 2, "Số", "−8,9%", null},
+				        {6, "Tăng trưởng doanh thu, theo báo cáo", "FY2020", "  ", 3, "Trang", "", null},
+				        {6, "Tăng trưởng doanh thu, theo báo cáo", "FY2021", "FY2021", 4, "Số", "+18,6%", null},
+				        {6, "Tăng trưởng doanh thu, theo báo cáo", "FY2021", "   ", 5, "Trang", "", null},
+				        {7, "EBIT, triệu USD", "FY2019", "FY2019", 0, "Số", "3.925", null},
+				        {7, "EBIT, triệu USD", "FY2019", " ", 1, "Trang", "tr. 82", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {7, "EBIT, triệu USD", "FY2020", "FY2020", 2, "Số", "2.899", null},
+				        {7, "EBIT, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 90", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {7, "EBIT, triệu USD", "FY2021", "FY2021", 4, "Số", "5.089", null},
+				        {7, "EBIT, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 89", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {8, "Biên EBIT", "FY2019", "FY2019", 0, "Số", "24,7%", null},
+				        {8, "Biên EBIT", "FY2019", " ", 1, "Trang", "", null},
+				        {8, "Biên EBIT", "FY2020", "FY2020", 2, "Số", "20,0%", null},
+				        {8, "Biên EBIT", "FY2020", "  ", 3, "Trang", "", null},
+				        {8, "Biên EBIT", "FY2021", "FY2021", 4, "Số", "29,6%", null},
+				        {8, "Biên EBIT", "FY2021", "   ", 5, "Trang", "", null},
+				        {9, "CHÂU ÂU, TRUNG ĐÔNG VÀ CHÂU PHI (EMEA)", "FY2019", "FY2019", 0, "Số", "", null},
+				        {9, "CHÂU ÂU, TRUNG ĐÔNG VÀ CHÂU PHI (EMEA)", "FY2019", " ", 1, "Trang", "", null},
+				        {9, "CHÂU ÂU, TRUNG ĐÔNG VÀ CHÂU PHI (EMEA)", "FY2020", "FY2020", 2, "Số", "", null},
+				        {9, "CHÂU ÂU, TRUNG ĐÔNG VÀ CHÂU PHI (EMEA)", "FY2020", "  ", 3, "Trang", "", null},
+				        {9, "CHÂU ÂU, TRUNG ĐÔNG VÀ CHÂU PHI (EMEA)", "FY2021", "FY2021", 4, "Số", "", null},
+				        {9, "CHÂU ÂU, TRUNG ĐÔNG VÀ CHÂU PHI (EMEA)", "FY2021", "   ", 5, "Trang", "", null},
+				        {10, "Doanh thu, triệu USD", "FY2019", "FY2019", 0, "Số", "9.812", null},
+				        {10, "Doanh thu, triệu USD", "FY2019", " ", 1, "Trang", "tr. 80", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {10, "Doanh thu, triệu USD", "FY2020", "FY2020", 2, "Số", "9.347", null},
+				        {10, "Doanh thu, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {10, "Doanh thu, triệu USD", "FY2021", "FY2021", 4, "Số", "11.456", null},
+				        {10, "Doanh thu, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {11, "NIKE Direct, triệu USD", "FY2019", "FY2019", 0, "Số", "2.736", null},
+				        {11, "NIKE Direct, triệu USD", "FY2019", " ", 1, "Trang", "tr. 80", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {11, "NIKE Direct, triệu USD", "FY2020", "FY2020", 2, "Số", "2.773", null},
+				        {11, "NIKE Direct, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {11, "NIKE Direct, triệu USD", "FY2021", "FY2021", 4, "Số", "3.644", null},
+				        {11, "NIKE Direct, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {12, "Bán buôn, triệu USD", "FY2019", "FY2019", 0, "Số", "7.076", null},
+				        {12, "Bán buôn, triệu USD", "FY2019", " ", 1, "Trang", "tr. 80", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {12, "Bán buôn, triệu USD", "FY2020", "FY2020", 2, "Số", "6.574", null},
+				        {12, "Bán buôn, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {12, "Bán buôn, triệu USD", "FY2021", "FY2021", 4, "Số", "7.812", null},
+				        {12, "Bán buôn, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {13, "Tỷ trọng NIKE Direct", "FY2019", "FY2019", 0, "Số", "27,9%", null},
+				        {13, "Tỷ trọng NIKE Direct", "FY2019", " ", 1, "Trang", "", null},
+				        {13, "Tỷ trọng NIKE Direct", "FY2020", "FY2020", 2, "Số", "29,7%", null},
+				        {13, "Tỷ trọng NIKE Direct", "FY2020", "  ", 3, "Trang", "", null},
+				        {13, "Tỷ trọng NIKE Direct", "FY2021", "FY2021", 4, "Số", "31,8%", null},
+				        {13, "Tỷ trọng NIKE Direct", "FY2021", "   ", 5, "Trang", "", null},
+				        {14, "Tăng trưởng doanh thu, theo báo cáo", "FY2019", "FY2019", 0, "Số", "+6,2%", null},
+				        {14, "Tăng trưởng doanh thu, theo báo cáo", "FY2019", " ", 1, "Trang", "", null},
+				        {14, "Tăng trưởng doanh thu, theo báo cáo", "FY2020", "FY2020", 2, "Số", "−4,7%", null},
+				        {14, "Tăng trưởng doanh thu, theo báo cáo", "FY2020", "  ", 3, "Trang", "", null},
+				        {14, "Tăng trưởng doanh thu, theo báo cáo", "FY2021", "FY2021", 4, "Số", "+22,6%", null},
+				        {14, "Tăng trưởng doanh thu, theo báo cáo", "FY2021", "   ", 5, "Trang", "", null},
+				        {15, "EBIT, triệu USD", "FY2019", "FY2019", 0, "Số", "1.995", null},
+				        {15, "EBIT, triệu USD", "FY2019", " ", 1, "Trang", "tr. 82", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {15, "EBIT, triệu USD", "FY2020", "FY2020", 2, "Số", "1.541", null},
+				        {15, "EBIT, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 90", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {15, "EBIT, triệu USD", "FY2021", "FY2021", 4, "Số", "2.435", null},
+				        {15, "EBIT, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 89", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {16, "Biên EBIT", "FY2019", "FY2019", 0, "Số", "20,3%", null},
+				        {16, "Biên EBIT", "FY2019", " ", 1, "Trang", "", null},
+				        {16, "Biên EBIT", "FY2020", "FY2020", 2, "Số", "16,5%", null},
+				        {16, "Biên EBIT", "FY2020", "  ", 3, "Trang", "", null},
+				        {16, "Biên EBIT", "FY2021", "FY2021", 4, "Số", "21,3%", null},
+				        {16, "Biên EBIT", "FY2021", "   ", 5, "Trang", "", null},
+				        {17, "ĐẠI TRUNG HOA", "FY2019", "FY2019", 0, "Số", "", null},
+				        {17, "ĐẠI TRUNG HOA", "FY2019", " ", 1, "Trang", "", null},
+				        {17, "ĐẠI TRUNG HOA", "FY2020", "FY2020", 2, "Số", "", null},
+				        {17, "ĐẠI TRUNG HOA", "FY2020", "  ", 3, "Trang", "", null},
+				        {17, "ĐẠI TRUNG HOA", "FY2021", "FY2021", 4, "Số", "", null},
+				        {17, "ĐẠI TRUNG HOA", "FY2021", "   ", 5, "Trang", "", null},
+				        {18, "Doanh thu, triệu USD", "FY2019", "FY2019", 0, "Số", "6.208", null},
+				        {18, "Doanh thu, triệu USD", "FY2019", " ", 1, "Trang", "tr. 80", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {18, "Doanh thu, triệu USD", "FY2020", "FY2020", 2, "Số", "6.679", null},
+				        {18, "Doanh thu, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {18, "Doanh thu, triệu USD", "FY2021", "FY2021", 4, "Số", "8.290", null},
+				        {18, "Doanh thu, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {19, "NIKE Direct, triệu USD", "FY2019", "FY2019", 0, "Số", "2.482", null},
+				        {19, "NIKE Direct, triệu USD", "FY2019", " ", 1, "Trang", "tr. 80", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {19, "NIKE Direct, triệu USD", "FY2020", "FY2020", 2, "Số", "2.876", null},
+				        {19, "NIKE Direct, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {19, "NIKE Direct, triệu USD", "FY2021", "FY2021", 4, "Số", "3.777", null},
+				        {19, "NIKE Direct, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {20, "Bán buôn, triệu USD", "FY2019", "FY2019", 0, "Số", "3.726", null},
+				        {20, "Bán buôn, triệu USD", "FY2019", " ", 1, "Trang", "tr. 80", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {20, "Bán buôn, triệu USD", "FY2020", "FY2020", 2, "Số", "3.803", null},
+				        {20, "Bán buôn, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {20, "Bán buôn, triệu USD", "FY2021", "FY2021", 4, "Số", "4.513", null},
+				        {20, "Bán buôn, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {21, "Tỷ trọng NIKE Direct", "FY2019", "FY2019", 0, "Số", "40,0%", null},
+				        {21, "Tỷ trọng NIKE Direct", "FY2019", " ", 1, "Trang", "", null},
+				        {21, "Tỷ trọng NIKE Direct", "FY2020", "FY2020", 2, "Số", "43,1%", null},
+				        {21, "Tỷ trọng NIKE Direct", "FY2020", "  ", 3, "Trang", "", null},
+				        {21, "Tỷ trọng NIKE Direct", "FY2021", "FY2021", 4, "Số", "45,6%", null},
+				        {21, "Tỷ trọng NIKE Direct", "FY2021", "   ", 5, "Trang", "", null},
+				        {22, "Tăng trưởng doanh thu, theo báo cáo", "FY2019", "FY2019", 0, "Số", "+20,9%", null},
+				        {22, "Tăng trưởng doanh thu, theo báo cáo", "FY2019", " ", 1, "Trang", "", null},
+				        {22, "Tăng trưởng doanh thu, theo báo cáo", "FY2020", "FY2020", 2, "Số", "+7,6%", null},
+				        {22, "Tăng trưởng doanh thu, theo báo cáo", "FY2020", "  ", 3, "Trang", "", null},
+				        {22, "Tăng trưởng doanh thu, theo báo cáo", "FY2021", "FY2021", 4, "Số", "+24,1%", null},
+				        {22, "Tăng trưởng doanh thu, theo báo cáo", "FY2021", "   ", 5, "Trang", "", null},
+				        {23, "EBIT, triệu USD", "FY2019", "FY2019", 0, "Số", "2.376", null},
+				        {23, "EBIT, triệu USD", "FY2019", " ", 1, "Trang", "tr. 82", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {23, "EBIT, triệu USD", "FY2020", "FY2020", 2, "Số", "2.490", null},
+				        {23, "EBIT, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 90", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {23, "EBIT, triệu USD", "FY2021", "FY2021", 4, "Số", "3.243", null},
+				        {23, "EBIT, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 89", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {24, "Biên EBIT", "FY2019", "FY2019", 0, "Số", "38,3%", null},
+				        {24, "Biên EBIT", "FY2019", " ", 1, "Trang", "", null},
+				        {24, "Biên EBIT", "FY2020", "FY2020", 2, "Số", "37,3%", null},
+				        {24, "Biên EBIT", "FY2020", "  ", 3, "Trang", "", null},
+				        {24, "Biên EBIT", "FY2021", "FY2021", 4, "Số", "39,1%", null},
+				        {24, "Biên EBIT", "FY2021", "   ", 5, "Trang", "", null},
+				        {25, "CHÂU Á – THÁI BÌNH DƯƠNG VÀ MỸ LATINH (APLA)", "FY2019", "FY2019", 0, "Số", "", null},
+				        {25, "CHÂU Á – THÁI BÌNH DƯƠNG VÀ MỸ LATINH (APLA)", "FY2019", " ", 1, "Trang", "", null},
+				        {25, "CHÂU Á – THÁI BÌNH DƯƠNG VÀ MỸ LATINH (APLA)", "FY2020", "FY2020", 2, "Số", "", null},
+				        {25, "CHÂU Á – THÁI BÌNH DƯƠNG VÀ MỸ LATINH (APLA)", "FY2020", "  ", 3, "Trang", "", null},
+				        {25, "CHÂU Á – THÁI BÌNH DƯƠNG VÀ MỸ LATINH (APLA)", "FY2021", "FY2021", 4, "Số", "", null},
+				        {25, "CHÂU Á – THÁI BÌNH DƯƠNG VÀ MỸ LATINH (APLA)", "FY2021", "   ", 5, "Trang", "", null},
+				        {26, "Doanh thu, triệu USD", "FY2019", "FY2019", 0, "Số", "5.254", null},
+				        {26, "Doanh thu, triệu USD", "FY2019", " ", 1, "Trang", "tr. 80", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {26, "Doanh thu, triệu USD", "FY2020", "FY2020", 2, "Số", "5.028", null},
+				        {26, "Doanh thu, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {26, "Doanh thu, triệu USD", "FY2021", "FY2021", 4, "Số", "5.343", null},
+				        {26, "Doanh thu, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {27, "NIKE Direct, triệu USD", "FY2019", "FY2019", 0, "Số", "1.508", null},
+				        {27, "NIKE Direct, triệu USD", "FY2019", " ", 1, "Trang", "tr. 80", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {27, "NIKE Direct, triệu USD", "FY2020", "FY2020", 2, "Số", "1.620", null},
+				        {27, "NIKE Direct, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {27, "NIKE Direct, triệu USD", "FY2021", "FY2021", 4, "Số", "1.956", null},
+				        {27, "NIKE Direct, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {28, "Bán buôn, triệu USD", "FY2019", "FY2019", 0, "Số", "3.746", null},
+				        {28, "Bán buôn, triệu USD", "FY2019", " ", 1, "Trang", "tr. 80", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {28, "Bán buôn, triệu USD", "FY2020", "FY2020", 2, "Số", "3.408", null},
+				        {28, "Bán buôn, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 88", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {28, "Bán buôn, triệu USD", "FY2021", "FY2021", 4, "Số", "3.387", null},
+				        {28, "Bán buôn, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 86", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {29, "Tỷ trọng NIKE Direct", "FY2019", "FY2019", 0, "Số", "28,7%", null},
+				        {29, "Tỷ trọng NIKE Direct", "FY2019", " ", 1, "Trang", "", null},
+				        {29, "Tỷ trọng NIKE Direct", "FY2020", "FY2020", 2, "Số", "32,2%", null},
+				        {29, "Tỷ trọng NIKE Direct", "FY2020", "  ", 3, "Trang", "", null},
+				        {29, "Tỷ trọng NIKE Direct", "FY2021", "FY2021", 4, "Số", "36,6%", null},
+				        {29, "Tỷ trọng NIKE Direct", "FY2021", "   ", 5, "Trang", "", null},
+				        {30, "Tăng trưởng doanh thu, theo báo cáo", "FY2019", "FY2019", 0, "Số", "+1,7%", null},
+				        {30, "Tăng trưởng doanh thu, theo báo cáo", "FY2019", " ", 1, "Trang", "", null},
+				        {30, "Tăng trưởng doanh thu, theo báo cáo", "FY2020", "FY2020", 2, "Số", "−4,3%", null},
+				        {30, "Tăng trưởng doanh thu, theo báo cáo", "FY2020", "  ", 3, "Trang", "", null},
+				        {30, "Tăng trưởng doanh thu, theo báo cáo", "FY2021", "FY2021", 4, "Số", "+6,3%", null},
+				        {30, "Tăng trưởng doanh thu, theo báo cáo", "FY2021", "   ", 5, "Trang", "", null},
+				        {31, "EBIT, triệu USD", "FY2019", "FY2019", 0, "Số", "1.323", null},
+				        {31, "EBIT, triệu USD", "FY2019", " ", 1, "Trang", "tr. 82", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {31, "EBIT, triệu USD", "FY2020", "FY2020", 2, "Số", "1.184", null},
+				        {31, "EBIT, triệu USD", "FY2020", "  ", 3, "Trang", "tr. 90", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {31, "EBIT, triệu USD", "FY2021", "FY2021", 4, "Số", "1.530", null},
+				        {31, "EBIT, triệu USD", "FY2021", "   ", 5, "Trang", "tr. 89", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {32, "Biên EBIT", "FY2019", "FY2019", 0, "Số", "25,2%", null},
+				        {32, "Biên EBIT", "FY2019", " ", 1, "Trang", "", null},
+				        {32, "Biên EBIT", "FY2020", "FY2020", 2, "Số", "23,5%", null},
+				        {32, "Biên EBIT", "FY2020", "  ", 3, "Trang", "", null},
+				        {32, "Biên EBIT", "FY2021", "FY2021", 4, "Số", "28,6%", null},
+				        {32, "Biên EBIT", "FY2021", "   ", 5, "Trang", "", null}
+				    })
+				in
+				    Source

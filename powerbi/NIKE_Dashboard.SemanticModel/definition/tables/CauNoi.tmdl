@@ -1,0 +1,64 @@
+table CauNoi
+
+	measure 'Cầu nối – nền' = SUM ( CauNoi[Nền] )
+		formatString: 0.0
+
+	measure 'Cầu nối – biên EBIT' = SUM ( CauNoi[Tổng] )
+		formatString: 0.0"%"
+
+	measure 'Cầu nối – làm biên tăng' = SUM ( CauNoi[Tăng] )
+		formatString: "+"0.0
+
+	measure 'Cầu nối – làm biên giảm' = SUM ( CauNoi[Giảm] )
+		formatString: "−"0.0
+
+	column 'Bước'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Bước
+		sortByColumn: 'Thứ tự'
+
+	column 'Thứ tự'
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: Thứ tự
+
+	column 'Nền'
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: Nền
+
+	column 'Tổng'
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: Tổng
+
+	column 'Tăng'
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: Tăng
+
+	column 'Giảm'
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: Giảm
+
+	partition CauNoi = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [#"Bước" = text, #"Thứ tự" = Int64.Type, #"Nền" = number, #"Tổng" = number, #"Tăng" = number, #"Giảm" = number], {
+				        {"FY2019 12,4%", 0, 0.0, 12.39870133190173, null, null},
+				        {"Biên gộp +0,1", 1, 12.39870133190173, null, 0.1490387161744322, null},
+				        {"Tạo nhu cầu +2,6", 2, 12.547740048076161, null, 2.602511742691903, null},
+				        {"Vận hành chung +0,6", 3, 15.150251790768065, null, 0.6246136528668983, null},
+				        {"Khác −0,2", 4, 15.544029817234719, null, null, 0.23083562640024424},
+				        {"FY2021 15,5%", 5, 0.0, 15.544029817234719, null, null}
+				    })
+				in
+				    Source

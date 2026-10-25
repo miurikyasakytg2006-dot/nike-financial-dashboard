@@ -3,11 +3,11 @@
   "name": "bao_cao",
   "position": {
     "x": 40,
-    "y": 112,
-    "z": 3000,
-    "height": 250,
+    "y": 1062,
+    "z": 11000,
+    "height": 480,
     "width": 1200,
-    "tabOrder": 3000
+    "tabOrder": 11000
   },
   "visual": {
     "visualType": "tableEx",
@@ -20,13 +20,28 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Nam"
+                      "Entity": "BaoCao"
+                    }
+                  },
+                  "Property": "Nhóm"
+                }
+              },
+              "queryRef": "BaoCao.Nhóm",
+              "nativeQueryRef": "Nhóm",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "BaoCao"
                     }
                   },
                   "Property": "Báo cáo"
                 }
               },
-              "queryRef": "Nam.Báo cáo",
+              "queryRef": "BaoCao.Báo cáo",
               "nativeQueryRef": "Báo cáo",
               "active": true
             },
@@ -35,13 +50,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Nam"
+                      "Entity": "BaoCao"
                     }
                   },
                   "Property": "Ngày nộp SEC"
                 }
               },
-              "queryRef": "Nam.Ngày nộp SEC",
+              "queryRef": "BaoCao.Ngày nộp SEC",
               "nativeQueryRef": "Ngày nộp SEC",
               "active": true
             },
@@ -50,13 +65,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Nam"
+                      "Entity": "BaoCao"
                     }
                   },
                   "Property": "Số accession"
                 }
               },
-              "queryRef": "Nam.Số accession",
+              "queryRef": "BaoCao.Số accession",
               "nativeQueryRef": "Số accession",
               "active": true
             },
@@ -65,13 +80,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "Nam"
+                      "Entity": "BaoCao"
                     }
                   },
                   "Property": "Liên kết SEC EDGAR"
                 }
               },
-              "queryRef": "Nam.Liên kết SEC EDGAR",
+              "queryRef": "BaoCao.Liên kết SEC EDGAR",
               "nativeQueryRef": "Liên kết SEC EDGAR",
               "active": true
             }
@@ -85,7 +100,7 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Nam"
+                    "Entity": "BaoCao"
                   }
                 },
                 "Property": "Báo cáo"
@@ -111,7 +126,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10.5D"
+                  "Value": "10D"
                 }
               }
             },
@@ -138,7 +153,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10.5D"
+                  "Value": "10D"
                 }
               }
             },

@@ -3,11 +3,11 @@
   "name": "bao_cao_tieu_de",
   "position": {
     "x": 40,
-    "y": 80,
-    "z": 2000,
+    "y": 1030,
+    "z": 10000,
     "height": 30,
     "width": 1200,
-    "tabOrder": 2000
+    "tabOrder": 10000
   },
   "visual": {
     "visualType": "textbox",
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Báo cáo Form 10‑K (SEC EDGAR)",
+                    "value": "Báo cáo nộp SEC",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "13pt",

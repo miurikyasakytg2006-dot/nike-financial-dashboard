@@ -1,0 +1,60 @@
+table BaoCao
+
+	column 'Báo cáo'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Báo cáo
+		sortByColumn: 'Thứ tự'
+
+	column 'Thứ tự'
+		dataType: int64
+		isHidden
+		summarizeBy: none
+		sourceColumn: Thứ tự
+
+	column 'Nhóm'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Nhóm
+
+	column 'Ngày nộp SEC'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Ngày nộp SEC
+
+	column 'Số accession'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Số accession
+
+	column 'Liên kết SEC EDGAR'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: Liên kết SEC EDGAR
+		dataCategory: WebUrl
+
+	partition BaoCao = m
+		mode: import
+		source =
+				let
+				    Source = #table(type table [#"Báo cáo" = text, #"Thứ tự" = Int64.Type, #"Nhóm" = text, #"Ngày nộp SEC" = text, #"Số accession" = text, #"Liên kết SEC EDGAR" = text], {
+				        {"10‑K FY2019", 100, "Báo cáo năm (10-K)", "23/07/2019", "0000320187-19-000051", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000051/nke-531201910k.htm"},
+				        {"10‑Q Q1 FY2019", 201, "Báo cáo quý (10-Q)", "05/10/2018", "0000320187-18-000213", "https://www.sec.gov/Archives/edgar/data/320187/000032018718000213/nke-08312018x10q.htm"},
+				        {"10‑Q Q2 FY2019", 202, "Báo cáo quý (10-Q)", "08/01/2019", "0000320187-19-000007", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000007/nke-11302018x10q.htm"},
+				        {"10‑Q Q3 FY2019", 203, "Báo cáo quý (10-Q)", "04/04/2019", "0000320187-19-000030", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000030/nke-02282019x10q.htm"},
+				        {"10‑K FY2020", 104, "Báo cáo năm (10-K)", "24/07/2020", "0000320187-20-000047", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000047/nke-531202010k.htm"},
+				        {"10‑Q Q1 FY2020", 205, "Báo cáo quý (10-Q)", "04/10/2019", "0000320187-19-000071", "https://www.sec.gov/Archives/edgar/data/320187/000032018719000071/nke-831201910q.htm"},
+				        {"10‑Q Q2 FY2020", 206, "Báo cáo quý (10-Q)", "07/01/2020", "0000320187-20-000004", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000004/nke-1130201910q.htm"},
+				        {"10‑Q Q3 FY2020", 207, "Báo cáo quý (10-Q)", "07/04/2020", "0000320187-20-000018", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000018/nke-229202010q.htm"},
+				        {"10‑K FY2021", 108, "Báo cáo năm (10-K)", "20/07/2021", "0000320187-21-000028", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000028/nke-20210531.htm"},
+				        {"10‑Q Q1 FY2021", 209, "Báo cáo quý (10-Q)", "08/10/2020", "0000320187-20-000061", "https://www.sec.gov/Archives/edgar/data/320187/000032018720000061/nke-20200831.htm"},
+				        {"10‑Q Q2 FY2021", 210, "Báo cáo quý (10-Q)", "05/01/2021", "0000320187-21-000003", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000003/nke-20201130.htm"},
+				        {"10‑Q Q3 FY2021", 211, "Báo cáo quý (10-Q)", "02/04/2021", "0000320187-21-000012", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000012/nke-20210228.htm"},
+				        {"10‑Q Q1 FY2022", 312, "Chỉ để xem số có bị trình bày lại không", "05/10/2021", "0000320187-21-000045", "https://www.sec.gov/Archives/edgar/data/320187/000032018721000045/nke-20210831.htm"},
+				        {"10‑Q Q2 FY2022", 313, "Chỉ để xem số có bị trình bày lại không", "06/01/2022", "0000320187-22-000004", "https://www.sec.gov/Archives/edgar/data/320187/000032018722000004/nke-20211130.htm"},
+				        {"10‑Q Q3 FY2022", 314, "Chỉ để xem số có bị trình bày lại không", "05/04/2022", "0000320187-22-000017", "https://www.sec.gov/Archives/edgar/data/320187/000032018722000017/nke-20220228.htm"},
+				        {"10‑K FY2022", 315, "Chỉ để xem số có bị trình bày lại không", "21/07/2022", "0000320187-22-000038", "https://www.sec.gov/Archives/edgar/data/320187/000032018722000038/nke-20220531.htm"},
+				        {"10‑K FY2023", 316, "Chỉ để xem số có bị trình bày lại không", "20/07/2023", "0000320187-23-000039", "https://www.sec.gov/Archives/edgar/data/320187/000032018723000039/nke-20230531.htm"}
+				    })
+				in
+				    Source

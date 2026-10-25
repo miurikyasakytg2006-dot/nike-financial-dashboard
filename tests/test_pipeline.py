@@ -1,4 +1,4 @@
-"""Data-integrity tests: extraction, workbook, validation, KPI formulas and the three dashboard versions."""
+"""Data-integrity tests: extraction, observations, workbook, validation, KPI formulas and the three dashboard versions."""
 import json
 import posixpath
 import re
@@ -11,19 +11,25 @@ import pytest
 from openpyxl import load_workbook
 
 from pipeline import dataset
-from pipeline.build_site_data import read_observations, validate
-from pipeline.build_workbook import FIELD_COL, HEADER_ROW, SHEET_CH, SHEET_FIN, WORKBOOK
-from pipeline.metrics import REPORTED, STATUS_CONFLICT, STATUS_HUMAN, STATUS_MATCHED
+from pipeline.build_site_data import SITE_DOWNLOAD, compare_with_workbook_formulas, read_observations, validate
+from pipeline.build_workbook import FIELD_COL, HEADER_ROW, SHEET_A, SHEET_Q, SHEET_R, WORKBOOK, git_user_name
+from pipeline.insights import findings, section_notes
+from pipeline.metrics import (A, CHECKS, COMPARISONS, Q, REPORTED, STATUS_CONFLICT, STATUS_HUMAN, STATUS_MATCHED,
+                              STATUS_MISSING, applies)
 
-# Representative values re-read by hand from the filings (early and late years, both scopes).
+# Representative values re-read from the filings: years, quarters (a fourth quarter is the year minus nine months),
+# a balance, a region and MD&A figures.
 GOLDEN = {
-    (2020, "revenues"): 37403, (2020, "nike_direct_revenue"): 12382, (2020, "nike_brand_wholesale_revenue"): 23156,
-    (2020, "inventories"): 7367, (2021, "ebit_reported"): 6923, (2022, "nike_direct_revenue"): 18726,
-    (2023, "nike_brand_wholesale_revenue"): 27397, (2024, "inventories"): 7519, (2025, "demand_creation_expense"): 4689,
-    (2026, "revenues"): 46398, (2026, "nike_direct_revenue"): 17720, (2026, "nike_brand_wholesale_revenue"): 27453,
-    (2026, "nike_brand_revenue"): 45222, (2026, "net_income"): 3108, (2026, "interest_expense_net"): -50,
-    (2023, "nike_brand_digital_sales"): Decimal("12.6"),
+    ("FY2019", "revenues"): 39117, ("FY2020", "revenues"): 37403, ("FY2021", "revenues"): 44538,
+    ("FY2019", "nike_direct_revenue"): 11753, ("FY2020", "nike_direct_revenue"): 12382,
+    ("FY2021", "nike_direct_revenue"): 16370, ("FY2021", "nike_brand_wholesale_revenue"): 25898,
+    ("FY2019", "nike_brand_revenue"): 37218, ("FY2020", "inventories"): 7367, ("FY2021", "ebit_reported"): 6923,
+    ("FY2021", "interest_expense_net"): 262, ("FY2021", "corporate_revenue"): 40, ("FY2021", "gc_ebit"): 3243,
+    ("FY2021", "nike_brand_digital_sales"): Decimal("9.1"), ("FY2019Q1", "revenues"): 9948,
+    ("FY2019Q1", "nike_brand_digital_sales"): Decimal("0.77"), ("FY2020Q4", "revenues"): 6313,
+    ("FY2020Q4", "net_income"): -790, ("FY2020Q4", "inventories"): 7367, ("FY2021Q4", "revenues"): 12344,
 }
+PAGES = ["tong_quan", "theo_quy", "khu_vuc_loi_nhuan", "bang_so_lieu", "nguon"]
 
 
 @pytest.fixture(scope="module")
@@ -32,102 +38,126 @@ def facts():
 
 
 @pytest.fixture(scope="module")
-def observations(facts):
-    obs = dataset.build_observations(facts, dataset.load_sec_check())
-    results = dataset.compute(obs)
-    dataset.apply_cross_check_statuses(obs, results)
-    dataset.apply_page_checks(obs, dataset.load_page_check())
-    return obs, results
+def assembled(facts):
+    return dataset.assemble(facts)
 
 
-def _mdna_only(o):
-    return o["metric"]["id"].endswith("_pct_change_cn") or o["metric"]["id"] == "nike_brand_digital_sales"
-
-
-def test_every_metric_and_year_present_once(observations):
-    obs, _ = observations
+def test_every_metric_and_period_present_once(assembled):
+    obs, _ = assembled
     keys = [o["key"] for o in obs]
-    assert len(keys) == len(set(keys)) == len(REPORTED) * len(dataset.YEARS)
-    missing = [o["key"] for o in obs if o["value"] is None]
-    assert missing == ["FY2026|nike_direct_share_stated"]
+    assert len(keys) == len(set(keys)) == sum(len(dataset.PERIODS[f]) for m in REPORTED for f in (A, Q) if applies(m, f))
+    # Only the percentages NIKE states are missing, and only for the fourth quarter, which has no 10-Q.
+    missing = [o for o in obs if o["value"] is None]
+    percentages = {m["id"] for m in REPORTED if m["unit"] == "%"}
+    assert {o["metric"]["id"] for o in missing} == percentages and len(missing) == 3 * len(percentages)
+    assert all(o["quarter"] == 4 and o["status"] == STATUS_MISSING for o in missing)
 
 
 @pytest.mark.parametrize("key,value", sorted(GOLDEN.items()))
-def test_golden_values(observations, key, value):
-    obs, _ = observations
-    o = next(o for o in obs if (o["fy"], o["metric"]["id"]) == key)
+def test_golden_values(assembled, key, value):
+    obs, _ = assembled
+    o = next(o for o in obs if (o["period"], o["metric"]["id"]) == key)
     assert o["value"] == value
 
 
-def test_sec_api_cross_check_all_match():
-    results = dataset.load_sec_check()
-    assert results and set(results.values()) == {"match"}
+def test_fourth_quarter_is_the_year_minus_nine_months(facts, assembled):
+    obs, _ = assembled
+    by = {(o["period"], o["metric"]["id"]): o for o in obs}
+    checked = 0
+    for o in obs:
+        if o["quarter"] != 4 or o["value"] is None:
+            continue
+        m, fy = o["metric"], o["fy"]
+        year = by[(f"FY{fy}", m["id"])]["value"]
+        if dataset.is_instant(m):      # a balance: 31 May, the same date as the year
+            assert o["value"] == year, o["key"]
+            continue
+        nine = facts[(f"10-Q Q3 FY{fy}", m["id"], f"FY{fy}M9", dataset.method_of(m))]["value"]
+        assert o["method"] == "q4_derived" and o["value"] == year - nine, o["key"]
+        # The four quarters add up to the year, give or take the rounding of the nine-month figure.
+        quarters = sum(by[(f"FY{fy}Q{q}", m["id"])]["value"] for q in (1, 2, 3, 4))
+        assert abs(quarters - year) <= dataset.rounding_tolerance(m["unit"], 3), o["key"]
+        checked += 1
+    assert checked > 50
 
 
-def test_only_disclosed_restatement_is_digital_fy2023(observations):
-    obs, _ = observations
-    restated = [o["key"] for o in obs if o["restatement"].startswith("CÓ THAY ĐỔI")]
-    assert restated == ["FY2023|nike_brand_digital_sales"]
+def test_quarters_add_up_to_the_year_to_date_figures(facts):
+    checks = dataset.ytd_checks(facts)
+    assert len(checks) > 150 and [c for c in checks if not c["ok"]] == []
 
 
-def test_reconciliations_and_comparisons_within_tolerance(observations):
-    from pipeline.metrics import CHECKS, COMPARISONS
-    _, results = observations
-    for c in CHECKS + COMPARISONS:
-        for y in dataset.YEARS:
-            v = results[y][c["id"]]
+def test_every_figure_has_a_second_source(assembled):
+    """Each figure is confirmed by an independent presentation (MD&A table, notes, year-to-date sums, the quarterly
+    table of the 10-K, a later report, a reading of the page); nothing is pending or conflicting."""
+    obs, _ = assembled
+    for o in obs:
+        if o["value"] is not None:
+            assert o["status"] == STATUS_MATCHED and o["confirms"] and not o["conflicts"], (o["key"], o["cross_check"])
+
+
+def test_later_reports_do_not_change_the_figures(assembled):
+    obs, _ = assembled
+    assert [o["key"] for o in obs if o["restatement"].startswith("CÓ THAY ĐỔI")] == []
+
+
+def test_reconciliations_and_comparisons_within_tolerance(assembled):
+    _, results = assembled
+    for period, env in results.items():
+        for c in CHECKS + COMPARISONS:
+            v = env[c["id"]]
+            if c in CHECKS and applies(c, dataset.freq_of(period)):
+                assert v is not None, (c["id"], period)
             if v is not None:
-                assert abs(v) <= Decimal(str(c["tol"])), (c["id"], y, v)
+                assert abs(v) <= Decimal(str(c["tol"])), (c["id"], period, v)
 
 
-def test_kpi_formulas_against_hand_calculation(observations):
-    _, r = observations
-    assert r[2020]["gross_margin"] == Decimal(16241) / Decimal(37403)
-    assert r[2026]["direct_share"] == Decimal(17720) / Decimal(45222)
-    assert r[2021]["direct_growth"] == Decimal(16370) / Decimal(12382) - 1
-    assert r[2026]["ebit"] == 3108 + 792 - 50
-    assert r[2020]["average_inventory"] == (Decimal(7367) + Decimal(5622)) / 2
-    assert r[2024]["days_inventory"] == 365 / (Decimal(28475) / ((Decimal(7519) + Decimal(8454)) / 2))
+def test_kpi_formulas_against_hand_calculation(assembled):
+    _, r = assembled
+    assert r["FY2020"]["gross_margin"] == Decimal(16241) / Decimal(37403)
+    assert r["FY2021"]["direct_share"] == Decimal(16370) / Decimal(42293)
+    assert r["FY2021"]["direct_growth"] == Decimal(16370) / Decimal(12382) - 1
+    assert r["FY2021"]["ebit"] == 5727 + 934 + 262
+    assert r["FY2020"]["average_inventory"] == (Decimal(7367) + Decimal(5622)) / 2
+    # A quarter: a quarter of a year, the quarter's opening and closing balances, its own cost of sales.
+    assert r["FY2020Q4"]["days_inventory"] == Decimal("91.25") * ((Decimal(7367) + Decimal(5807)) / 2) / Decimal(3960)
+    assert r["FY2020Q4"]["direct_growth"] == Decimal(2581) / Decimal(3105) - 1
 
 
-def test_missing_values_never_become_zero(observations):
-    _, r = observations
-    assert r[2026]["cmp_direct_share"] is None
+def test_missing_values_never_become_zero(assembled):
+    _, r = assembled
+    assert r["FY2020Q4"]["cmp_direct_share"] is None
+    assert r["FY2019Q1"]["inventory_growth"] is None      # the same quarter of FY2018 is outside the scope
     assert dataset.evaluate("a / b", {"a": Decimal(1), "b": None}) is None
 
 
-def test_mdna_only_values_are_matched_only_through_the_page_check(observations):
-    obs, _ = observations
+def test_quarterly_mdna_figures_were_read_again_on_the_page(assembled):
+    """Currency-neutral growth of a quarter is printed only in that 10-Q's MD&A and never again, so each figure was
+    read a second time on the rendered page, with a screenshot."""
+    from pipeline.recheck_pages import EVIDENCE_PAGE
+    obs, _ = assembled
     checks = dataset.load_page_check()
-    for o in obs:
-        if _mdna_only(o) and o["status"] == STATUS_MATCHED:
-            assert checks[(o["fy"], o["metric"]["id"])]["result"] == "match", o["key"]
-            assert o["cross_check"].startswith("Đã đọc lại ngay trên trang 10-K"), o["key"]
-
-
-def test_page_check_covers_every_mdna_only_value_with_evidence(observations):
-    obs, _ = observations
-    checks = dataset.load_page_check()
-    mdna = [o for o in obs if _mdna_only(o)]
-    assert len(mdna) == 35
-    for o in mdna:
-        c = checks[(o["fy"], o["metric"]["id"])]
+    targets = [o for o in obs if o["metric"]["id"].endswith("_pct_change_cn") and o["freq"] == Q and o["quarter"] < 4]
+    assert len(targets) == len(checks) == 36
+    for o in targets:
+        c = checks[(o["source"], o["metric"]["id"], o["period"])]
         assert c["result"] == "match" and Decimal(c["extracted_value"]) == o["value"], o["key"]
+        assert "đã đọc lại ngay trên trang" in o["cross_check"].lower(), o["key"]
         assert (dataset.ROOT / "handover" / "bang-chung-doi-chieu" / c["screenshot"]).exists(), c["screenshot"]
+    for folder in ("handover", "site"):
+        assert (dataset.ROOT / folder / "bang-chung-doi-chieu" / EVIDENCE_PAGE).exists(), folder
 
 
 # ---------------------------------------------------------------- workbook validation
-def test_workbook_passes_validation(facts):
-    errors, _ = validate(read_observations(WORKBOOK), facts)
-    assert errors == []
+def test_workbook_passes_validation(assembled):
+    obs, _ = assembled
+    assert validate(read_observations(WORKBOOK), obs) == []
 
 
 def _mutated_copy(tmp_path, sheet, key, field, new_value):
     path = tmp_path / "wb.xlsx"
     shutil.copyfile(WORKBOOK, path)
     wb = load_workbook(path)
-    ws = wb[sheet]
-    for row in ws.iter_rows(min_row=HEADER_ROW + 2):
+    for row in wb[sheet].iter_rows(min_row=HEADER_ROW + 2):
         if row[FIELD_COL["key"]].value == key:
             row[FIELD_COL[field]].value = new_value
             break
@@ -138,60 +168,129 @@ def _mutated_copy(tmp_path, sheet, key, field, new_value):
 
 
 @pytest.mark.parametrize("sheet,key,field,value,expected", [
-    (SHEET_FIN, "FY2024|revenues", "value", 51000, "differs from the 10-K extraction"),
-    (SHEET_CH, "FY2022|nike_direct_revenue", "value", None, "must be marked missing"),
-    (SHEET_CH, "FY2021|nike_direct_pct_change_cn", "value", 30, "whole percent"),
-    (SHEET_FIN, "FY2020|cost_of_sales", "unit", "tỷ USD", "unit"),
-    (SHEET_CH, "FY2025|nike_brand_revenue", "scope", "NIKE, Inc.", "reporting scope"),
-    (SHEET_FIN, "FY2023|gross_profit", "status", STATUS_CONFLICT, "conflicting evidence"),
-    (SHEET_CH, "FY2024|nike_direct_revenue", "status", STATUS_HUMAN, "verifier's name"),
-    (SHEET_FIN, "FY2022|net_income", "page", None, "incomplete provenance"),
-    (SHEET_FIN, "FY2022|net_income", "page", 99, "page 99 differs"),
-    (SHEET_FIN, "FY2021|inventories", "prior", 6000, "comparative"),
-    (SHEET_CH, "FY2026|nike_direct_revenue", "key", "FY2026|revenues", "Duplicate"),
+    (SHEET_A, "FY2021|revenues", "value", 45000, "differs from the extraction"),
+    (SHEET_Q, "Q4 FY2020|revenues", "value", 6000, "differs from the extraction"),
+    (SHEET_Q, "Q2 FY2020|nike_direct_revenue", "value", None, "must be marked missing"),
+    (SHEET_Q, "Q3 FY2021|nike_direct_pct_change_cn", "value", 16, "whole percent"),
+    (SHEET_A, "FY2020|cost_of_sales", "unit", "tỷ USD", "unit"),
+    (SHEET_R, "FY2021|na_revenue", "scope", "NIKE, Inc.", "reporting scope"),
+    (SHEET_A, "FY2019|gross_profit", "status", STATUS_CONFLICT, "conflicting evidence"),
+    (SHEET_Q, "Q1 FY2021|nike_direct_revenue", "status", STATUS_HUMAN, "verifier's name"),
+    (SHEET_A, "FY2020|net_income", "page", None, "incomplete provenance"),
+    (SHEET_A, "FY2020|net_income", "page", 99, "page 99 differs"),
+    (SHEET_A, "FY2021|inventories", "prior", 6000, "comparative"),
+    (SHEET_R, "FY2021|gc_revenue", "key", "FY2021|na_revenue", "Duplicate"),
 ])
-def test_validator_rejects_bad_data(tmp_path, facts, sheet, key, field, value, expected):
-    errors, _ = validate(read_observations(_mutated_copy(tmp_path, sheet, key, field, value)), facts)
+def test_validator_rejects_bad_data(tmp_path, assembled, sheet, key, field, value, expected):
+    obs, _ = assembled
+    errors = validate(read_observations(_mutated_copy(tmp_path, sheet, key, field, value)), obs)
     assert any(expected in e for e in errors), errors
 
 
 def test_workbook_formulas_recalculate_independently():
     from pipeline.verify_workbook import verify
     n, problems = verify(WORKBOOK)
-    assert n > 400 and problems == []
+    assert n > 1000 and problems == []
+
+
+def test_kpi_sheets_match_the_python_results(assembled):
+    _, results = assembled
+    errors, compared = compare_with_workbook_formulas(results)
+    assert errors == [] and compared > 800
+
+
+def test_site_json_matches_the_dataset(assembled, site_data):
+    obs, results = assembled
+    for o in obs:
+        got = site_data["observations"][o["metric"]["id"]][o["period"]]
+        assert got["value"] == (None if o["value"] is None else float(o["value"])), o["key"]
+        assert got["status"] == o["status"] and got["page"] == o["page"], o["key"]
+    for kid, k in site_data["kpis"].items():
+        for p in dataset.PERIODS_A + dataset.PERIODS_Q:
+            want = results[p][kid]
+            assert k["values"][p] == (None if want is None else float(want)), (kid, p)
+    # The key findings and section notes are written once, from the figures, for all three versions.
+    assert site_data["findings"] == findings(obs, results)
+    assert site_data["notes"] == section_notes(obs, results)
+
+
+def test_site_download_is_the_handover_workbook():
+    assert SITE_DOWNLOAD.read_bytes() == WORKBOOK.read_bytes()
+
+
+# ---------------------------------------------------------------- Excel dashboard
+@pytest.mark.parametrize("module", ["build_excel_dashboard", "build_powerbi"])
+def test_wrapped_text_keeps_units_and_periods_together(module):
+    """Excel and Power BI wrap text at any space or after any hyphen, so the builders glue figures to their units and
+    reports to their periods with non-breaking characters (an editor once turned them into plain spaces)."""
+    import importlib
+    glue = importlib.import_module(f"pipeline.{module}").glue
+    assert glue("4,6 tỷ USD") == "4,6 tỷ USD"
+    assert glue("+7,1 điểm %") == "+7,1 điểm %"
+    assert glue("152 ngày") == "152 ngày"
+    assert glue("10-Q Q3 FY2020") == "10‑Q Q3 FY2020"
+    assert glue("FY2019 → FY2021") == "FY2019 → FY2021"
+    assert glue("non-GAAP") == "non‑GAAP"
+
+
+def _data_blocks(ws):
+    """Blocks of the hidden chart-data sheet: {block name: {column header: [values]}}."""
+    rows = [[c.value for c in r] for r in ws.iter_rows()]
+    blocks, i = {}, 0
+    while i < len(rows) - 1:
+        if rows[i][0] and rows[i + 1][0] in ("Kỳ", "Năm"):
+            head = [h for h in rows[i + 1] if h is not None]
+            j = i + 2
+            while j < len(rows) and any(v is not None for v in rows[j][:len(head)]):
+                j += 1
+            blocks[rows[i][0]] = {h: [r[k] for r in rows[i + 2:j]] for k, h in enumerate(head)}
+            i = j
+        else:
+            i += 1
+    return blocks
 
 
 def _check_excel_dashboard(path, site_data):
-    from pipeline.build_excel_dashboard import SHEET_CH, SHEET_DATA, SHEET_PERF, SHEET_SRC
+    from pipeline.build_excel_dashboard import (CHANNEL_ROWS, FINANCE_ROWS, SHEET_DATA, SHEET_OVERVIEW, SHEET_TABLES, SHEETS,
+                                                glue, region_rows)
     wb = load_workbook(path)
-    assert wb.sheetnames == [SHEET_CH, SHEET_PERF, SHEET_SRC, SHEET_DATA]
-    ws = wb[SHEET_DATA]
-    assert ws.sheet_state == "hidden"
-    rows = list(ws[ws.tables["tblNam"].ref])
-    header = [c.value for c in rows[0]]
-    years = site_data["years"]
-    assert [r[header.index("Năm")].value for r in rows[1:]] == years
-    for col, kid in (("Tỷ trọng NIKE Direct", "direct_share"), ("Biên EBIT", "ebit_margin"), ("Số ngày tồn kho bình quân", "days_inventory")):
-        # XlsxWriter stores 16 significant digits, so compare with a relative tolerance.
-        want = [site_data["kpis"][kid]["values"][str(y)] for y in years]
-        assert [r[header.index(col)].value for r in rows[1:]] == pytest.approx(want, rel=1e-12), col
-    for col, mid in (("NIKE Brand Digital (tỷ USD)", "nike_brand_digital_sales"),
-                     ("Tăng trưởng NIKE Direct loại trừ tỷ giá", "nike_direct_pct_change_cn")):
-        for r, y in zip(rows[1:], years):
-            assert _same(r[header.index(col)].value, site_data["observations"][mid][str(y)]["value"]), (col, y)
-    # Table texts: figures and their 10-K pages are in separate rows, so every figure ends under its year header.
-    start = next(r for r in range(1, ws.max_row + 1) if str(ws.cell(r, 1).value).startswith("Văn bản cho bảng"))
-    n = 0
-    for row in ws.iter_rows(min_row=start + 2, max_col=2 + len(years), values_only=True):
-        if row[1] is None:
-            break
-        cells = [v or "" for v in row[2:]]
-        if row[1].endswith(" (trang)"):
+    assert wb.sheetnames == SHEETS + [SHEET_DATA]
+    assert wb[SHEET_DATA].sheet_state == "hidden"
+    A_, Q_ = site_data["periods"]["A"], site_data["periods"]["Q"]
+    k = lambda kid, ps: [site_data["kpis"][kid]["values"][p] for p in ps]
+    bn = lambda mid, ps: [site_data["observations"][mid][p]["value"] / 1000 for p in ps]
+    blocks = _data_blocks(wb[SHEET_DATA])
+    # Excel keeps 15 to 17 significant digits when it saves, so numbers compare with a relative tolerance.
+    for block, column, want in (("Cơ cấu kênh", "NIKE Direct", k("direct_share", A_)),
+                                ("Tỷ trọng NIKE Direct theo quý", "Tỷ trọng", k("direct_share", Q_)),
+                                ("Doanh thu theo kênh, từng quý", "NIKE Direct", bn("nike_direct_revenue", Q_)),
+                                ("Doanh thu theo kênh, từng quý", "Bán buôn", bn("nike_brand_wholesale_revenue", Q_)),
+                                ("Digital / NIKE Direct, từng quý", "Tỷ trọng Digital", k("digital_share_of_direct", Q_)),
+                                ("Biên gộp và biên EBIT, từng quý", "Biên gộp", k("gross_margin", Q_)),
+                                ("Biên gộp và biên EBIT, từng quý", "Biên EBIT", k("ebit_margin", Q_)),
+                                ("Tồn kho cuối quý", "Tồn kho (tỷ USD)", bn("inventories", Q_)),
+                                ("Số ngày tồn kho, từng quý", "Số ngày", k("days_inventory", Q_))):
+        assert blocks[block][column] == pytest.approx(want, rel=1e-12), (block, column)
+    texts = {c.value for row in wb[SHEET_OVERVIEW].iter_rows() for c in row if isinstance(c.value, str)}
+    for f in site_data["findings"]:
+        assert glue(f["value"]) in texts and glue(f["text"]) in texts, f["id"]
+    # Tables: a reported figure has its page in the small row below it, so every figure ends under its header.
+    ws, page_rows = wb[SHEET_TABLES], 0
+    for row in ws.iter_rows(min_row=5, max_col=15, values_only=True):
+        cells = [v or "" for v in row[3:]]
+        if row[1] is None and any(cells) and not any(re.fullmatch(r"FY\d{4}", v) for v in cells):
             assert all(re.fullmatch(r"(† )?(tr\. \d+)?", v) for v in cells), row
+            page_rows += 1
         else:
             assert not any("tr." in v for v in cells), row
-        n += 1
-    assert n > 40, n
+    reported = lambda rows: sum(r[0] == "obs" for r in rows)
+    # The annual and quarterly tables share their rows; the regional table follows.
+    assert page_rows == 2 * reported(CHANNEL_ROWS + FINANCE_ROWS) + reported(region_rows(site_data["regions"])), page_rows
+    # Every printed page of the tables opens with a table title or the column headers (a break id is the last row of a
+    # page, 1-based).
+    for brk in ws.row_breaks.brk:
+        first = [ws.cell(brk.id + 1, c).value for c in (2, 4)]
+        assert first[0] == "Chỉ tiêu" or first[1] == A_[0] or str(first[0]).startswith(("Theo quý", "Bốn khu vực")), (brk.id, first)
     _check_print_layout(path)
 
 
@@ -202,60 +301,54 @@ REL_ID = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}i
 
 
 def _check_print_layout(path):
-    """Both dashboards print at a fixed scale, with manual page breaks that never cut a chart or slicer in two."""
+    """The chart sheets print at a fixed scale, with manual page breaks that never cut a chart in two; the tables
+    sheet starts each table on a new page, and a page never ends between a figure and its page reference."""
     def part(base, target):     # relationship targets are absolute or relative to the part's folder
         return target.lstrip("/") if target.startswith("/") else posixpath.normpath(posixpath.join(base, target))
     with zipfile.ZipFile(path) as z:
         rels = {r.get("Id"): r.get("Target") for r in ET.fromstring(z.read("xl/_rels/workbook.xml.rels"))}
-        for sheet in ET.fromstring(z.read("xl/workbook.xml")).find("m:sheets", XL)[:2]:
-            name = part("xl", rels[sheet.get(REL_ID)])
+        sheets = [part("xl", rels[s.get(REL_ID)]) for s in ET.fromstring(z.read("xl/workbook.xml")).find("m:sheets", XL)]
+        for name in sheets[:3]:
             ws = ET.fromstring(z.read(name))
             assert ws.find("m:pageSetup", XL).get("scale") == "79", name
             breaks = [int(b.get("id")) for b in ws.iterfind("m:rowBreaks/m:brk", XL)]
-            assert breaks, name
             srels = ET.fromstring(z.read(name.replace("worksheets/", "worksheets/_rels/") + ".rels"))
             drawing = next(part("xl/worksheets", r.get("Target")) for r in srels.iterfind("p:Relationship", XL)
                            if r.get("Type").endswith("/drawing"))
             anchors = list(ET.fromstring(z.read(drawing)).iter(f"{{{XL['x']}}}twoCellAnchor"))
-            assert len(anchors) >= 4, drawing
+            assert len(anchors) >= 2, drawing
             for a in anchors:
                 top = int(a.find("x:from/x:row", XL).text)
                 bottom = int(a.find("x:to/x:row", XL).text) - (a.find("x:to/x:rowOff", XL).text == "0")
                 assert not [b for b in breaks if top < b <= bottom], (name, top, bottom, breaks)
+        tables = ET.fromstring(z.read(sheets[3]))
+        assert tables.find("m:pageSetup", XL).get("scale") == "66"
+        assert len(list(tables.iterfind("m:rowBreaks/m:brk", XL))) == 5     # three tables of two pages each
 
 
 def test_excel_dashboard_build_matches_site_data(tmp_path, site_data):
     from pipeline.build_excel_dashboard import build
     path = tmp_path / "dashboard.xlsx"
-    build(path, add_slicers=False)
+    build(path, save_with_excel=False)
     _check_excel_dashboard(path, site_data)
 
 
-@pytest.mark.filterwarnings("ignore:Unknown extension")   # openpyxl does not read slicer definitions
 def test_delivered_excel_dashboard_is_current(site_data):
-    """The handover copy must have been rebuilt from the current data and carry its two slicer caches."""
+    """The handover copy is rebuilt from the current data and saved once by Excel, which stores the chart caches
+    Excel for the web draws; its file properties carry the builder's name, not Excel's user."""
     from pipeline.build_excel_dashboard import OUT
     _check_excel_dashboard(OUT, site_data)
     with zipfile.ZipFile(OUT) as z:
-        assert len([n for n in z.namelist() if n.startswith("xl/slicerCaches/")]) == 2
-    # Excel recalculated this copy when the slicers were added, so the tables' displayed values are stored:
-    # figures carry no page reference, and page cells hold only "tr. N" (a blank page must not show as 0).
-    wb = load_workbook(OUT, data_only=True)
-    for name in wb.sheetnames[:2]:
-        ws = wb[name]
-        head = next(r for r in range(1, ws.max_row + 1) if ws.cell(r, 2).value == "Chỉ tiêu")
-        page_rows = 0
-        for r in range(head + 1, ws.max_row + 1):
-            cells = [ws.cell(r, c).value for c in range(6, 13)]
-            assert all(v is None or isinstance(v, str) for v in cells), (name, r, cells)
-            if ws.cell(r, 2).value is None and any(cells):
-                assert all(re.fullmatch(r"(† )?(tr\. \d+)?", v or "") for v in cells), (name, r, cells)
-                page_rows += 1
-            else:
-                assert not any("tr." in (v or "") for v in cells), (name, r, cells)
-        assert page_rows > 5, (name, page_rows)
+        charts = [n for n in z.namelist() if re.fullmatch(r"xl/charts/chart\d+\.xml", n)]
+        assert len(charts) == 12 and all(b"xmlns:c16r2" in z.read(n) for n in charts)
+        core = z.read("docProps/core.xml").decode("utf-8")
+    creator = re.search(r"<dc:creator>(.*?)</dc:creator>", core).group(1)
+    modified = re.search(r"<cp:lastModifiedBy>(.*?)</cp:lastModifiedBy>", core).group(1)
+    # A CI checkout has no git user name; the delivered copy was built where there is one.
+    assert creator and modified == creator == (git_user_name() or creator)
 
 
+# ---------------------------------------------------------------- Power BI
 def _tmdl_rows(path):
     """Rows of the #table literal embedded in a TMDL partition, as dicts keyed by column name."""
     text = path.read_text(encoding="utf-8")
@@ -273,48 +366,84 @@ def _same(got, want):
     return got is None if want is None else got == pytest.approx(want, rel=1e-12)
 
 
-def test_powerbi_model_matches_site_data(site_data):
-    from pipeline.build_powerbi import NAME
-    tables = dataset.ROOT / "powerbi" / f"{NAME}.SemanticModel" / "definition" / "tables"
-    rows = {int(r["FY"]): r for r in _tmdl_rows(tables / "Nam.tmdl")}
-    assert sorted(rows) == site_data["years"]
-    for y in site_data["years"]:
-        for mid, by_year in site_data["observations"].items():
-            assert _same(rows[y][mid], by_year[str(y)]["value"]), (mid, y)
-        for kid, k in site_data["kpis"].items():
-            assert _same(rows[y][kid], k["values"][str(y)]), (kid, y)
-    # Table texts: each year is two matrix columns, the figure under "FY…" and then its 10-K page, so every
-    # figure ends under its year header. Page references link to that year's 10-K.
-    for name in ("BangKenh", "BangKetQua"):
+def _strings(obj):
+    """Every string in a parsed JSON document (the text of the report's text boxes and titles)."""
+    if isinstance(obj, str):
+        yield obj
+    elif isinstance(obj, dict):
+        for v in obj.values():
+            yield from _strings(v)
+    elif isinstance(obj, list):
+        for v in obj:
+            yield from _strings(v)
+
+
+@pytest.fixture(scope="module")
+def pbip(tmp_path_factory, site_data):
+    from pipeline import build_powerbi as pb
+    out = tmp_path_factory.mktemp("pbip")
+    w = pb.Wording()
+    pb.semantic_model(site_data, w, out)
+    pb.report(site_data, w, out)
+    return out
+
+
+def test_powerbi_model_matches_site_data(pbip, site_data):
+    from pipeline.build_powerbi import NAME, glue
+    tables = pbip / f"{NAME}.SemanticModel" / "definition" / "tables"
+    for name, freq in (("Nam", "A"), ("Quy", "Q")):
+        periods = site_data["periods"][freq]
+        rows = {r["Kỳ"]: r for r in _tmdl_rows(tables / f"{name}.tmdl")}
+        assert list(rows) == [site_data["labels"][p] for p in periods], name
+        for p in periods:
+            row = rows[site_data["labels"][p]]
+            for mid, by_period in site_data["observations"].items():
+                assert _same(row[mid], (by_period.get(p) or {}).get("value")), (name, mid, p)
+            for kid, k in site_data["kpis"].items():
+                assert _same(row[kid], k["values"][p]), (name, kid, p)
+    # Table texts: the annual and regional tables give each figure's page in a column of its own, linked to the report;
+    # the quarterly table has no page columns (twelve columns of figures already).
+    filings = {f["url"] for f in site_data["filings"].values()}
+    for name, with_pages in (("BangNam", True), ("BangQuy", False), ("BangKhuVuc", True)):
         cells = _tmdl_rows(tables / f"{name}.tmdl")
         figures, pages = [c for c in cells if c["Loại"] == "Số"], [c for c in cells if c["Loại"] == "Trang"]
-        assert len(figures) == len(pages) > 0 and len(figures) + len(pages) == len(cells), name
-        for c in figures:
-            assert c["Cột"] == f"FY{int(c['FY'])}" and c["Thứ tự cột"] % 2 == 0, c
-            assert "tr." not in c["Hiển thị"] and c["Liên kết"] is None, c
+        assert figures and len(pages) == (len(figures) if with_pages else 0), name
+        assert all("tr." not in c["Hiển thị"] and c["Liên kết"] is None for c in figures), name
         for c in pages:
             assert re.fullmatch(r"(†|† tr\. \d+|tr\. \d+)?", c["Hiển thị"]), c
-            url = site_data["filings"][str(int(c["FY"]))]["url"]
-            assert c["Liên kết"] == (url if "tr." in c["Hiển thị"] else None), c
+            assert (c["Liên kết"] in filings) if "tr." in c["Hiển thị"] else c["Liên kết"] is None, c
+        # A page column has a blank header of non-breaking spaces, a different number per period: plain spaces would be
+        # trimmed by Power BI and the page columns of the three years would merge into one.
+        heads = {c["Kỳ"]: c["Cột"] for c in pages}
+        assert all(set(h) == {" "} for h in heads.values()) and len(set(heads.values())) == len(heads), (name, heads)
+    show = {(c["Chỉ tiêu"], c["Kỳ"]): c["Hiển thị"] for c in _tmdl_rows(tables / "BangQuy.tmdl") if c["Loại"] == "Số"}
+    assert show[(glue("NIKE Direct, triệu USD"), "FY2021Q2")] == "4.310"
+    assert show[(glue("Doanh số Digital, tỷ USD"), "FY2020Q4")] == "≈1,7"
+    assert show[(glue("Tỷ trọng NIKE Direct do NIKE nêu (xấp xỉ)"), "FY2020Q4")] == "Không công bố"
 
 
-def test_delivered_pbix_opens_on_all_years():
-    """The .pbix must have three pages and no saved year filter (it once shipped filtered to FY2024–2026)."""
-    pbix = dataset.ROOT / "handover" / "NIKE_Dashboard_FY2020-2026.pbix"
-    with zipfile.ZipFile(pbix) as z:
-        pages = [n for n in z.namelist() if re.fullmatch(r"Report/definition/pages/[^/]+/page\.json", n)]
-        slicers = [n for n in z.namelist() if re.search(r"/visuals/loc_nam/visual\.json$", n)]
-        assert len(pages) == 3 and len(slicers) == 2
-        for n in slicers:
-            assert '"filter"' not in z.read(n).decode("utf-8"), n
+def test_powerbi_report_pages(pbip, site_data):
+    from pipeline.build_powerbi import NAME, glue
+    defn = pbip / f"{NAME}.Report" / "definition"
+    assert json.loads((defn / "pages" / "pages.json").read_text(encoding="utf-8"))["pageOrder"] == PAGES
+    visuals = {f"{f.parents[2].name}/{f.parent.name}": json.loads(f.read_text(encoding="utf-8"))
+               for f in defn.glob("pages/*/visuals/*/visual.json")}
+    # Only the regional EBIT chart has a filter: it leaves out the NIKE Brand row, which has no EBIT of its own.
+    assert [n for n, v in visuals.items() if v.get("filterConfig")] == ["khu_vuc_loi_nhuan/khu_vuc_ebit"]
+    strings = set(_strings(list(visuals.values())))
+    for f in site_data["findings"]:
+        assert glue(f["text"]) in strings, f["id"]
 
 
-def test_site_json_matches_workbook(observations, site_data):
-    obs, results = observations
-    for o in obs:
-        got = site_data["observations"][o["metric"]["id"]][str(o["fy"])]["value"]
-        assert got == (None if o["value"] is None else float(o["value"])), o["key"]
-    for kid, k in site_data["kpis"].items():
-        for y in dataset.YEARS:
-            want = results[y][kid]
-            assert k["values"][str(y)] == (None if want is None else float(want)), (kid, y)
+def test_delivered_pbix_is_current(site_data):
+    """The .pbix handed to the team is saved from the project by Power BI Desktop, so it can lag behind a rebuild:
+    it must have the five pages, no saved filter but the regional one, and the current findings."""
+    from pipeline.build_powerbi import glue
+    with zipfile.ZipFile(dataset.ROOT / "handover" / "NIKE_Dashboard_FY2019-2021.pbix") as z:
+        assert json.loads(z.read("Report/definition/pages/pages.json"))["pageOrder"] == PAGES
+        visuals = {"/".join(n.split("/")[-4::2]): json.loads(z.read(n)) for n in z.namelist() if n.endswith("/visual.json")}
+        assert z.getinfo("DataModel").file_size > 100_000
+    assert [n for n, v in visuals.items() if v.get("filterConfig")] == ["khu_vuc_loi_nhuan/khu_vuc_ebit"]
+    strings = set(_strings(list(visuals.values())))
+    for f in site_data["findings"]:
+        assert glue(f["text"]) in strings, f["id"]
