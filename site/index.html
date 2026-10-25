@@ -242,14 +242,17 @@
     <div class="footer-grid">
       <section aria-labelledby="footer-sources">
         <h3 id="footer-sources">Báo cáo Form 10-K (SEC EDGAR)</h3>
-        <ul class="filing-list" id="filing-list"></ul>
+        <table class="filing-table" id="filing-list">
+          <thead><tr><th scope="col">Báo cáo</th><th scope="col">Ngày nộp</th><th scope="col">Số hồ sơ</th></tr></thead>
+          <tbody></tbody>
+        </table>
       </section>
       <section aria-labelledby="footer-method">
         <h3 id="footer-method">Phương pháp</h3>
         <ul class="plain-list">
-          <li>Số liệu của mỗi năm tài chính được lấy từ báo cáo 10-K của chính năm đó. Khi tính tăng trưởng, số năm trước được lấy ở cột so sánh trong cùng báo cáo, giống cách NIKE tự tính.</li>
+          <li>Số liệu của mỗi năm tài chính được lấy từ báo cáo 10-K của chính năm đó. Mỗi báo cáo đều in kèm số của năm trước để so sánh, và tăng trưởng được tính với chính số năm trước này, giống cách NIKE tự tính. Ví dụ: tăng trưởng doanh thu FY2026 tính với doanh thu FY2025 in trong 10-K FY2026.</li>
           <li>Các số trên báo cáo tài chính được lấy từ dữ liệu XBRL đi kèm mỗi báo cáo 10-K, sau đó đối chiếu với dữ liệu XBRL do SEC công bố và với các bảng trong phần MD&amp;A.</li>
-          <li>Các chỉ tiêu chỉ có trong phần MD&amp;A (tăng trưởng loại trừ tỷ giá, doanh số Digital) không có dữ liệu XBRL để đối chiếu, nên được đọc lại thêm một lần ngay trên trang 10-K. Ảnh chụp từng chỗ có ở trang <a href="bang-chung-doi-chieu/doi-chieu-35-so.html">“Đối chiếu 35 số”</a> trên dashboard web.</li>
+          <li>Các chỉ tiêu chỉ có trong phần MD&amp;A (tăng trưởng loại trừ tỷ giá, doanh số Digital) không có dữ liệu XBRL để đối chiếu, nên được đọc lại thêm một lần ngay trên trang 10-K. Ảnh chụp từng chỗ có ở trang <a class="nowrap" href="bang-chung-doi-chieu/doi-chieu-35-so.html">“Đối chiếu 35 số”</a> trên dashboard web.</li>
           <li>Các chỉ số do nhóm tự tính dùng đúng công thức ở sheet 04 của bộ dữ liệu Excel. Mỗi lần cập nhật đều kiểm tra lại các phép cộng trừ, chẳng hạn doanh thu trừ giá vốn phải bằng lợi nhuận gộp.</li>
           <li>Số liệu nào NIKE không công bố thì ghi “Không công bố”, không điền số 0.</li>
         </ul>

@@ -33,7 +33,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Số liệu của mỗi năm tài chính được lấy từ báo cáo 10-K của chính năm đó. Khi tính tăng trưởng, số năm trước được lấy ở cột so sánh trong cùng báo cáo, giống cách NIKE tự tính.",
+                    "value": "– Số liệu của mỗi năm tài chính được lấy từ báo cáo 10‑K của chính năm đó. Mỗi báo cáo đều in kèm số của năm trước để so sánh, và tăng trưởng được tính với chính số năm trước này, giống cách NIKE tự tính. Ví dụ: tăng trưởng doanh thu FY2026 tính với doanh thu FY2025 in trong 10‑K FY2026.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -46,7 +46,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Các số trên báo cáo tài chính được lấy từ dữ liệu XBRL đi kèm mỗi báo cáo 10-K, sau đó đối chiếu với dữ liệu XBRL do SEC công bố và với các bảng trong phần MD&A.",
+                    "value": "– Các số trên báo cáo tài chính được lấy từ dữ liệu XBRL đi kèm mỗi báo cáo 10‑K, sau đó đối chiếu với dữ liệu XBRL do SEC công bố và với các bảng trong phần MD&A.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",
@@ -59,7 +59,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "– Các chỉ tiêu chỉ có trong phần MD&A (tăng trưởng loại trừ tỷ giá, doanh số Digital) không có dữ liệu XBRL để đối chiếu, nên được đọc lại thêm một lần ngay trên trang 10-K. Ảnh chụp từng chỗ có ở trang “Đối chiếu 35 số” trên dashboard web.",
+                    "value": "– Các chỉ tiêu chỉ có trong phần MD&A (tăng trưởng loại trừ tỷ giá, doanh số Digital) không có dữ liệu XBRL để đối chiếu, nên được đọc lại thêm một lần ngay trên trang 10‑K. Ảnh chụp từng chỗ có ở trang “Đối chiếu 35 số” trên dashboard web.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "10.5pt",

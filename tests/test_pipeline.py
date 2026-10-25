@@ -66,7 +66,7 @@ def test_sec_api_cross_check_all_match():
 
 def test_only_disclosed_restatement_is_digital_fy2023(observations):
     obs, _ = observations
-    restated = [o["key"] for o in obs if o["restatement"].startswith("ĐIỀU CHỈNH")]
+    restated = [o["key"] for o in obs if o["restatement"].startswith("CÓ THAY ĐỔI")]
     assert restated == ["FY2023|nike_brand_digital_sales"]
 
 

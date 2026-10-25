@@ -94,7 +94,7 @@ def restatement_note(facts, m, fy, value):
         return "Không thay đổi khi trình bày lại trong 10-K " + ", ".join(f"FY{t}" for t, _ in later) + "."
     parts = [f"10-K FY{t} trình bày lại là {_fmt_num(v, m['unit'])} (chênh {_fmt_num(v - value, m['unit'], signed=True)})"
              for t, v in changed]
-    return "ĐIỀU CHỈNH HỒI TỐ: " + "; ".join(parts) + "."
+    return "CÓ THAY ĐỔI: " + "; ".join(parts) + "."
 
 
 def short_section(section):

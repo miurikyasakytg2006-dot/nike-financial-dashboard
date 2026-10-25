@@ -3,8 +3,8 @@
 Usage:  python -m pipeline.build_guide_pdf
 
 Markdown → HTML (Python-Markdown) → PDF printed by Chrome (Playwright): A4, the dashboard's own fonts
-(full Vietnamese support), clickable links, page numbers. Run it after every edit of the .md so the
-two stay identical.
+(full Vietnamese support), clickable links, page numbers; the file's author is the builder's git user name.
+Run it after every edit of the .md so the two stay identical.
 """
 import re
 import sys
@@ -12,6 +12,9 @@ import tempfile
 from pathlib import Path
 
 import markdown
+import pymupdf
+
+from .build_workbook import git_user_name
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "handover" / "GIAI-THICH-QUY-TRINH.md"
@@ -33,15 +36,31 @@ code { font-family: Consolas, "Courier New", monospace; font-size: 9pt; backgrou
 pre { background: #f3f5f7; padding: 6pt 8pt; border-radius: 3pt; white-space: pre-wrap; font-size: 9pt; }
 pre code { background: none; padding: 0; }
 a { color: #1d4e89; }
+.nowrap { white-space: nowrap; }
 """
 FOOTER = ('<div style="width:100%;text-align:center;font:8pt Arial,sans-serif;color:#5b6472">'
           'Trang <span class="pageNumber"></span>/<span class="totalPages"></span></div>')
+# Kept on one line, as on the dashboard (KEEP in site/assets/app.js): "10-K" with its year, "non-GAAP", a year range,
+# a figure and its unit, "(xấp xỉ)".
+KEEP = re.compile(r"(10-K(?: FY\d{4}(?:–FY\d{4})?)?|non-GAAP|FY\d{4}–FY\d{4}|±?\d[\d.,]*(?:–\d[\d.,]*)? (?:tỷ|triệu) USD|\(xấp xỉ\))")
+
+
+def keep_together(body):
+    """Wrap KEEP matches in text (not inside tags or code) in a no-wrap span."""
+    out, code = [], 0
+    for part in re.split(r"(<[^>]+>)", body):
+        if part.startswith("<"):
+            code += 1 if re.match(r"<(code|pre)\b", part) else -1 if re.match(r"</(code|pre)>", part) else 0
+        elif not code:
+            part = KEEP.sub(r'<span class="nowrap">\1</span>', part)
+        out.append(part)
+    return "".join(out)
 
 
 def to_html(md_text):
     # Bare URLs become autolinks so they stay clickable in the PDF.
     md_text = re.sub(r"(?<![<(\"])(https?://[^\s<>()|]+?)([.,;]?)(?=\s|$)", r"<\1>\2", md_text)
-    body = markdown.markdown(md_text, extensions=["tables", "fenced_code", "sane_lists"])
+    body = keep_together(markdown.markdown(md_text, extensions=["tables", "fenced_code", "sane_lists"]))
     title = re.search(r"^# (.+)$", md_text, re.M).group(1)
     # Same @font-face rules as the dashboard; <base> makes their relative font paths resolve.
     fonts = "\n".join(line for line in (ASSETS / "styles.css").read_text(encoding="utf-8").splitlines()
@@ -66,8 +85,19 @@ def main():
         page.pdf(path=str(OUT), prefer_css_page_size=True, print_background=True, display_header_footer=True,
                  header_template="<div></div>", footer_template=FOOTER)
         browser.close()
+    set_author(OUT, git_user_name())
     print(f"Guide PDF written: {OUT.relative_to(ROOT)}")
     return 0
+
+
+def set_author(path, name):
+    """Chrome leaves the author field empty. Saved incrementally, so the pages Chrome printed stay as they are."""
+    if not name:
+        return
+    doc = pymupdf.open(path)
+    doc.set_metadata({**doc.metadata, "author": name})
+    doc.saveIncr()
+    doc.close()
 
 
 if __name__ == "__main__":

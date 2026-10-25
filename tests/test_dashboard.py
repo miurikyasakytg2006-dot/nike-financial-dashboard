@@ -110,6 +110,7 @@ def test_growth_basis_toggle(page, site_data):
     cn = page.evaluate(ECHARTS_SERIES, "growth")
     assert cn["series"][0]["data"] == [site_data["observations"]["nike_direct_pct_change_cn"][str(y)]["value"] for y in years]
     assert "non-GAAP" in page.inner_text("#growth-sub")
+    assert page.evaluate(UNBROKEN) == []
 
 
 def test_series_toggle_and_last_series_guard(page):
@@ -118,6 +119,7 @@ def test_series_toggle_and_last_series_guard(page):
     buttons.nth(1).click()
     assert page.locator('[data-legend="channelRevenue"] button').nth(1).get_attribute("aria-pressed") == "false"
     assert [s["name"] for s in page.evaluate(ECHARTS_SERIES, "channelRevenue")["series"]] == ["NIKE Direct"]
+    assert page.evaluate(UNBROKEN) == []
     page.locator('[data-legend="channelRevenue"] button').nth(0).click()
     assert [s["name"] for s in page.evaluate(ECHARTS_SERIES, "channelRevenue")["series"]] == ["NIKE Direct"]
     page.wait_for_function("document.getElementById('live').textContent.includes('ít nhất một')")
@@ -199,6 +201,18 @@ HEADER_VS_FIGURES = """(view) => {
 }"""
 
 
+UNBROKEN = r"""() => {
+  const bad = [];
+  document.querySelectorAll('.nowrap').forEach(s => { if (s.getClientRects().length > 1) bad.push(s.textContent); });
+  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n; (n = w.nextNode());) {
+    if (/10-K|non-GAAP|FY\d{4}–FY\d{4}|\d (tỷ|triệu) USD|\(xấp xỉ\)/.test(n.nodeValue) &&
+        !n.parentNode.closest('.nowrap, script, style, option, .chart, .visually-hidden')) bad.push(n.nodeValue.trim().slice(0, 50));
+  }
+  return bad;
+}"""
+
+
 def assert_headers_align(pg, view):
     """Every cell (reported, calculated or 'Không công bố') ends exactly under its year header."""
     offsets = pg.evaluate(HEADER_VS_FIGURES, view)
@@ -214,6 +228,13 @@ def test_tables_fit_and_headers_align_on_desktop(page):
                                       f"return [s.scrollWidth, s.clientWidth]; }}")
         assert width <= client, (view, width, client)
         assert_headers_align(page, view)
+        # "10-K", "non-GAAP", year ranges and figures with their unit never split across lines, also after the
+        # charts redraw on resize.
+        assert page.evaluate(UNBROKEN) == [], view
+        page.set_viewport_size({"width": 1180, "height": 1000})
+        page.wait_for_timeout(500)
+        assert page.evaluate(UNBROKEN) == [], (view, "resized")
+        page.set_viewport_size({"width": 1440, "height": 1000})
 
 
 def test_print_draws_both_views(page):
@@ -260,6 +281,7 @@ def test_narrow_layouts(browser, server):
             # and the first year in view starts at the label column's edge.
             pinned = pg.evaluate(PINNED, view)
             assert pinned == {"scrolled": True, "header": 0, "clipped": [], "partial": []}, (width, view, pinned)
+            assert pg.evaluate(UNBROKEN) == [], (width, view)
         ctx.close()
 
 

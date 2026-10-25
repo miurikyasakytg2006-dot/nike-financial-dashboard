@@ -183,6 +183,7 @@
     if (!h[name] && shown.length === 1) { announce('Phải giữ lại ít nhất một loại số liệu trên biểu đồ.'); return; }
     h[name] = !h[name];
     RENDER[id]();
+    keepTogether(document.body);
     var btn = Array.prototype.find.call(document.querySelectorAll('[data-legend="' + id + '"] button'),
       function (b) { return b.textContent === items.filter(function (it) { return it.name === name; })[0].label; });
     if (btn) btn.focus();
@@ -195,7 +196,7 @@
     ys.forEach(function (y, i) {
       var a = document.createElement('a');
       a.href = D.filings[y].url; a.target = '_blank'; a.rel = 'noopener';
-      a.textContent = '10-K FY' + y;
+      a.textContent = '10-K FY' + y; a.className = 'nowrap';
       a.setAttribute('aria-label', 'Mở báo cáo 10-K FY' + y + ' trên SEC EDGAR (thẻ mới)');
       el.append(a, document.createTextNode(i < ys.length - 1 ? ', ' : '.'));
     });
@@ -338,7 +339,7 @@
     o.tooltip.formatter = function (ps) {
       var y = ys[ps[0].dataIndex];
       var dig = ob('nike_brand_digital_sales', y), prev = ob('nike_brand_digital_sales', y - 1);
-      var restated = dig && dig.restatement && dig.restatement.indexOf('ĐIỀU CHỈNH') === 0;  // note written by the pipeline
+      var restated = dig && dig.restatement && dig.restatement.indexOf('CÓ THAY ĐỔI') === 0;  // note written by the pipeline
       // When last year's figure was later reclassified, say which number this year should be compared with.
       var sameBasis = dig && prev && dig.prior != null && prev.value != null && Math.abs(dig.prior - prev.value) > 1e-9
         ? 'So sánh cùng cách phân loại: FY' + (y - 1) + ' trong 10-K FY' + y + ' là ' + num(dig.prior, 1) + ' tỷ USD. ' : '';
@@ -346,7 +347,7 @@
         { color: C.directLight, value: bn(val('nike_direct_revenue', y)) + ' tỷ USD', label: 'NIKE Direct (tổng)' },
         { color: C.digital, value: num(val('nike_brand_digital_sales', y), 1) + ' tỷ USD', label: 'NIKE Brand Digital' },
         { color: C.digital, value: '≈ ' + pct(kpi('digital_share_of_direct', y), 0), label: 'Digital trong NIKE Direct' }
-      ], (restated ? 'Số gốc theo 10-K FY' + y + '. ' + dig.restatement.replace('ĐIỀU CHỈNH HỒI TỐ: ', '') + ' ' : '') +
+      ], (restated ? 'Số gốc theo 10-K FY' + y + '. ' + dig.restatement.replace('CÓ THAY ĐỔI: ', '') + ' ' : '') +
         sameBasis + srcNote('nike_brand_digital_sales', y));
     };
     o.series = [
@@ -657,7 +658,10 @@
           var o = ob(row.obs, y);
           if (!o || o.value == null) {
             td = cell('td', null, 'num missing');
-            td.append(cell('span', 'Không công bố', 'missing-text'));
+            // Two short lines, so this column is no wider than the columns of figures.
+            var miss = cell('span', null, 'missing-text');
+            miss.append(cell('span', 'Không'), document.createTextNode(' '), cell('span', 'công bố'));
+            td.append(miss);
             td.title = (o && o.cross_check) || 'NIKE không công bố số liệu này trong 10-K.';
           } else {
             td = cell('td', row.fmt(o.value), 'num');
@@ -900,6 +904,23 @@
     VIEW_CHARTS[state.view].forEach(function (id) { RENDER[id](); charts[id].resize(); });
     renderTable(state.view);
     writeURL();
+    keepTogether(document.body);
+  }
+  // Kept on one line because they read badly when split: "10-K" with the year after it and "non-GAAP" (browsers may
+  // break right after their hyphen), a year range, a figure and its unit, "(xấp xỉ)".
+  var KEEP = /(10-K(?: FY\d{4}(?:–FY\d{4})?)?|non-GAAP|FY\d{4}–FY\d{4}|±?\d[\d.,]*(?:–\d[\d.,]*)? (?:tỷ|triệu) USD|\(xấp xỉ\))/;
+  function keepTogether(root) {
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), found = [], n;
+    while ((n = walker.nextNode())) {
+      if (KEEP.test(n.nodeValue) && !n.parentNode.closest('.nowrap, script, style, option, .chart, .visually-hidden')) found.push(n);
+    }
+    found.forEach(function (node) {
+      var frag = document.createDocumentFragment();
+      node.nodeValue.split(KEEP).forEach(function (s, i) {
+        if (s) frag.append(i % 2 ? cell('span', s, 'nowrap') : document.createTextNode(s));
+      });
+      node.parentNode.replaceChild(frag, node);
+    });
   }
   function bind() {
     document.querySelectorAll('[role="tab"]').forEach(function (tab) {
@@ -925,7 +946,7 @@
     });
     document.querySelectorAll('#growth-basis input').forEach(function (r) {
       r.addEventListener('change', function () {
-        state.basis = r.value; renderGrowth(); writeURL();
+        state.basis = r.value; renderGrowth(); keepTogether(document.body); writeURL();
         announce(r.value === 'cn' ? 'Tăng trưởng loại trừ tỷ giá (non-GAAP).' : 'Tăng trưởng theo báo cáo.');
       });
     });
@@ -938,6 +959,7 @@
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
         VIEW_CHARTS[state.view].forEach(function (id) { RENDER[id](); });
+        keepTogether(document.body);
         fitTable(document.getElementById('table-' + state.view));
       }, 200);
     });
@@ -959,22 +981,22 @@
         VIEW_CHARTS[v].forEach(function (id) { RENDER[id](); charts[id].resize(); });
         renderTable(v);
       });
+      keepTogether(document.body);
     });
     window.addEventListener('afterprint', function () { showView(state.view); renderAll(); });
   }
 
   function renderFooter() {
-    var list = document.getElementById('filing-list');
+    var list = document.querySelector('#filing-list tbody');
     D.years.forEach(function (y) {
       var f = D.filings[y];
-      var li = document.createElement('li');
       var a = document.createElement('a');
       a.href = f.url; a.target = '_blank'; a.rel = 'noopener';
-      a.textContent = 'Form 10-K FY' + y;
-      var filed = isoDate(f.filed);
-      var acc = document.createElement('span'); acc.className = 'nowrap'; acc.textContent = f.accession;
-      li.append(a, document.createTextNode(', nộp ngày ' + filed + ', số '), acc);
-      list.append(li);
+      a.textContent = '10-K FY' + y;
+      var tr = document.createElement('tr'), link = cell('td');
+      link.append(a);
+      tr.append(link, cell('td', isoDate(f.filed)), cell('td', f.accession));
+      list.append(tr);
     });
     var c = D.meta.status_counts;
     var total = Object.keys(c).reduce(function (s, k) { return s + c[k]; }, 0);

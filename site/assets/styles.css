@@ -188,7 +188,8 @@ main:focus { outline: none; }
 .data-table td.calc { font-style: italic; color: var(--ink-2); }
 .data-table td.missing { color: var(--muted); }
 /* Smaller text, same cell size: the trailing slots are sized in em of the cell, so they stay as wide as in other cells. */
-.missing-text { font-size: 14px; }
+/* First line sits on the row's baseline, like the figures beside it. */
+.missing-text { display: inline-flex; flex-direction: column; align-items: flex-end; font-size: 14px; }
 .data-table tr.group th { font-weight: 600; padding-top: 16px; color: var(--ink); border-bottom-color: var(--rule); }
 .data-table tr.total th, .data-table tr.total td { font-weight: 600; }
 .mark-slot { display: inline-block; width: 0.8em; text-align: center; color: var(--muted); font-style: normal; }
@@ -204,12 +205,23 @@ main:focus { outline: none; }
 .site-footer { border-top: 1px solid var(--rule); background: var(--plane); padding: 36px 0 48px; font-size: 15px; }
 .site-footer h2 { font-family: var(--serif); font-weight: 600; font-size: 22px; margin-bottom: 16px; }
 .site-footer h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-.footer-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 48px; }
-.filing-list, .plain-list { margin: 0; padding: 0; list-style: none; }
-.filing-list li, .plain-list li { margin-bottom: 6px; color: var(--ink-2); }
+/* Two balanced columns: the filings and the data status on the left, the method on the right. */
+.footer-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 64px; align-items: start;
+  grid-template-areas: "sources method" "status method";
+}
+.footer-grid > :nth-child(1) { grid-area: sources; }
+.footer-grid > :nth-child(2) { grid-area: method; }
+.footer-grid > :nth-child(3) { grid-area: status; }
+.filing-table { border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums lining-nums; }
+.filing-table th { text-align: left; font-weight: 600; font-size: 13px; color: var(--muted); padding: 0 20px 6px 0; border-bottom: 1px solid var(--rule); }
+.filing-table td { padding: 6px 20px 6px 0; color: var(--ink-2); border-bottom: 1px solid var(--grid); white-space: nowrap; }
+.filing-table th:last-child, .filing-table td:last-child { padding-right: 0; }
+.plain-list { margin: 0; padding: 0; list-style: none; }
+.plain-list li { margin-bottom: 8px; color: var(--ink-2); padding-left: 16px; position: relative; }
+.plain-list li::before { content: "–"; position: absolute; left: 0; top: 0; color: var(--muted); }
+#status-summary { margin: 0; color: var(--ink-2); }
 .nowrap { white-space: nowrap; }
-.plain-list li { padding-left: 14px; position: relative; }
-.plain-list li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: 5px; height: 1px; background: var(--muted); }
 .fine { color: var(--muted); font-size: 14px; margin-top: 12px; }
 
 /* Responsive */
@@ -221,7 +233,7 @@ main:focus { outline: none; }
   :root { --gutter: 24px; }
   .view-head { grid-template-columns: 1fr; }
   .grid-2 { grid-template-columns: 1fr; }
-  .footer-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; grid-template-areas: "sources" "method" "status"; }
   .masthead-inner { flex-direction: column; align-items: flex-start; }
   .masthead-links { flex-direction: row; align-items: flex-start; gap: 20px; }
 }
@@ -240,7 +252,13 @@ main:focus { outline: none; }
   .grid-3 { grid-template-columns: 1fr; }
   .chart { height: 260px; }
   .chart-share { height: 340px; }
-  .figure-head { flex-wrap: wrap; }
+  /* Every chart keeps "Tải PNG" on its title line; the subtitle runs full width below. */
+  .figure-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; align-items: baseline; }
+  .figure-head > div { display: contents; }
+  .figure-head h3 { grid-column: 1; grid-row: 1; }
+  /* The button's padding stays clickable but does not push the subtitle down. */
+  .figure-head .export-png { grid-column: 2; grid-row: 1; margin: -6px 0; }
+  .figure-head .figure-sub { grid-column: 1 / -1; grid-row: 2; }
   .data-table { font-size: 14px; }
   .data-table tbody th { min-width: 11rem; }
 }
@@ -258,7 +276,7 @@ main:focus { outline: none; }
   .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .reading-notes-wide dl { display: grid; }
-  .footer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "sources method" "status method"; }
   /* Charts are drawn at screen width; let them shrink to the page. */
   .chart > div, .chart canvas { width: 100% !important; height: auto !important; }
   .table-scroll { overflow: visible; }

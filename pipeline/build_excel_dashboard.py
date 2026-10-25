@@ -22,7 +22,7 @@ from xml.sax.saxutils import escape
 import xlsxwriter
 from lxml import html
 
-from .build_workbook import DASHBOARD_URL
+from .build_workbook import DASHBOARD_URL, git_user_name
 from .dataset import vi_num
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -45,6 +45,7 @@ C = dict(direct="#2a78d6", wholesale="#eb6834", gbd="#a3a9b2", direct_light="#86
          grid="#e6e9ee", axis="#c3c9d1", rule="#d9dde3", band="#f4f5f7", link="#1f4e9a")
 FONT, SERIF = "Arial", "Cambria"
 MINUS = "−"
+NBSP, NB_HYPHEN = " ", "‑"
 
 # Page grid: column A is a margin, B..M are twelve 100-pixel columns (1,200 px of content).
 GRID_W = 13.57
@@ -55,6 +56,16 @@ ROW_PX = 20
 PRINT_SCALE = 79
 PAGE_ROWS_PT = (595.3 - 2 * 0.4 * 72) * 100 / PRINT_SCALE   # row height that fits on an A4-landscape page
 
+def glue(text):
+    """Keep together what reads badly when a wrapped cell splits it. Excel ends a line after any hyphen, so "10-K"
+    and "non-GAAP" take a non-breaking hyphen (Arial has none; Excel draws a matching one from a fallback font).
+    "10-K" stays with the "FY" after it and a figure with its unit, also where a formula joins them ('" tỷ USD')."""
+    text = text.replace("10-K", "10" + NB_HYPHEN + "K").replace("non-GAAP", "non" + NB_HYPHEN + "GAAP")
+    text = text.replace("10" + NB_HYPHEN + "K FY", "10" + NB_HYPHEN + "K" + NBSP + "FY")
+    text = re.sub(r"(\d) (tỷ|triệu) USD", "\\1" + NBSP + "\\2" + NBSP + "USD", text)
+    return text.replace('" tỷ USD', '"' + NBSP + "tỷ" + NBSP + "USD")
+
+
 def app_texts():
     """Chart source lines and the growth subtitle, read from app.js so the versions cannot drift apart."""
     js = APP_JS.read_text(encoding="utf-8")
@@ -62,7 +73,7 @@ def app_texts():
     m = re.search(r"sourceLine\('growth', cn \? '([^']*)'\s*:\s*'([^']*)'", js)
     sources["growth_cn"], sources["growth_reported"] = m.group(1), m.group(2)
     m = re.search(r"getElementById\('growth-sub'\)\.textContent = cn\s*\?\s*'([^']*)'\s*:\s*'([^']*)'", js)
-    return sources, {"cn": m.group(1), "reported": m.group(2)}
+    return {k: glue(v) for k, v in sources.items()}, {"cn": glue(m.group(1)), "reported": glue(m.group(2))}
 
 
 # ------------------------------------------------------------------ number formatting (vi-VN, as in app.js)
@@ -151,18 +162,21 @@ TABLES = {
 def page_texts():
     root = html.parse(str(INDEX_HTML)).getroot()
 
+    def text(el):
+        return glue(" ".join(el.text_content().split()))
+
     def t(xpath):
-        return " ".join(root.xpath(xpath)[0].text_content().split())
+        return text(root.xpath(xpath)[0])
 
     def notes(labelledby):
         aside = root.xpath(f"//aside[@aria-labelledby='{labelledby}']")[0]
         pairs = zip(aside.xpath(".//dt"), aside.xpath(".//dd"))
-        return t(f"//h3[@id='{labelledby}']"), [(" ".join(a.text_content().split()), " ".join(b.text_content().split())) for a, b in pairs]
+        return t(f"//h3[@id='{labelledby}']"), [(text(a), text(b)) for a, b in pairs]
 
     def fig(fid):
         f = root.xpath(f"//figure[@id='{fid}']")[0]
         sub = f.xpath(".//p[@class='figure-sub']")
-        return " ".join(f.xpath(".//h3")[0].text_content().split()), " ".join(sub[0].text_content().split()) if sub else ""
+        return text(f.xpath(".//h3")[0]), text(sub[0]) if sub else ""
 
     return dict(
         title=t("//header[@class='masthead']//h1"), subtitle=t("//p[@class='masthead-sub']"),
@@ -173,7 +187,7 @@ def page_texts():
                                          digital="fig-digital", revenue="fig-revenue", grossMargin="fig-gross-margin",
                                          sga="fig-sga", ebit="fig-ebit", inventory="fig-inventory", days="fig-days").items()},
         table_ch=t("//h3[@id='table-channels-title']"), table_perf=t("//h3[@id='table-performance-title']"),
-        method=[" ".join(li.text_content().split()) for li in root.xpath("//section[@aria-labelledby='footer-method']//li")],
+        method=[text(li) for li in root.xpath("//section[@aria-labelledby='footer-method']//li")],
         fine=t("//p[@class='fine']"),
     )
 
@@ -340,7 +354,7 @@ class DataSheet:
                               ("reports", f'=" Báo cáo: 10-K FY"&{self.qh("Năm đầu")}&IF({self.qh("Năm đầu")}={self.qh("Năm cuối")},"","–FY"&{self.qh("Năm cuối")})'
                                           f'&" (danh sách ở sheet “{SHEET_SRC}”)."')):
             ws.write(row, 1, name)
-            ws.write_formula(row, 2, formula)
+            ws.write_formula(row, 2, glue(formula))
             self.summary_cells[name] = self.q(xlsxwriter.utility.xl_rowcol_to_cell(row, 2, row_abs=True, col_abs=True))
             row += 1
         self.write_table_texts()
@@ -500,7 +514,7 @@ class Dashboard:
         self.year_slicer_cell = "B8"
         for r in range(7, 10):
             ws.set_row(r, 18)
-        ws.merge_range(7, 9, 9, 12, "Bấm một năm để lọc, giữ Ctrl để chọn nhiều năm. Bấm nút xoá lọc ở góc slicer để xem lại đủ 7 năm.",
+        ws.merge_range(7, 9, 9, 12, "Bấm một năm để lọc, giữ Ctrl để chọn nhiều năm. Bấm nút xóa lọc ở góc slicer để xem lại đủ 7 năm.",
                        b.f(font_size=9, font_color=C["muted"], text_wrap=True, valign="vcenter"))
         ws.set_row(10, 12)
         # Question and summary
@@ -554,7 +568,7 @@ class Dashboard:
             key = "Đơn vị triệu USD, trừ khi ghi khác. Số âm để trong ngoặc đơn. " + key
         if b.pending_count():
             key += " † chưa được kiểm tra."
-        self.text(r + 1, 1, 12, key, b.f(font_size=9, font_color=C["muted"]), 18)
+        self.text(r + 1, 1, 12, glue(key), b.f(font_size=9, font_color=C["muted"]), 18)
         h = r + 2
         head = b.f(bold=True, font_color=C["ink"], bottom=1, bottom_color=C["ink2"], valign="bottom")
         ws.merge_range(h, 1, h, 3, "Chỉ tiêu", head)
@@ -574,7 +588,7 @@ class Dashboard:
                 if r > h + 1:
                     self.table_starts.append(r)
                 g = b.f(bold=True, font_color=C["ink"], bg_color=C["band"], valign="vcenter")
-                ws.merge_range(r, 1, r, 12, spec[1], g)
+                ws.merge_range(r, 1, r, 12, glue(spec[1]), g)
                 ws.set_row(r, 20)
                 r += 1
                 continue
@@ -585,7 +599,7 @@ class Dashboard:
             top = {"top": 1, "top_color": C["ink2"]} if total else {}
             border = top if reported else {**top, **rule}
             weight = {"bold": True} if total else {}
-            ws.merge_range(r, 1, r, 3, label, b.f(font_color=C["ink"], valign="vcenter", **border, **weight))
+            ws.merge_range(r, 1, r, 3, glue(label), b.f(font_color=C["ink"], valign="vcenter", **border, **weight))
             ws.write(r, 4, unit, b.f(font_color=C["muted"], valign="vcenter", **border))
             cell = b.f(italic=not reported, align="right", font_color=C["ink"] if reported else C["ink2"], valign="vcenter",
                        **border, **weight)
@@ -827,12 +841,12 @@ def build_sources(b, ws):
     ws.write(1, 1, "Nguồn và phương pháp", b.f(font_name=SERIF, font_size=20, bold=True, font_color=C["ink"]))
     ws.set_row(1, 32)
     h = b.f(bold=True, font_size=11, font_color=C["ink"], bottom=1, bottom_color=C["rule"])
-    ws.write(3, 1, "Báo cáo Form 10-K (SEC EDGAR)", h)
+    ws.write(3, 1, glue("Báo cáo Form 10-K (SEC EDGAR)"), h)
     link = b.f(font_color=C["link"], underline=1)
     for i, y in enumerate(b.years):
         f = b.d["filings"][str(y)]
         dd, mm, yy = f["filed"][8:10], f["filed"][5:7], f["filed"][:4]
-        ws.write_url(4 + i, 1, f["url"], link, f"Form 10-K FY{y}, nộp ngày {dd}/{mm}/{yy}, số {f['accession']}")
+        ws.write_url(4 + i, 1, f["url"], link, glue(f"Form 10-K FY{y}, nộp ngày {dd}/{mm}/{yy}, số {f['accession']}"))
     ws.write(3, 3, "Phương pháp", h)
     for i, item in enumerate(t["method"]):
         ws.write(4 + i, 3, "–  " + item, b.f(text_wrap=True))
@@ -849,12 +863,12 @@ def build_sources(b, ws):
     extracted = b.d["meta"]["extracted_on"]
     status = (f"{total} số liệu báo cáo: " + ", ".join(f"{n}{label}" for n, label in parts if n) +
               f". Dữ liệu trích xuất ngày {extracted[8:10]}/{extracted[5:7]}/{extracted[:4]}.")
-    ws.merge_range(r + 1, 1, r + 2, 1, status, b.f(text_wrap=True))
+    ws.merge_range(r + 1, 1, r + 2, 1, glue(status), b.f(text_wrap=True))
     ws.write(r + 3, 1, t["fine"], b.f(font_size=9, font_color=C["muted"]))
     ws.write(r, 3, "Liên kết", h)
     ws.write_url(r + 1, 3, DASHBOARD_URL, link, "Dashboard web")
     ws.write_url(r + 2, 3, DASHBOARD_URL + b.d["meta"]["workbook"], link, "Bộ dữ liệu Excel (đầy đủ nguồn từng số)")
-    ws.write_url(r + 3, 3, DASHBOARD_URL + EVIDENCE_PAGE, link, "Đối chiếu 35 số trên trang 10-K (ảnh chụp)")
+    ws.write_url(r + 3, 3, DASHBOARD_URL + EVIDENCE_PAGE, link, glue("Đối chiếu 35 số trên trang 10-K (ảnh chụp)"))
     ws.set_landscape()
     ws.fit_to_pages(1, 0)
 
@@ -881,15 +895,6 @@ def build(path=OUT, add_slicers=True):
         run_slicer_script(path, anchors)
     set_author(path, git_user_name())
     return anchors
-
-
-def git_user_name():
-    """The builder's name as set in git (the repository's own setting first)."""
-    try:
-        out = subprocess.run(["git", "config", "user.name"], cwd=ROOT, capture_output=True, encoding="utf-8")
-    except OSError:
-        return ""
-    return out.stdout.strip()
 
 
 def set_author(path, name):

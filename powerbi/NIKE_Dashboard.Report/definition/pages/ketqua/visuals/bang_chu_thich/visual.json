@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Đơn vị triệu USD, trừ khi ghi khác. Số âm để trong ngoặc đơn. Số NIKE công bố có số trang 10-K ở cột nhỏ bên phải (Ctrl + bấm vào số trang để mở báo cáo trên SEC). Số nhóm tự tính không có số trang.",
+                    "value": "Đơn vị triệu USD, trừ khi ghi khác. Số âm để trong ngoặc đơn. Số NIKE công bố có số trang 10‑K ở cột nhỏ bên phải (Ctrl + bấm vào số trang để mở báo cáo trên SEC). Số nhóm tự tính không có số trang.",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
                       "fontSize": "9.5pt",

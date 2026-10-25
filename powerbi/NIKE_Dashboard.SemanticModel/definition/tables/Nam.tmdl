@@ -119,15 +119,15 @@ table Nam
 			    IF (
 			        a = b,
 			        "Trong FY" & a & ", NIKE Direct chiếm " & FORMAT ( shA, "0.0%", "vi-VN" ) & " doanh thu NIKE Brand ("
-			            & FORMAT ( dA, "#,0.0", "vi-VN" ) & " tỷ USD), còn bán buôn chiếm " & FORMAT ( wsA, "0.0%", "vi-VN" ) & " ("
-			            & FORMAT ( wA, "#,0.0", "vi-VN" ) & " tỷ USD).",
+			            & FORMAT ( dA, "#,0.0", "vi-VN" ) & " tỷ USD), còn bán buôn chiếm " & FORMAT ( wsA, "0.0%", "vi-VN" ) & " ("
+			            & FORMAT ( wA, "#,0.0", "vi-VN" ) & " tỷ USD).",
 			        "Tỷ trọng NIKE Direct trong doanh thu NIKE Brand là " & FORMAT ( shA, "0.0%", "vi-VN" ) & " ở FY" & a & " và "
 			            & FORMAT ( shB, "0.0%", "vi-VN" ) & " ở FY" & b
 			            & IF ( hi <> a && hi <> b, ", cao nhất " & FORMAT ( shHi, "0.0%", "vi-VN" ) & " (FY" & hi & ")" )
 			            & IF ( lo <> a && lo <> b, IF ( hi <> a && hi <> b, " và thấp nhất ", ", thấp nhất " )
 			                & FORMAT ( shLo, "0.0%", "vi-VN" ) & " (FY" & lo & ")" )
 			            & ". Doanh thu NIKE Direct đi từ " & FORMAT ( dA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( dB, "#,0.0", "vi-VN" )
-			            & " tỷ USD, còn bán buôn từ " & FORMAT ( wA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( wB, "#,0.0", "vi-VN" ) & " tỷ USD."
+			            & " tỷ USD, còn bán buôn từ " & FORMAT ( wA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( wB, "#,0.0", "vi-VN" ) & " tỷ USD."
 			    )
 
 	measure 'Tóm tắt kết quả' =
@@ -146,15 +146,15 @@ table Nam
 			RETURN
 			    IF (
 			        a = b,
-			        "Trong FY" & a & ", doanh thu NIKE, Inc. là " & FORMAT ( rA, "#,0.0", "vi-VN" ) & " tỷ USD, biên lợi nhuận gộp "
-			            & FORMAT ( gA, "0.0%", "vi-VN" ) & ", biên EBIT (non-GAAP) " & FORMAT ( eA, "0.0%", "vi-VN" )
-			            & ", hàng tồn kho cuối kỳ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " tỷ USD.",
+			        "Trong FY" & a & ", doanh thu NIKE, Inc. là " & FORMAT ( rA, "#,0.0", "vi-VN" ) & " tỷ USD, biên lợi nhuận gộp "
+			            & FORMAT ( gA, "0.0%", "vi-VN" ) & ", biên EBIT (non‑GAAP) " & FORMAT ( eA, "0.0%", "vi-VN" )
+			            & ", hàng tồn kho cuối kỳ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " tỷ USD.",
 			        "Doanh thu NIKE, Inc. đi từ " & FORMAT ( rA, "#,0.0", "vi-VN" ) & " (FY" & a & ") đến " & FORMAT ( rB, "#,0.0", "vi-VN" )
-			            & " tỷ USD (FY" & b & "). Biên lợi nhuận gộp là " & FORMAT ( gA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
-			            & FORMAT ( gB, "0.0%", "vi-VN" ) & " (FY" & b & "), còn biên EBIT (non-GAAP) là " & FORMAT ( eA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
+			            & " tỷ USD (FY" & b & "). Biên lợi nhuận gộp là " & FORMAT ( gA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
+			            & FORMAT ( gB, "0.0%", "vi-VN" ) & " (FY" & b & "), còn biên EBIT (non‑GAAP) là " & FORMAT ( eA, "0.0%", "vi-VN" ) & " (FY" & a & ") và "
 			            & FORMAT ( eB, "0.0%", "vi-VN" ) & " (FY" & b & ")"
 			            & IF ( yHi <> a && yHi <> b, ", cao nhất " & FORMAT ( eHi, "0.0%", "vi-VN" ) & " (FY" & yHi & ")" )
-			            & ". Hàng tồn kho cuối kỳ đi từ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( iB, "#,0.0", "vi-VN" ) & " tỷ USD."
+			            & ". Hàng tồn kho cuối kỳ đi từ " & FORMAT ( iA, "#,0.0", "vi-VN" ) & " đến " & FORMAT ( iB, "#,0.0", "vi-VN" ) & " tỷ USD."
 			    )
 
 	measure 'Phụ đề tăng trưởng' = IF ( [Cơ sở đang chọn] = "Loại trừ tỷ giá", "Thay đổi so với năm trước (%), loại trừ tỷ giá, phạm vi NIKE Brand. Số do NIKE công bố (non-GAAP).", "Thay đổi so với năm trước (%), theo báo cáo, phạm vi NIKE Brand. Nhóm tự tính từ 10-K." )

@@ -11,6 +11,7 @@ expression is stored as the cached value so previews show numbers before recalcu
 """
 import datetime
 import json
+import subprocess
 import sys
 from decimal import Decimal
 from pathlib import Path
@@ -422,7 +423,7 @@ GLOSSARY = [
      "GAAP: số liệu theo chuẩn mực kế toán Mỹ trong BCTC đã kiểm toán. Non-GAAP: chỉ tiêu do công ty tự định nghĩa, trình bày ngoài BCTC.",
      "Cột “Loại số liệu” ở sheet 02–03 ghi rõ từng trường hợp."),
     ("Số năm trước (cùng 10-K)", "Comparative prior-year amount",
-     "Số của năm trước được trình bày làm cột so sánh trong 10-K của năm hiện tại.", "Dùng làm mẫu số khi tính tăng trưởng."),
+     "Số của năm trước được in kèm trong 10-K năm hiện tại để so sánh.", "Dùng làm mẫu số khi tính tăng trưởng."),
     ("Trình bày lại / phân loại lại", "Restatement / reclassification",
      "Khi 10-K năm sau trình bày lại số của năm trước theo cách phân loại mới.",
      "Bộ dữ liệu giữ số gốc và ghi chênh lệch ở cột “Trình bày lại ở 10-K sau”."),
@@ -563,8 +564,8 @@ def write_overview_sheet(wb, st, obs, extracted_on):
             ("Thứ tự ưu tiên nguồn", "(1) Báo cáo tài chính đã kiểm toán và thuyết minh (Item 8), lấy từ dữ liệu XBRL đi kèm chính báo cáo 10-K. "
                                      "(2) Phần MD&A (Item 7) của cùng báo cáo, cho các số non-GAAP và số do ban điều hành nêu: EBIT, tăng trưởng loại trừ tỷ giá, "
                                      "doanh số Digital. (3) Dữ liệu XBRL do SEC công bố chỉ dùng để đối chiếu."),
-            ("Quy tắc chọn số", "Số liệu của mỗi năm tài chính được lấy từ báo cáo 10-K của chính năm đó. “Giá trị năm trước” là số ở cột so sánh "
-                                "trong cùng báo cáo, dùng để tính tăng trưởng giống cách NIKE tự tính. Nếu báo cáo năm sau trình bày lại số liệu, "
+            ("Quy tắc chọn số", "Số liệu của mỗi năm tài chính được lấy từ báo cáo 10-K của chính năm đó. “Giá trị năm trước” là số của năm trước "
+                                "được in kèm trong cùng báo cáo để so sánh, dùng để tính tăng trưởng giống cách NIKE tự tính. Nếu báo cáo năm sau trình bày lại số liệu, "
                                 "phần chênh lệch được ghi ở cột “Trình bày lại ở 10-K sau”, số gốc giữ nguyên."),
             ("Tình trạng dữ liệu", f"Trích xuất tự động ngày {_vn_date(extracted_on)}. {total} số liệu: " + ", ".join(
                 f"{n[s]} {label}" for s, label in ((STATUS_MATCHED, "khớp nguồn chính thức"), (STATUS_HUMAN, "đã được người xác minh"),
@@ -615,6 +616,15 @@ def write_overview_sheet(wb, st, obs, extracted_on):
 
 
 # ------------------------------------------------------------------ main
+def git_user_name():
+    """The builder's name as set in git (the repository's own setting first), for the files' author field."""
+    try:
+        out = subprocess.run(["git", "config", "user.name"], cwd=ROOT, capture_output=True, encoding="utf-8")
+    except OSError:
+        return ""
+    return out.stdout.strip()
+
+
 def build(path=WORKBOOK, active_sheet=None):
     """Write the workbook; `active_sheet` (QA renders only) selects the sheet shown on open."""
     facts = dataset.load_facts()
@@ -628,7 +638,7 @@ def build(path=WORKBOOK, active_sheet=None):
     path.parent.mkdir(parents=True, exist_ok=True)
     wb = xlsxwriter.Workbook(str(path))
     wb.set_properties({"title": "NIKE Financial Dataset FY2020–FY2026", "subject": "Dữ liệu tài chính NIKE, Inc. từ Form 10-K",
-                       "comments": "Nguồn: NIKE, Inc. Form 10-K FY2020–FY2026 (SEC EDGAR)."})
+                       "author": git_user_name(), "comments": "Nguồn: NIKE, Inc. Form 10-K FY2020–FY2026 (SEC EDGAR)."})
     st = Styles(wb)
     write_overview_sheet(wb, st, obs, extracted_on)
     fin = [o for o in obs if o["metric"]["sheet"] == "financial"]

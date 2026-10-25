@@ -48,6 +48,18 @@ C = dict(direct="#2a78d6", wholesale="#eb6834", gbd="#a3a9b2", directLight="#86b
          ink="#15191e", ink2="#3b4350", muted="#5b6472", faint="#6f7784", grid="#e6e9ee", axis="#c3c9d1", rule="#dde1e6")
 SANS, SERIF = "Segoe UI", "Cambria"
 PAGE_W, MARGIN = 1280, 40
+NBSP, NB_HYPHEN = " ", "‑"
+
+
+def glue(text):
+    """Keep together what reads badly when a text box, the summary card or a table label splits it (the same rule as
+    in build_excel_dashboard.py): "10-K" and "non-GAAP" take a non-breaking hyphen, "10-K" stays with the "FY" after
+    it and a figure with its unit, also where DAX joins them ('" tỷ USD')."""
+    text = text.replace("10-K", "10" + NB_HYPHEN + "K").replace("non-GAAP", "non" + NB_HYPHEN + "GAAP")
+    text = text.replace("10" + NB_HYPHEN + "K FY", "10" + NB_HYPHEN + "K" + NBSP + "FY")
+    text = re.sub(r"(\d) (tỷ|triệu) USD", "\\1" + NBSP + "\\2" + NBSP + "USD", text)
+    return text.replace('" tỷ USD', '"' + NBSP + "tỷ" + NBSP + "USD")
+
 
 # Table rows mirror TABLES in site/assets/app.js: (kind, id, label, unit, format).
 TABLES = {
@@ -371,8 +383,8 @@ MEASURES = [
     dict(name="Tồn kho bình quân (tỷ USD)", expr="DIVIDE ( SUM ( Nam[average_inventory] ), 1000 )", format="#,0.00"),
     dict(name="Giá vốn hàng bán (tỷ USD)", expr="DIVIDE ( SUM ( Nam[cost_of_sales] ), 1000 )", format="#,0.0"),
     # Text
-    dict(name="Tóm tắt kênh", expr=dax_summary_channels()),
-    dict(name="Tóm tắt kết quả", expr=dax_summary_performance()),
+    dict(name="Tóm tắt kênh", expr=glue(dax_summary_channels())),
+    dict(name="Tóm tắt kết quả", expr=glue(dax_summary_performance())),
 ]
 
 
@@ -398,10 +410,10 @@ def semantic_model(d, w, out):
         rows = []
         for order, row in enumerate(spec, 1):
             if row[0] == "g":
-                label = row[1].upper()
+                label = glue(row[1]).upper()
             else:
                 # Percentages carry their own sign; other units go into the row label (one row level only).
-                label = row[2] if row[3] == "%" else f"{row[2]}, {row[3]}"
+                label = glue(row[2] if row[3] == "%" else f"{row[2]}, {row[3]}")
             for i, y in enumerate(years):
                 figure, page, link = ("", "", None) if row[0] == "g" else table_cells(row, y, obs, kpis, filings)
                 # Each year is two matrix columns: the figure under "FY2020", then its page reference under a
@@ -522,7 +534,7 @@ def run(text, size=11, color=C["ink2"], bold=False, family=SANS, url=None):
     style = {"fontFamily": family, "fontSize": f"{size}pt", "color": color}
     if bold:
         style["fontWeight"] = "bold"
-    r = {"value": text, "textStyle": style}
+    r = {"value": glue(text), "textStyle": style}
     if url:
         r["url"] = url
     return r
